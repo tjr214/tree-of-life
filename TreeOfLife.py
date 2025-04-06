@@ -652,7 +652,9 @@ class TreeOfLife:
     def render(self,
                focus_sephirah: Optional[int] = None,
                display: bool = True,
-               save_to_file: Optional[str] = None) -> None:
+               save_to_file: Optional[str] = None,
+               figsize: Tuple[float, float] = (7.5, 11),
+               dpi: int = 300) -> None:
         """
         Render the Tree of Life diagram.
 
@@ -660,7 +662,522 @@ class TreeOfLife:
             focus_sephirah: If provided, render only this Sephirah (1-10) and its connected paths
             display: Whether to display the diagram in a window
             save_to_file: If provided, save the diagram to this filename
+            figsize: Size of the figure (width, height) in inches
+            dpi: Resolution in dots per inch for saving the figure
         """
-        # TODO: Implement rendering logic
-        # This will be done in Phase 4
-        pass
+        # Setup the plot
+        fig, ax = plt.subplots(figsize=figsize)
+        # Set background color of the figure
+        fig.patch.set_facecolor('#EAEAEA')
+        ax.set_facecolor('#EAEAEA')  # Set background color of the axes area
+
+        # Set plot limits with padding to accommodate the larger spheres and adjusted spacing
+        ax.set_xlim(-4.0, 4.0)
+        ax.set_ylim(-3.5, 15.0)
+
+        # Ensure aspect ratio is equal so circles are not distorted
+        ax.set_aspect('equal', adjustable='box')
+
+        # Hide the axes
+        ax.axis('off')
+
+        # Define visual parameters
+        line_color_outer = 'black'
+        line_color_inner = 'white'
+        # Increased thickness for path numbers
+        line_width_outer = 14.0 * (self.sphere_scale_factor * 0.7)
+        line_width_inner = 10.0 * (self.sphere_scale_factor * 0.7)
+        circle_edge_color = 'black'
+        # Increased for thicker sephiroth borders
+        circle_line_width = 3.0 * (self.sphere_scale_factor * 0.6)
+        zorder_paths_outer = 1  # Draw black lines first
+        zorder_paths_inner = 2  # Draw white lines on top
+        zorder_circles = 3     # Draw circles on top of lines
+        # Draw Daath outline above outer paths, potentially below inner paths/circles
+        zorder_daath = 2
+        zorder_path_numbers = 4  # Draw path numbers on top of everything
+
+        # Determine which paths and Sephiroth to draw based on focus
+        if focus_sephirah is not None and 1 <= focus_sephirah <= 10:
+            paths_to_draw = self._get_connected_paths(focus_sephirah)
+            sephiroth_to_draw = self._get_connected_sephiroth(focus_sephirah)
+            # Always include the focus sephirah
+            sephiroth_to_draw.add(focus_sephirah)
+        else:
+            # Draw all paths and Sephiroth
+            paths_to_draw = set(self.paths.keys())
+            sephiroth_to_draw = set(self.sephiroth.keys())
+
+        # Identify special paths that need different z-ordering
+        path13_num = 13  # Kether to Tiphereth
+        path14_num = 14  # Chokmah to Binah
+        path15_num = 15  # Chokmah to Tiphereth
+        path17_num = 17  # Binah to Tiphereth
+        path19_num = 19  # Chesed to Geburah
+        path25_num = 25  # Tiphereth to Yesod
+        path27_num = 27  # Netzach to Hod
+
+        # Create lists of special paths
+        paths_underneath = {path13_num, path15_num, path17_num, path25_num}
+        paths_special = {path14_num, path19_num,
+                         path27_num}  # Horizontal paths
+
+        # Draw paths
+        # First handle normal paths
+        for path_num, path in self.paths.items():
+            if path_num not in paths_to_draw:
+                continue
+
+            # Skip special paths for now
+            if path_num in paths_underneath or path_num in paths_special:
+                continue
+
+            # Get sephiroth coordinates
+            i, j = path.connects
+            # Convert from 0-based to 1-based
+            x1, y1 = self.sephiroth[i+1].coord
+            # Convert from 0-based to 1-based
+            x2, y2 = self.sephiroth[j+1].coord
+
+            # Determine path color
+            path_color = path.color
+
+            # Check if we're focusing on a specific sephirah
+            if focus_sephirah is not None:
+                # Get 0-based indices for the focused sephirah
+                focus_idx = focus_sephirah - 1
+
+                # If path connects to focused sephirah, use normal color
+                # Otherwise gray it out
+                if focus_idx not in path.connects:
+                    path_color = '#888888'  # Use gray for non-focused paths
+
+            # Draw the outer black line
+            ax.plot([x1, x2], [y1, y2],
+                    color=line_color_outer,
+                    linewidth=line_width_outer,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_outer)
+
+            # Draw the inner colored line
+            ax.plot([x1, x2], [y1, y2],
+                    color=path_color if path_color != '#888888' else line_color_inner,
+                    linewidth=line_width_inner,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_inner)
+
+            # Apply special effects if any
+            if path.color_effect and path_color != '#888888':
+                self._apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+
+            # Add path number at the midpoint
+            self._add_path_number(ax, path_num, x1, y1,
+                                  x2, y2, zorder_path_numbers)
+
+        # Draw paths that should appear underneath
+        for path_num in paths_underneath:
+            if path_num not in paths_to_draw or path_num not in self.paths:
+                continue
+
+            path = self.paths[path_num]
+            i, j = path.connects
+            x1, y1 = self.sephiroth[i+1].coord
+            x2, y2 = self.sephiroth[j+1].coord
+
+            # Determine path color
+            path_color = path.color
+
+            # Check if we're focusing on a specific sephirah
+            if focus_sephirah is not None:
+                focus_idx = focus_sephirah - 1
+                if focus_idx not in path.connects:
+                    path_color = '#888888'  # Use gray for non-focused paths
+
+            # Draw with lower zorder to ensure it appears underneath
+            ax.plot([x1, x2], [y1, y2],
+                    color=line_color_outer,
+                    linewidth=line_width_outer,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_outer-1)  # Even lower zorder
+
+            ax.plot([x1, x2], [y1, y2],
+                    color=path_color if path_color != '#888888' else line_color_inner,
+                    linewidth=line_width_inner,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_inner-1)  # Even lower zorder
+
+            # Apply special effects if any
+            if path.color_effect and path_color != '#888888':
+                self._apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+
+            # Add path number at the midpoint
+            self._add_path_number(ax, path_num, x1, y1,
+                                  x2, y2, zorder_path_numbers)
+
+        # Draw special horizontal paths
+        for path_num in paths_special:
+            if path_num not in paths_to_draw or path_num not in self.paths:
+                continue
+
+            path = self.paths[path_num]
+            i, j = path.connects
+            x1, y1 = self.sephiroth[i+1].coord
+            x2, y2 = self.sephiroth[j+1].coord
+
+            # Determine path color
+            path_color = path.color
+
+            # Check if we're focusing on a specific sephirah
+            if focus_sephirah is not None:
+                focus_idx = focus_sephirah - 1
+                if focus_idx not in path.connects:
+                    path_color = '#888888'  # Use gray for non-focused paths
+
+            # Draw with different zorder to handle horizontal paths correctly
+            ax.plot([x1, x2], [y1, y2],
+                    color=line_color_outer,
+                    linewidth=line_width_outer,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_outer)
+
+            ax.plot([x1, x2], [y1, y2],
+                    color=path_color if path_color != '#888888' else line_color_inner,
+                    linewidth=line_width_inner,
+                    solid_capstyle='round',
+                    zorder=zorder_paths_inner)
+
+            # Apply special effects if any
+            if path.color_effect and path_color != '#888888':
+                self._apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+
+            # Add path number at the midpoint
+            self._add_path_number(ax, path_num, x1, y1,
+                                  x2, y2, zorder_path_numbers)
+
+        # Draw Sephiroth
+        for seph_num, sephirah in self.sephiroth.items():
+            if seph_num not in sephiroth_to_draw:
+                continue
+
+            x, y = sephirah.coord
+            color = sephirah.color
+
+            # If focusing on a specific sephirah, gray out all except the focused one
+            if focus_sephirah is not None and seph_num != focus_sephirah:
+                # Gray out connected sephiroth by reducing opacity
+                alpha = 0.6
+                circle_face_color = '#AAAAAA'  # Gray out connected sephiroth
+            else:
+                alpha = 1.0
+                circle_face_color = color  # Use the sephirah's color
+
+            # Draw the circle
+            circle = patches.Circle(
+                (x, y),
+                self.circle_radius,
+                facecolor=circle_face_color,
+                edgecolor=circle_edge_color,
+                linewidth=circle_line_width,
+                alpha=alpha,
+                zorder=zorder_circles
+            )
+            ax.add_patch(circle)
+
+            # Apply special color effects if any
+            if sephirah.color_effect and (focus_sephirah is None or seph_num == focus_sephirah):
+                self._apply_color_effect(
+                    ax, 'sephirah', seph_num, x, y, color,
+                    sephirah.color_effect, self.circle_radius
+                )
+
+            # Add sephirah number in the center
+            ax.text(
+                x, y,
+                str(seph_num),
+                color='black',
+                fontsize=12 * self.sphere_scale_factor,
+                ha='center',
+                va='center',
+                fontweight='bold',
+                zorder=zorder_circles + 1
+            )
+
+            # Special case for Kether (1) - Add radiant effect
+            if seph_num == 1:
+                self._add_kether_radiant_effect(ax, x, y)
+
+        # Draw Da'ath (the hidden Sephirah) if it should be included
+        # (either showing all sephiroth or if it's connected to the focused sephirah)
+        if focus_sephirah is None or 0 in sephiroth_to_draw:
+            x, y = self.daath.coord
+            color = self.daath.color
+
+            # Da'ath is typically drawn with a dashed line
+            circle = patches.Circle(
+                (x, y),
+                self.circle_radius,
+                facecolor='none',  # Transparent fill
+                edgecolor=circle_edge_color,
+                linewidth=circle_line_width * 0.7,
+                linestyle='dashed',
+                alpha=0.8,
+                zorder=zorder_daath
+            )
+            ax.add_patch(circle)
+
+            # Add the name "Da'ath" below the circle
+            ax.text(
+                x, y - self.circle_radius - 0.15,
+                "Da'ath",
+                color='black',
+                fontsize=11 * self.sphere_scale_factor,
+                ha='center',
+                va='top',
+                fontstyle='italic',
+                zorder=zorder_circles + 1
+            )
+
+        # Add title if focusing on a specific sephirah
+        if focus_sephirah is not None:
+            sephirah_name = self.sephiroth[focus_sephirah].name
+            title = f"Tree of Life - Focus on {sephirah_name} (Sephirah {focus_sephirah})"
+            fig.suptitle(title, fontsize=14)
+        else:
+            fig.suptitle("The Tree of Life", fontsize=14)
+
+        # Save the figure if a filename is provided
+        if save_to_file:
+            plt.savefig(save_to_file, dpi=dpi, bbox_inches='tight')
+            print(f"Diagram saved to {save_to_file}")
+
+        # Display the figure if requested
+        if display:
+            plt.show()
+        else:
+            plt.close(fig)
+
+    def _get_connected_paths(self, sephirah_num: int) -> set:
+        """
+        Get the set of path numbers that connect to the given sephirah.
+
+        Args:
+            sephirah_num: The sephirah number (1-10)
+
+        Returns:
+            Set of path numbers (11-32) that connect to the sephirah
+        """
+        connected_paths = set()
+        sephirah_idx = sephirah_num - 1  # Convert to 0-based index
+
+        for path_num, path in self.paths.items():
+            if sephirah_idx in path.connects:
+                connected_paths.add(path_num)
+
+        return connected_paths
+
+    def _get_connected_sephiroth(self, sephirah_num: int) -> set:
+        """
+        Get the set of sephiroth that are directly connected to the given sephirah.
+
+        Args:
+            sephirah_num: The sephirah number (1-10)
+
+        Returns:
+            Set of sephirah numbers (1-10) that are connected to the given sephirah
+        """
+        connected_sephiroth = set()
+        sephirah_idx = sephirah_num - 1  # Convert to 0-based index
+
+        for path in self.paths.values():
+            if sephirah_idx in path.connects:
+                # Get the other sephirah connected by this path
+                other_idx = path.connects[0] if path.connects[1] == sephirah_idx else path.connects[1]
+                # Convert back to 1-based
+                connected_sephiroth.add(other_idx + 1)
+
+        # Check if Da'ath (0) should be included
+        # For simplicity, consider Da'ath connected to Sephiroth 1-6
+        if 1 <= sephirah_num <= 6:
+            connected_sephiroth.add(0)  # Add Da'ath
+
+        return connected_sephiroth
+
+    def _add_path_number(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float, zorder: int) -> None:
+        """
+        Add the path number at the midpoint of the path.
+
+        Args:
+            ax: Matplotlib axis
+            path_num: Path number (11-32)
+            x1, y1: Coordinates of the first endpoint
+            x2, y2: Coordinates of the second endpoint
+            zorder: Z-order for drawing
+        """
+        # Calculate midpoint
+        mid_x = (x1 + x2) / 2
+        mid_y = (y1 + y2) / 2
+
+        # Add small white circle as background for the path number
+        bg_circle = patches.Circle(
+            (mid_x, mid_y),
+            0.18 * self.sphere_scale_factor,
+            facecolor='white',
+            edgecolor='black',
+            linewidth=1,
+            alpha=0.9,
+            zorder=zorder - 0.5
+        )
+        ax.add_patch(bg_circle)
+
+        # Add the path number
+        ax.text(
+            mid_x, mid_y,
+            str(path_num),
+            color='black',
+            fontsize=9 * self.sphere_scale_factor,
+            ha='center',
+            va='center',
+            fontweight='bold',
+            zorder=zorder
+        )
+
+    def _add_kether_radiant_effect(self, ax, x: float, y: float) -> None:
+        """
+        Add a radiant effect around Kether (first Sephirah).
+
+        Args:
+            ax: Matplotlib axis
+            x, y: Center coordinates of Kether
+        """
+        # Create a radiant glow effect
+        for i in range(20, 0, -2):
+            # Decrease alpha and increase size as we move outward
+            alpha = i / 40.0  # 0.5 to 0.025
+            size = self.circle_radius * (1 + (20 - i) / 10.0)  # 1.0r to 3.0r
+
+            glow = patches.Circle(
+                (x, y),
+                size,
+                facecolor='white',
+                edgecolor='none',
+                alpha=alpha,
+                zorder=1  # Below the main circle
+            )
+            ax.add_patch(glow)
+
+    def _apply_path_effect(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float,
+                           color: str, effect: Optional[ColorEffect]) -> None:
+        """
+        Apply special color effects to a path.
+
+        Args:
+            ax: Matplotlib axis
+            path_num: Path number (11-32)
+            x1, y1: Coordinates of the first endpoint
+            x2, y2: Coordinates of the second endpoint
+            color: Base color of the path
+            effect: Special color effect data
+        """
+        if not effect:
+            return
+
+        effect_type = effect.get('type')
+
+        if effect_type == 'flecked':
+            # Get the second color for flecking
+            color2 = effect.get('color2_hex', '#FFFFFF')
+
+            # Calculate the path length and angle
+            dx = x2 - x1
+            dy = y2 - y1
+            path_length = np.sqrt(dx*dx + dy*dy)
+            angle = np.arctan2(dy, dx)
+
+            # Draw flecks along the path
+            # Scale number of flecks with path length
+            num_flecks = int(path_length * 15)
+            # Use path number as seed for reproducibility
+            np.random.seed(path_num)
+
+            for _ in range(num_flecks):
+                # Random position along the path
+                t = np.random.uniform(0.1, 0.9)  # Avoid endpoints
+                # Random offset perpendicular to the path
+                offset = np.random.uniform(-0.05, 0.05)
+
+                fleck_x = x1 + t * dx + offset * np.sin(angle)
+                fleck_y = y1 + t * dy - offset * np.cos(angle)
+
+                # Random size for the fleck
+                fleck_size = np.random.uniform(
+                    0.01, 0.03) * self.sphere_scale_factor
+
+                # Draw the fleck
+                fleck = patches.Circle(
+                    (fleck_x, fleck_y),
+                    fleck_size,
+                    facecolor=color2,
+                    edgecolor=None,
+                    alpha=0.8,
+                    zorder=3  # Above the path
+                )
+                ax.add_patch(fleck)
+
+        elif effect_type == 'rayed':
+            # Get the second color for rays
+            color2 = effect.get('color2_hex', '#FFFFFF')
+
+            # Calculate the midpoint
+            mid_x = (x1 + x2) / 2
+            mid_y = (y1 + y2) / 2
+
+            # Draw rays emanating perpendicular to the path
+            num_rays = 8  # Number of rays
+            ray_length = 0.2 * self.sphere_scale_factor  # Length of rays
+
+            # Calculate path direction vector
+            dx = x2 - x1
+            dy = y2 - y1
+            path_length = np.sqrt(dx*dx + dy*dy)
+
+            # Normalize direction vector
+            if path_length > 0:
+                dx /= path_length
+                dy /= path_length
+
+                # Calculate perpendicular vector
+                perp_dx = -dy
+                perp_dy = dx
+
+                # Draw rays along the path
+                for t in np.linspace(0.2, 0.8, num_rays):
+                    # Position along the path
+                    ray_x = x1 + t * dx * path_length
+                    ray_y = y1 + t * dy * path_length
+
+                    # Draw rays in perpendicular directions
+                    ax.plot(
+                        [ray_x, ray_x + perp_dx * ray_length],
+                        [ray_y, ray_y + perp_dy * ray_length],
+                        color=color2,
+                        linewidth=1.5,
+                        alpha=0.7,
+                        zorder=2.5
+                    )
+
+                    ax.plot(
+                        [ray_x, ray_x - perp_dx * ray_length],
+                        [ray_y, ray_y - perp_dy * ray_length],
+                        color=color2,
+                        linewidth=1.5,
+                        alpha=0.7,
+                        zorder=2.5
+                    )
+
+        elif effect_type == 'tinged':
+            # For tinged paths, we'd normally blend the colors
+            # This is handled during the main path drawing
+            pass
