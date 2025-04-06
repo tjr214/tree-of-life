@@ -1,11 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import numpy as np
-import re
-from typing import List, Tuple, Dict, Optional, Union, NamedTuple, Literal, Any
-from enum import Enum
+from typing import Tuple, Dict, Optional, NamedTuple, Any
 from pathlib import Path as FilePath
-import matplotlib.colors as mcolors
 
 # Import color-related functionality from color_utils
 from color_utils import (

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Tuple, Optional, Any, NamedTuple
+from typing import Dict, Optional, Any
 import matplotlib.colors as mcolors
 import yaml
 import numpy as np
