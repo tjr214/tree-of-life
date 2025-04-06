@@ -16,28 +16,28 @@
 
 ## The King Scale Paths
 
-- 11 =
-- 12 =
-- 13 =
-- 14 =
-- 15 =
-- 16 =
-- 17 =
-- 18 =
-- 19 =
-- 20 =
-- 21 =
-- 22 =
-- 23 =
-- 24 =
-- 25 =
-- 26 =
-- 27 =
-- 28 =
-- 29 =
-- 30 =
-- 31 =
-- 32 =
+- 11 = Bright Pale Yellow
+- 12 = Yellow
+- 13 = Pale Blue
+- 14 = Green
+- 15 = Violet
+- 16 = Red-orange
+- 17 = Orange
+- 18 = Amber
+- 19 = Yellow, golden
+- 20 = Yellow-green
+- 21 = Violet
+- 22 = Green
+- 23 = Deep Blue
+- 24 = Blue-green
+- 25 = Blue
+- 26 = Indigo (usually very dark)
+- 27 = Red
+- 28 = Red
+- 29 = Red-violet
+- 30 = Orange
+- 31 = Glowing Orange-scarlet
+- 32 = Indigo
 
 # Queen Scale
 
