@@ -64,7 +64,8 @@ def main():
             focus_sephirah=num,
             display=False,
             save_to_file=os.path.join(
-                output_dir, f"focus_{num}_{name.lower()}.png")
+                output_dir, f"focus_{num}_{name.lower()}.png"),
+            show_title=True  # Enable titles for focused views
         )
 
     # Part 3: Generate a color scheme comparison grid
