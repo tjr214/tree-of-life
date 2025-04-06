@@ -1,6 +1,6 @@
 # TreeOfLife Class Refactoring Project Progress
 
-You can use the read tool to read in `new_tree.py` and `color_scales.md` whenever you need that information.
+You can use the read tool to read in `new_tree.py` and `color_scales.md` whenever you need that information. The Python requirements are in `requirements.txt`.
 
 ## Phase 1: Setup and Planning
 
