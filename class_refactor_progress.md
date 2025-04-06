@@ -1,5 +1,7 @@
 # TreeOfLife Class Refactoring Project Progress
 
+You can use the read tool to read in `new_tree.py` and `color_scales.md` whenever you need that information.
+
 ## Phase 1: Setup and Planning
 
 - [x] Review existing `new_tree.py` code
