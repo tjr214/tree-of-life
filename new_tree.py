@@ -17,28 +17,42 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                                          Defaults to None.
     """
 
-    # 1. Define Coordinates for the Sephirot
-    #    Coordinates are chosen to visually match the layout in the source image.
-    #    The indices correspond to the traditional numbering:
-    #    0: Kether (1), 1: Chokmah (2), 2: Binah (3), 3: Chesed (4), 4: Geburah (5),
-    #    5: Tiphereth (6), 6: Netzach (7), 7: Hod (8), 8: Yesod (9), 9: Malkuth (10)
-    #    We use 0-based indexing for easy list access.
+    # Define parameters for scaling
+    sphere_scale_factor: float = 1.75  # Scale factor for spheres (sephirot)
+    spacing_factor: float = 1.5        # Factor to adjust spacing between spheres
+
+    # Original base radius
+    base_radius: float = 0.5
+    # Calculate the increased radius
+    circle_radius: float = base_radius * sphere_scale_factor
+
+    # 1. Define Coordinates for the Sephirot with adjusted spacing
+    # We apply the spacing factor to spread out the coordinates
     sephirot_coords: List[Coord] = [
-        (0, 9),    # 0: Kether (Top center)
-        (1.5, 7.5),  # 1: Chokmah (Top right)
-        (-1.5, 7.5),  # 2: Binah (Top left)
-        (1.5, 5.5),  # 3: Chesed (Mid right)
-        (-1.5, 5.5),  # 4: Geburah (Mid left)
-        (0, 4.5),  # 5: Tiphereth (Center)
-        (1.5, 2.5),  # 6: Netzach (Bottom right)
-        (-1.5, 2.5),  # 7: Hod (Bottom left)
-        (0, 1.5),  # 8: Yesod (Bottom center)
-        (0, 0)     # 9: Malkuth (Bottom)
+        # 0: Kether (Top center)
+        (0 * spacing_factor, 9 * spacing_factor),
+        # 1: Chokmah (Top right)
+        (1.5 * spacing_factor, 7.5 * spacing_factor),
+        (-1.5 * spacing_factor, 7.5 * spacing_factor),         # 2: Binah (Top left)
+        # 3: Chesed (Mid right)
+        (1.5 * spacing_factor, 5.5 * spacing_factor),
+        # 4: Geburah (Mid left)
+        (-1.5 * spacing_factor, 5.5 * spacing_factor),
+        # 5: Tiphereth (Center)
+        (0 * spacing_factor, 4.5 * spacing_factor),
+        # 6: Netzach (Bottom right)
+        (1.5 * spacing_factor, 2.5 * spacing_factor),
+        # 7: Hod (Bottom left)
+        (-1.5 * spacing_factor, 2.5 * spacing_factor),
+        # 8: Yesod (Bottom center)
+        (0 * spacing_factor, 1.5 * spacing_factor),
+        # 9: Malkuth (Bottom)
+        (0 * spacing_factor, 0 * spacing_factor)
     ]
 
     # Coordinate for the hidden Sephirah, Da'ath
     # Positioned visually based on the source image.
-    daath_coord: Coord = (0, 6.5)
+    daath_coord: Coord = (0 * spacing_factor, 6.5 * spacing_factor)
 
     # 2. Define the Paths connecting the Sephirot
     #    Each tuple contains the 0-based indices of the two Sephirot it connects.
@@ -94,13 +108,14 @@ def draw_tree_of_life(output_filename: str = None) -> None:
 
     # 3. Setup the Plot
     # Adjust figsize for better aspect ratio
-    fig, ax = plt.subplots(figsize=(6, 9))
+    # Adjusted from original (6, 9) based on spacing factor
+    fig, ax = plt.subplots(figsize=(7.5, 11))
     fig.patch.set_facecolor('#EAEAEA')  # Set background color of the figure
     ax.set_facecolor('#EAEAEA')      # Set background color of the axes area
 
-    # Set plot limits with some padding
-    ax.set_xlim(-2.5, 2.5)
-    ax.set_ylim(-1, 10)
+    # Set plot limits with some padding to accommodate the larger spheres and adjusted spacing
+    ax.set_xlim(-3.5, 3.5)  # Adjusted based on spacing factor
+    ax.set_ylim(-1.5, 14.5)  # Adjusted based on spacing factor
 
     # Ensure aspect ratio is equal so circles are not distorted
     ax.set_aspect('equal', adjustable='box')
@@ -109,14 +124,17 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     ax.axis('off')
 
     # Define visual parameters
-    circle_radius: float = 0.5
     line_color_outer: str = 'black'
     line_color_inner: str = 'white'
-    line_width_outer: float = 5.0  # Thicker line for the black outline effect
-    line_width_inner: float = 3.0  # Thinner line for the white fill effect
+    # Further increased thickness for paths to accommodate future text/symbols
+    line_width_outer: float = 11.5 * \
+        (sphere_scale_factor * 0.7)  # Even thicker than before
+    # Further increased thickness while maintaining the outer/inner ratio
+    line_width_inner: float = 8.0 * (sphere_scale_factor * 0.7)
     circle_edge_color: str = 'black'
     circle_face_color: str = 'white'
-    circle_line_width: float = 1.5
+    circle_line_width: float = 1.5 * \
+        (sphere_scale_factor * 0.6)  # Adjusted for visual balance
     zorder_paths_outer: int = 1  # Draw black lines first
     zorder_paths_inner: int = 2  # Draw white lines on top
     zorder_circles: int = 3     # Draw circles on top of lines
@@ -158,7 +176,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         # Traditional numbering starts at 1, so add 1 to the 0-based index
         number = i + 1
         ax.text(x, y, str(number),
-                fontsize=12,
+                fontsize=12 * sphere_scale_factor * 0.55,  # Adjusted for visual balance
                 fontweight='bold',
                 ha='center',
                 va='center',
