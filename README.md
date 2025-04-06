@@ -95,9 +95,23 @@ tree.render(
     display=True,
     save_to_file="high_res_tree.png",
     figsize=(10, 15),  # Width, height in inches
-    dpi=600           # High resolution
+    dpi=600,          # High resolution
+    show_title=True   # Display title on the diagram
+)
+
+# Render without a title
+tree.render(
+    display=True,
+    save_to_file="tree_no_title.png",
+    show_title=False  # Hide the title
 )
 ```
+
+The `show_title` parameter (default is `False`) controls whether titles are displayed on the diagram:
+
+- When `show_title=True` and a specific Sephirah is focused, the title will display "Tree of Life - Focus on [Sephirah Name] (Sephirah [Number])"
+- When `show_title=True` and no Sephirah is focused, no title will be displayed
+- When `show_title=False`, no title will be displayed in any case
 
 ## Example Scripts
 
