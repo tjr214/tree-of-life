@@ -11,6 +11,7 @@ This library provides a flexible, object-oriented implementation for rendering t
 - Multiple color schemes (Plain, King Scale, Queen Scale, Prince Scale, Princess Scale)
 - Focusing on individual Sephiroth with connected paths
 - Special color effects (flecked, rayed, tinged)
+- Dynamic text coloring for optimal readability
 - High-quality output for both display and saving to file
 - Modular architecture with separation of concerns
 
@@ -135,6 +136,16 @@ The color system is now implemented in a separate module (`color_utils.py`), mak
 - Add new color schemes
 - Implement custom color effects
 - Modify color parsing logic without affecting the main Tree of Life structure
+
+### Dynamic Text Color
+
+The visualization automatically adjusts text colors based on the background brightness:
+
+- For light-colored backgrounds, black text is used
+- For dark-colored backgrounds, white text is used
+- This ensures optimal readability regardless of the background color
+
+This feature works for both Sephiroth numbers and Path numbers/symbols, and maintains the current behavior for non-focused elements (which are grayed out).
 
 ### Color Schemes
 

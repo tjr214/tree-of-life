@@ -19,17 +19,17 @@ Implement a dynamic text color system that:
 
 ## Implementation Tasks
 
-- [ ] 1. Create a utility function to detect color brightness
-- [ ] 2. Modify the Sephiroth rendering code to use dynamic text colors
-- [ ] 3. Modify the Path number rendering code to use dynamic text colors
-- [ ] 4. Add tests to verify the functionality
-- [ ] 5. Update documentation
+- [x] 1. Create a utility function to detect color brightness
+- [x] 2. Modify the Sephiroth rendering code to use dynamic text colors
+- [x] 3. Modify the Path number rendering code to use dynamic text colors
+- [x] 4. Add tests to verify the functionality
+- [x] 5. Update documentation
 
 ## Implementation Details
 
 ### 1. Color Brightness Detection
 
-We'll implement a function in `color_utils.py` to calculate the perceived brightness of a color and determine if it needs light or dark text:
+We've implemented a function in `color_utils.py` to calculate the perceived brightness of a color and determine if it needs light or dark text:
 
 ```python
 def get_contrasting_text_color(background_color: str) -> str:
@@ -51,13 +51,13 @@ def get_contrasting_text_color(background_color: str) -> str:
     brightness = (0.299 * r + 0.587 * g + 0.114 * b)
 
     # Use white text on dark backgrounds, black text on light backgrounds
-    # 128 is the mid-point on the 0-255 scale
-    return "#FFFFFF" if brightness < 128 else "#000000"
+    # Use a higher threshold (150) for better readability with gray colors
+    return "#FFFFFF" if brightness < 150 else "#000000"
 ```
 
 ### 2. Modify Sephiroth Rendering
 
-In the `render` method of `TreeOfLife.py`, we'll update the text color logic (around line 690-698):
+In the `render` method of `TreeOfLife.py`, we've updated the text color logic:
 
 ```python
 # If focusing on a specific sephirah, gray out all except the focused one
@@ -77,9 +77,13 @@ else:
 
 ### 3. Modify Path Number Rendering
 
-In the `_add_path_number` method, we'll update the text color logic:
+In the `_add_path_number` method, we've updated the text color logic:
 
 ```python
+# Get the path color from the paths dictionary
+path = self.paths.get(path_num)
+path_color = path.color if path else '#888888'
+
 # Dynamic text color based on path color
 text_color = 'black'  # Default
 if path_color != '#888888':  # Only change for focused paths (non-gray)
@@ -100,6 +104,60 @@ ax.text(
 )
 ```
 
+### 4. Testing
+
+We've created a test file `test_color_contrast.py` that tests the brightness detection function with various colors:
+
+```python
+import unittest
+from color_utils import get_contrasting_text_color
+
+
+class TestColorContrast(unittest.TestCase):
+    """Test cases for the color contrast utility function."""
+
+    def test_get_contrasting_text_color(self):
+        """Test that dark backgrounds get white text and light backgrounds get black text."""
+        # Dark colors should return white text
+        self.assertEqual(get_contrasting_text_color("#000000"), "#FFFFFF")  # Black
+        self.assertEqual(get_contrasting_text_color("#0000FF"), "#FFFFFF")  # Blue
+        # ... more test cases ...
+
+    def test_with_actual_color_schemes(self):
+        """Test with colors that might be used in the Tree of Life visualization."""
+        # Test with sample colors from Tree of Life color schemes
+        # ... color scheme test cases ...
+```
+
+### 5. Documentation
+
+We've updated the README.md file to include information about the dynamic text color feature:
+
+```markdown
+## Overview
+
+This library provides a flexible, object-oriented implementation for rendering the Kabbalistic Tree of Life. It supports:
+
+- Multiple color schemes (Plain, King Scale, Queen Scale, Prince Scale, Princess Scale)
+- Focusing on individual Sephiroth with connected paths
+- Special color effects (flecked, rayed, tinged)
+- Dynamic text coloring for optimal readability
+- High-quality output for both display and saving to file
+- Modular architecture with separation of concerns
+
+...
+
+### Dynamic Text Color
+
+The visualization automatically adjusts text colors based on the background brightness:
+
+- For light-colored backgrounds, black text is used
+- For dark-colored backgrounds, white text is used
+- This ensures optimal readability regardless of the background color
+
+This feature works for both Sephiroth numbers and Path numbers/symbols, and maintains the current behavior for non-focused elements (which are grayed out).
+```
+
 ## Testing Strategy
 
 1. **Manual Testing**:
@@ -116,7 +174,7 @@ ax.text(
 
 ## Notes
 
-- The brightness threshold (128) might need adjustment based on testing results
+- The brightness threshold has been set to 150 (instead of the mid-point 128) for better handling of gray tones
 - For colors with special effects (flecked, rayed, tinged), we'll use the base color for brightness calculation
 - The current implementation doesn't account for color opacity (alpha), but all colors in the current system appear to use full opacity
 

@@ -417,3 +417,27 @@ def apply_path_effect(ax, path_num: int, x1: float, y1: float, x2: float, y2: fl
         # The blended color would be used to draw the path
         # This is handled during the main path drawing
         pass
+
+
+def get_contrasting_text_color(background_color: str) -> str:
+    """
+    Determine whether to use light or dark text based on background color brightness.
+
+    Args:
+        background_color: Hex color string (e.g., "#RRGGBB")
+
+    Returns:
+        Text color as hex string ("#FFFFFF" for white or "#000000" for black)
+    """
+    # Convert hex color to RGB values
+    bg_color = background_color.lstrip('#')
+    r, g, b = int(bg_color[0:2], 16), int(
+        bg_color[2:4], 16), int(bg_color[4:6], 16)
+
+    # Calculate perceived brightness using the common formula
+    # (0.299*R + 0.587*G + 0.114*B)
+    brightness = (0.299 * r + 0.587 * g + 0.114 * b)
+
+    # Use white text on dark backgrounds, black text on light backgrounds
+    # Use a higher threshold (150) for better readability with gray colors
+    return "#FFFFFF" if brightness < 150 else "#000000"

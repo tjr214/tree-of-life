@@ -3,12 +3,15 @@ import matplotlib.patches as patches
 from typing import Tuple, Dict, Optional, NamedTuple, Any, List
 import numpy as np
 from pathlib import Path as FilePath
+from enum import Enum
+import yaml
 
 # Import color-related functionality from color_utils
 from color_utils import (
     ColorScheme, ColorEffect, ColorParser,
     DEFAULT_SEPHIROTH_COLORS, DEFAULT_PATH_COLORS,
-    apply_color_effect, apply_path_effect, blend_colors
+    apply_color_effect, apply_path_effect, blend_colors,
+    get_contrasting_text_color
 )
 
 # Define type aliases for clarity
@@ -541,7 +544,8 @@ class TreeOfLife:
                 alpha = 1.0
                 circle_face_color = color  # Use the sephirah's color
                 circle_edge_color_override = circle_edge_color  # Use default border color
-                text_color = 'black'  # Use default text color
+                # Dynamically determine text color based on background brightness
+                text_color = get_contrasting_text_color(circle_face_color)
 
             # Draw the circle
             circle = patches.Circle(
@@ -756,6 +760,15 @@ class TreeOfLife:
             # For horizontal and diagonal paths, put symbol next to number
             path_label = f"{path_num} {path_symbols[path_num]}"
 
+        # Get the path color from the paths dictionary
+        path = self.paths.get(path_num)
+        path_color = path.color if path else '#888888'
+
+        # Dynamic text color based on path color
+        text_color = 'black'  # Default
+        if path_color != '#888888':  # Only change for focused paths (non-gray)
+            text_color = get_contrasting_text_color(path_color)
+
         # Draw text without background or border
         ax.text(
             mid_x, mid_y + special_offset_y,
@@ -764,7 +777,7 @@ class TreeOfLife:
             fontweight='bold',
             ha='center',
             va='center',
-            color='black',
+            color=text_color,
             rotation=rotation,
             rotation_mode='anchor',
             zorder=zorder
