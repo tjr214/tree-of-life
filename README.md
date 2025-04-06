@@ -1,47 +1,29 @@
-# Kircher Tree of Life
+# Tree of Life Visualization
 
-This Python program generates a visualization of Athanasius Kircher's version of the Kabbalistic Tree of Life. The visualization accurately represents the 10 Sephirot (nodes) and the paths connecting them, with special attention to making the paths look like actual paths rather than simple lines.
+A Python library for generating customizable diagrams of the Kabbalistic Tree of Life.
 
-![Kircher Tree of Life](kircher_tree_of_life.png)
+![Tree of Life Example](output/full_tree_king_scale.png)
 
-## About the Kircher Tree of Life
+## Overview
 
-Athanasius Kircher (1602-1680) was a German Jesuit scholar who published his interpretation of the Kabbalistic Tree of Life in the mid-17th century. His version has become one of the standard representations in Western esoteric traditions.
+This library provides a flexible, object-oriented implementation for rendering the Kabbalistic Tree of Life. It supports:
 
-The Tree of Life in Kabbalah represents the process of divine creation and the spiritual path of ascent. It consists of:
+- Multiple color schemes (Plain, King Scale, Queen Scale, Prince Scale, Princess Scale)
+- Focusing on individual Sephiroth with connected paths
+- Special color effects (flecked, rayed, tinged)
+- High-quality output for both display and saving to file
 
-- **10 Sephirot**: Divine emanations or attributes
-- **22 Paths**: Connections between the Sephirot
-- **3 Pillars**: Mercy (right), Balance (middle), and Severity (left)
-- **The Flaming Sword**: The zigzag path showing the order of divine emanation
-- **The Abyss**: A conceptual division between the upper and lower Sephirot
+## Installation
 
-## Features
-
-- Accurate representation of the Kircher Tree of Life structure
-- Curved paths that look like actual paths, not just straight lines
-- Colored Sephirot according to traditional attributions
-- Visualization of the three pillars
-- Visualization of the "Flaming Sword" path
-- High-quality image output
-
-## Requirements
+### Requirements
 
 - Python 3.6+
 - matplotlib
 - numpy
+- networkx
 - Pillow
 
-## Installation
-
-1. Clone this repository:
-
-```bash
-git clone https://github.com/yourusername/kircher-tree.git
-cd kircher-tree
-```
-
-2. Install the required dependencies:
+Install the required packages:
 
 ```bash
 pip install -r requirements.txt
@@ -49,57 +31,102 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the script to generate and display the visualization:
-
-```bash
-python kircher_tree.py
-```
-
-This will display the visualization and save it as `kircher_tree_of_life.png` in the current directory.
-
-## Customization
-
-You can customize the visualization by modifying the `KircherTreeOfLife` class:
-
-- Change the colors of Sephirot in the `sephirot_colors` dictionary
-- Adjust the positions in the `sephirot_positions` dictionary
-- Modify the paths in the `paths` list
-- Change the figure size and DPI in the constructor
-
-Example:
+### Basic Usage
 
 ```python
-# Create a larger visualization with higher resolution
-tree = KircherTreeOfLife(figsize=(15, 20), dpi=300)
+from TreeOfLife import TreeOfLife, ColorScheme
 
-# Draw with a custom title
-tree.draw(title="My Custom Kircher Tree of Life")
+# Create a Tree of Life instance with default settings
+tree = TreeOfLife()
 
-# Save to a custom location
-tree.save("my_tree_of_life.png")
+# Render the tree with default (plain) colors
+tree.render(display=True)
+
+# Save the tree to a file
+tree.render(display=False, save_to_file="tree_of_life.png")
+
+# Change color schemes
+tree.set_sephiroth_color_scheme(ColorScheme.KING_SCALE)
+tree.set_path_color_scheme(ColorScheme.KING_SCALE)
+
+# Render with the new color scheme
+tree.render(display=True, save_to_file="tree_king_scale.png")
 ```
 
-## Structure of the Tree
+### Focus on Specific Sephiroth
 
-In the Kircher Tree of Life:
+You can render a view that focuses on a specific Sephirah, showing only its connected paths and adjacent Sephiroth:
 
-1. **Keter** (Crown): The highest Sephirah, representing divine will
-2. **Chokmah** (Wisdom): The active, masculine force
-3. **Binah** (Understanding): The passive, feminine force
-4. **Chesed** (Mercy): Loving-kindness and benevolence
-5. **Geburah** (Severity): Discipline and judgment
-6. **Tiferet** (Beauty): Harmony and balance
-7. **Netzach** (Victory): Endurance and triumph
-8. **Hod** (Splendor): Majesty and surrender
-9. **Yesod** (Foundation): The collection and balancing of the forces above it
-10. **Malkuth** (Kingdom): The physical world and reality as we experience it
+```python
+# Focus on Tiphereth (6)
+tree.render(focus_sephirah=6, display=True, save_to_file="tiphereth_focus.png")
+
+# Focus on Kether (1)
+tree.render(focus_sephirah=1, display=True, save_to_file="kether_focus.png")
+```
+
+### Mixing Color Schemes
+
+You can use different color schemes for Sephiroth and Paths:
+
+```python
+# Use Queen Scale for Sephiroth and Prince Scale for Paths
+tree.set_sephiroth_color_scheme(ColorScheme.QUEEN_SCALE)
+tree.set_path_color_scheme(ColorScheme.PRINCE_SCALE)
+tree.render(display=True)
+```
+
+### Customizing Rendering Parameters
+
+```python
+# Customize figure size and DPI
+tree.render(
+    display=True,
+    save_to_file="high_res_tree.png",
+    figsize=(10, 15),  # Width, height in inches
+    dpi=600           # High resolution
+)
+```
+
+## Example Scripts
+
+This repository includes two example scripts:
+
+- `example_usage.py`: Basic examples of using the TreeOfLife class
+- `demonstration.py`: Comprehensive demonstration of all features
+
+Run the demonstration script to generate examples of all supported features:
+
+```bash
+python demonstration.py
+```
+
+This will create a range of example files in the `output` directory.
+
+## Color Schemes
+
+The TreeOfLife class supports the following color schemes:
+
+- **Plain**: Default colors based on the original implementation
+- **King Scale**: Corresponds to the elemental/planetary associations in Atziluth (World of Archetypes)
+- **Queen Scale**: Corresponds to the elemental/planetary associations in Briah (World of Creation)
+- **Prince Scale**: Corresponds to the elemental/planetary associations in Yetzirah (World of Formation)
+- **Princess Scale**: Corresponds to the elemental/planetary associations in Assiah (World of Action/Material)
+
+Color definitions are loaded from `color_scales.md`.
+
+## Special Color Effects
+
+The implementation supports special color effects found in the traditional color scales:
+
+- **Flecked**: Colors flecked or dotted with particles of another color
+- **Rayed**: Colors with rays of another color emanating from it
+- **Tinged**: Colors slightly modified with a tinge of another color
 
 ## License
 
-MIT
+This code is available for academic and personal use.
 
-## References
+## Acknowledgments
 
-- Kircher, Athanasius. (1652-1654). _Oedipus Aegyptiacus_.
-- Scholem, Gershom. (1991). _On the Mystical Shape of the Godhead: Basic Concepts in the Kabbalah_.
-- Regardie, Israel. (2000). _A Garden of Pomegranates: Skrying on the Tree of Life_.
+This implementation is a refactoring of the original `new_tree.py` script, enhancing it with object-oriented design, greater flexibility, and richer visualization options.
