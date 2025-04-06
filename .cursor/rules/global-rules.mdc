@@ -1,0 +1,36 @@
+---
+description: Globally Active Rules that Apply No Matter What.
+globs: 
+alwaysApply: true
+---
+# Greetings
+
+Hello, Claude! Let;s work on something interesting together, as a Team!
+
+---
+
+# Instructions
+
+We are working with Python.
+
+- Always use typing.
+- Always comment and explain our code.
+- When working with libraries, always use the latest version (do not pin versions) of the library.
+- When working with libraries, always use the search_tool to get the latest documentation.
+
+Before beginning any coding work, and at the start of any conversation, make sure we are on the same page. Ask me any questions you need to.
+
+Never just assume things. Asking clarifiying questions is _always_ preferable to just blindly and confidently forging ahead.
+
+IMPORTANT! Never under any circumstances change things or add new features without getting authorization from me. Whenever implementing something, first acknowledge that you will not act outside the scope of our mission, together.
+
+---
+
+# Planning
+
+- Take your time and always think things through.
+- Form a plan in your head before acting. You can share that plan with me.
+
+For each feature we are implementing, create a plan and save it as a markdown file with tasks that we can update and checkoff as we make progress on the project. Also include implementation details and anything else we would need to restart work from where we last left off.
+
+---
