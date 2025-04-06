@@ -24,6 +24,7 @@ Implement a dynamic text color system that:
 - [x] 3. Modify the Path number rendering code to use dynamic text colors
 - [x] 4. Add tests to verify the functionality
 - [x] 5. Update documentation
+- [x] 6. Fix special case for bright green in King Scale (paths 14 and 22)
 
 ## Implementation Details
 
@@ -45,6 +46,10 @@ def get_contrasting_text_color(background_color: str) -> str:
     # Convert hex color to RGB values
     bg_color = background_color.lstrip('#')
     r, g, b = int(bg_color[0:2], 16), int(bg_color[2:4], 16), int(bg_color[4:6], 16)
+
+    # Special case for bright green (#00FF00) which should use black text
+    if r == 0 and g > 240 and b == 0:
+        return "#000000"
 
     # Calculate perceived brightness using the common formula
     # (0.299*R + 0.587*G + 0.114*B)
@@ -175,6 +180,7 @@ This feature works for both Sephiroth numbers and Path numbers/symbols, and main
 ## Notes
 
 - The brightness threshold has been set to 150 (instead of the mid-point 128) for better handling of gray tones
+- A special case was added for bright green (#00FF00), which always uses black text for better readability in the King Scale paths 14 and 22
 - For colors with special effects (flecked, rayed, tinged), we'll use the base color for brightness calculation
 - The current implementation doesn't account for color opacity (alpha), but all colors in the current system appear to use full opacity
 

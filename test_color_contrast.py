@@ -31,6 +31,10 @@ class TestColorContrast(unittest.TestCase):
         self.assertEqual(get_contrasting_text_color(
             "#FAFAD2"), "#000000")  # Light Goldenrod
 
+        # Special case for bright green
+        self.assertEqual(get_contrasting_text_color(
+            "#00FF00"), "#000000")  # Bright Green
+
         # Edge cases near the threshold (128)
         self.assertEqual(get_contrasting_text_color("#808080"),
                          "#FFFFFF")  # Mid-gray (exactly at threshold)
@@ -51,6 +55,10 @@ class TestColorContrast(unittest.TestCase):
             "#800080"), "#FFFFFF")  # Purple (Yesod)
         self.assertEqual(get_contrasting_text_color(
             "#FFA500"), "#000000")  # Orange (Hod)
+
+        # Specific test for paths 14 and 22 in King Scale
+        self.assertEqual(get_contrasting_text_color("#00FF00"),
+                         "#000000")  # Green (Paths 14 and 22)
 
         # Queen Scale examples
         self.assertEqual(get_contrasting_text_color(
