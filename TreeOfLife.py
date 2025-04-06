@@ -317,7 +317,8 @@ class TreeOfLife:
                display: bool = True,
                save_to_file: Optional[str] = None,
                figsize: Tuple[float, float] = (7.5, 11),
-               dpi: int = 300) -> None:
+               dpi: int = 300,
+               show_title: bool = False) -> None:
         """
         Render the Tree of Life diagram.
 
@@ -327,6 +328,7 @@ class TreeOfLife:
             save_to_file: If provided, save the diagram to this filename
             figsize: Size of the figure (width, height) in inches
             dpi: Resolution in dots per inch for saving the figure
+            show_title: Whether to display the title on the diagram
         """
         # Setup the plot
         fig, ax = plt.subplots(figsize=figsize)
@@ -591,13 +593,14 @@ class TreeOfLife:
             )
             ax.add_patch(circle)
 
-        # Add title if focusing on a specific sephirah
-        if focus_sephirah is not None:
-            sephirah_name = self.sephiroth[focus_sephirah].name
-            title = f"Tree of Life - Focus on {sephirah_name} (Sephirah {focus_sephirah})"
-            fig.suptitle(title, fontsize=14)
-        else:
-            fig.suptitle("The Tree of Life", fontsize=14)
+        # Add title if enabled
+        if show_title:
+            if focus_sephirah is not None:
+                sephirah_name = self.sephiroth[focus_sephirah].name
+                title = f"Tree of Life - Focus on {sephirah_name} (Sephirah {focus_sephirah})"
+                fig.suptitle(title, fontsize=14)
+            else:
+                pass
 
         # Save the figure if a filename is provided
         if save_to_file:
