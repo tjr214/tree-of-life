@@ -132,12 +132,12 @@ NOTE: "flecked" means "dotted with particles of".
 - 3, Binah = Gray, flecked Pink
 - Daath = Gray, flecked Gold
 - 4, Chesed = Deep Azure, flecked Yellow
-- 5, Geburah =
-- 6, Tiphareth =
-- 7, Netzach =
-- 8, Hod =
-- 9, Yesod =
-- 10, Malkuth =
+- 5, Geburah = Red, flecked Black
+- 6, Tiphareth = Gold-amber
+- 7, Netzach = Olive, flecked Gold
+- 8, Hod = Yellowish Brown, flecked White
+- 9, Yesod = Citrine, flecked Azure
+- 10, Malkuth = Black, rayed with Yellow
 
 ## The Princess Scale Paths
 
