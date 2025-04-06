@@ -32,24 +32,24 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     sephirot_coords: List[Coord] = [
         # 0: Kether (Top center)
         (0 * spacing_factor, 9 * spacing_factor),
-        # 1: Chokmah (Top right) - moved further right to match Chesed
-        (2.0 * spacing_factor, 7.5 * spacing_factor),
-        # 2: Binah (Top left) - moved further left to match Geburah
-        (-2.0 * spacing_factor, 7.5 * spacing_factor),
-        # 3: Chesed (Mid right) - moved further right
-        (2.0 * spacing_factor, 5.5 * spacing_factor),
-        # 4: Geburah (Mid left) - moved further left
-        (-2.0 * spacing_factor, 5.5 * spacing_factor),
-        # 5: Tiphereth (Center) - moved to geometric center of Chesed, Geburah, Netzach, and Hod
-        (0 * spacing_factor, 4.0 * spacing_factor),
-        # 6: Netzach (Bottom right) - adjusted to align with Chesed
-        (2.0 * spacing_factor, 2.5 * spacing_factor),
+        # 1: Chokmah (Top right) - adjusted to match Binah's height
+        (2.0 * spacing_factor, 8.0 * spacing_factor),
+        # 2: Binah (Top left) - moved further left to match Geburah and slightly higher
+        (-2.0 * spacing_factor, 8.0 * spacing_factor),
+        # 3: Chesed (Mid right) - lowered to match Geburah's height
+        (2.0 * spacing_factor, 5.0 * spacing_factor),
+        # 4: Geburah (Mid left) - moved further left and slightly lower
+        (-2.0 * spacing_factor, 5.0 * spacing_factor),
+        # 5: Tiphereth (Center) - exact geometric center of Chesed, Geburah, Netzach, Hod
+        (0 * spacing_factor, 3.5 * spacing_factor),
+        # 6: Netzach (Bottom right) - lowered to match Hod's height
+        (2.0 * spacing_factor, 2.0 * spacing_factor),
         # 7: Hod (Bottom left) - adjusted to align with Geburah
-        (-2.0 * spacing_factor, 2.5 * spacing_factor),
-        # 8: Yesod (Bottom center)
-        (0 * spacing_factor, 1.5 * spacing_factor),
-        # 9: Malkuth (Bottom) - adjusted position
-        (0 * spacing_factor, -0.5 * spacing_factor)
+        (-2.0 * spacing_factor, 2.0 * spacing_factor),
+        # 8: Yesod (Bottom center) - lowered to maintain middle pillar spacing
+        (0 * spacing_factor, 1.0 * spacing_factor),
+        # 9: Malkuth (Bottom) - lowered to maintain middle pillar spacing
+        (0 * spacing_factor, -1.0 * spacing_factor)
     ]
 
     # Coordinate for the hidden Sephirah, Da'ath
@@ -119,7 +119,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Expanded to accommodate wider sephirot positioning
     ax.set_xlim(-4.0, 4.0)
     # Extended lower limit to accommodate Malkuth's new position
-    ax.set_ylim(-2.5, 14.5)
+    ax.set_ylim(-3.0, 14.5)
 
     # Ensure aspect ratio is equal so circles are not distorted
     ax.set_aspect('equal', adjustable='box')
