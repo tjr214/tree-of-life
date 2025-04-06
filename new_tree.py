@@ -360,8 +360,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 # Set the rotation to match the path direction
                 rotation=rotation,
                 rotation_mode='anchor',  # Rotate around the anchor point
-                bbox=dict(facecolor='white', alpha=0.7,
-                          edgecolor='none', pad=2),  # Add white background
+                # Remove bbox entirely to eliminate any border issues
                 zorder=zorder_path_numbers)  # Make text appear above paths
 
     # 5. Draw the Sephirot (Circles)
