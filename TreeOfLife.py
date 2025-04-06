@@ -584,12 +584,18 @@ class TreeOfLife:
             x, y = self.daath.coord
             color = self.daath.color
 
+            # Use gray border when Kether or Tiphareth is focused
+            if focus_sephirah == 1 or focus_sephirah == 6:
+                daath_border_color = '#AAAAAA'
+            else:
+                daath_border_color = circle_edge_color
+
             # Da'ath is typically drawn with a dashed line
             circle = patches.Circle(
                 (x, y),
                 self.circle_radius,
                 facecolor='none',  # Transparent fill
-                edgecolor=circle_edge_color,
+                edgecolor=daath_border_color,
                 linewidth=circle_line_width * 0.7,
                 linestyle='dashed',
                 alpha=0.8,
