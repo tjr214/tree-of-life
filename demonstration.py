@@ -17,7 +17,7 @@ from TreeOfLife import TreeOfLife, ColorScheme
 def main():
     """Run a comprehensive demonstration of the TreeOfLife class."""
     # Create output directory if it doesn't exist
-    output_dir = "output"
+    output_dir = "demo-output"
     os.makedirs(output_dir, exist_ok=True)
 
     # Create a Tree of Life instance
