@@ -9,53 +9,204 @@
 ## Phase 2: Basic Class Structure
 
 - [ ] Create `TreeOfLife` class with constructor and basic attributes
+
+  - [ ] Define class skeleton with appropriate imports
+  - [ ] Implement constructor with default parameters
+  - [ ] Set up default scaling and spacing parameters
+  - [ ] Initialize default color schemes
+
 - [ ] Define color scheme ENUMs
+
+  - [ ] Create ColorScheme enum with PLAIN, KING_SCALE, QUEEN_SCALE, PRINCE_SCALE, PRINCESS_SCALE
+  - [ ] Document enum values with descriptions
+
 - [ ] Create data structures to store Sephiroth and Paths information
+
+  - [ ] Define Sephirah class or namedtuple for storing Sephirah data
+  - [ ] Define Path class or namedtuple for storing path data
+  - [ ] Create structure to map Sephiroth numbers (1-10) to their data
+  - [ ] Create structure to map path numbers (11-32) to their data
+  - [ ] Store the coordinates and connections from original code
+
 - [ ] Implement basic setup methods
+  - [ ] Method to initialize Sephiroth positions and properties
+  - [ ] Method to initialize path connections and properties
+  - [ ] Method to handle Da'ath's special case
 
 ## Phase 3: Color Scheme Implementation
 
 - [ ] Parse color data from color scales
+
+  - [ ] Create parser for `color_scales.md` file
+  - [ ] Extract color definitions for each scheme
+  - [ ] Handle special effect colors (flecked, rayed, tinged)
+  - [ ] Create mapping from Sephiroth/path numbers to colors for each scheme
+
 - [ ] Implement plain/default color scheme
+
+  - [ ] Define default colors based on the original implementation
+  - [ ] Create method to apply default colors to all elements
+
 - [ ] Implement `set_sephiroth_color_scheme` method
+
+  - [ ] Create method to change the color scheme for all Sephiroth
+  - [ ] Handle validation and error cases
+  - [ ] Ensure Da'ath is handled correctly
+
 - [ ] Implement `set_path_color_scheme` method
-- [ ] Create helper methods for specialized color effects (flecked, rayed, tinged)
+
+  - [ ] Create method to change the color scheme for all paths
+  - [ ] Handle validation and error cases
+
+- [ ] Create helper methods for specialized color effects
+  - [ ] Implement flecked color rendering helper
+  - [ ] Implement rayed color rendering helper
+  - [ ] Implement tinged color rendering helper
+  - [ ] Create color utility functions (blend, convert, etc.)
 
 ## Phase 4: Rendering Implementation
 
 - [ ] Implement base rendering logic
+
+  - [ ] Create core render method structure
+  - [ ] Set up plot parameters and configuration
+  - [ ] Implement Sephiroth drawing logic
+  - [ ] Implement path drawing logic
+  - [ ] Implement Da'ath drawing logic
+  - [ ] Handle special case for Kether's radiant effect
+
 - [ ] Implement selective Sephirah rendering
+
+  - [ ] Create method to focus on a specific Sephirah
+  - [ ] Implement zooming or framing logic for focus view
+  - [ ] Handle special layout adjustments for focused view
+
 - [ ] Create method to determine which paths to include when rendering a single Sephirah
+
+  - [ ] Implement path filtering logic
+  - [ ] Create mapping of Sephiroth to their connected paths
+  - [ ] Ensure all relevant paths are included
+
 - [ ] Implement logic to gray out connected Sephiroth
+
+  - [ ] Create method to modify colors for grayed out state
+  - [ ] Adjust opacity and saturation for connected Sephiroth
+  - [ ] Ensure visual hierarchy (focused Sephirah > paths > connected Sephiroth)
+
 - [ ] Implement special color effects rendering
+  - [ ] Integrate flecked color rendering
+  - [ ] Integrate rayed color rendering
+  - [ ] Integrate tinged color rendering
+  - [ ] Implement any other special color effects
 
 ## Phase 5: Output Methods
 
 - [ ] Implement method to display the tree in a window
+
+  - [ ] Create display method with appropriate parameters
+  - [ ] Handle matplotlib figure configuration
+  - [ ] Implement interactive elements if needed
+  - [ ] Add window title and metadata
+
 - [ ] Implement method to save the tree to a file
+
+  - [ ] Create save method with filename parameter
+  - [ ] Support multiple file formats (png, svg, pdf)
+  - [ ] Handle file path validation and error cases
+  - [ ] Set appropriate DPI and quality settings
+
 - [ ] Create a combined method to both display and save
+  - [ ] Implement method that calls both display and save
+  - [ ] Add parameter to control this behavior
+  - [ ] Ensure proper cleanup and resource management
 
 ## Phase 6: Testing and Refinement
 
 - [ ] Test full tree rendering with different color schemes
+
+  - [ ] Test with default/plain scheme
+  - [ ] Test with King Scale
+  - [ ] Test with Queen Scale
+  - [ ] Test with Prince Scale
+  - [ ] Test with Princess Scale
+  - [ ] Compare output with expected results
+
 - [ ] Test selective Sephirah rendering
+
+  - [ ] Test rendering each individual Sephirah (1-10)
+  - [ ] Verify correct paths are included
+  - [ ] Verify connected Sephiroth are properly grayed out
+  - [ ] Test boundary cases and error handling
+
 - [ ] Test special color effects
+
+  - [ ] Test flecked color rendering
+  - [ ] Test rayed color rendering
+  - [ ] Test tinged color rendering
+  - [ ] Test combinations of effects
+
 - [ ] Optimize and refine code
+
+  - [ ] Identify and fix any performance bottlenecks
+  - [ ] Refactor repeated code into utility functions
+  - [ ] Optimize color rendering for performance
+  - [ ] Clean up variable names and code structure
+
 - [ ] Add detailed documentation
+  - [ ] Add docstrings to all classes and methods
+  - [ ] Document parameters and return values
+  - [ ] Add usage examples in documentation
+  - [ ] Create README with overview and examples
 
 ## Phase 7: Final Implementation
 
 - [ ] Write example usage code
+
+  - [ ] Basic usage example script
+  - [ ] Color scheme switching example
+  - [ ] Selective rendering example
+  - [ ] Complete demonstration of all features
+
 - [ ] Create demonstration script
+
+  - [ ] Create script that demonstrates all color schemes
+  - [ ] Add examples of focused Sephirah rendering
+  - [ ] Generate sample output files
+  - [ ] Add explanatory comments
+
 - [ ] Final review and testing
+
+  - [ ] Code review for quality and style
+  - [ ] Test on different platforms if applicable
+  - [ ] Handle any edge cases or bugs
+  - [ ] Verify all requirements are met
+
 - [ ] Integration with any existing systems
+  - [ ] Ensure compatibility with larger codebase if applicable
+  - [ ] Create any necessary adapter methods
+  - [ ] Document integration points
 
 ## Future Enhancements
 
 - [ ] Add option for custom color schemes
+
+  - [ ] Create interface for defining custom colors
+  - [ ] Add save/load functionality for custom schemes
+
 - [ ] Add option to adjust size and spacing
+
+  - [ ] Create methods to customize layout parameters
+  - [ ] Add presets for different aspect ratios
+
 - [ ] Add text labels for Sephiroth names
+
+  - [ ] Add support for displaying Hebrew names
+  - [ ] Add support for displaying English names
+  - [ ] Add customizable label positioning
+
 - [ ] Add support for Hebrew letter and astrological symbol display options
+  - [ ] Enhance path display with more symbol options
+  - [ ] Add toggle for different symbol sets
 
 ## Implementation Details and Notes
 
