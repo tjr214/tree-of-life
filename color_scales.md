@@ -98,28 +98,28 @@
 
 ## The Prince Scale Paths
 
-- 11 =
-- 12 =
-- 13 =
-- 14 =
-- 15 =
-- 16 =
-- 17 =
-- 18 =
-- 19 =
-- 20 =
-- 21 =
-- 22 =
-- 23 =
-- 24 =
-- 25 =
-- 26 =
-- 27 =
-- 28 =
-- 29 =
-- 30 =
-- 31 =
-- 32 =
+- 11 = Blue Green
+- 12 = Light Gray
+- 13 = Cold Pale Blue
+- 14 = Early Spring Green
+- 15 = Bluish Mauve
+- 16 = Deep Warm Olive
+- 17 = Brownish Orange
+- 18 = Rich Bright Russet
+- 19 = Gray
+- 20 = Green-gray
+- 21 = Rich Purple
+- 22 = Blue Green
+- 23 = Deep Olive-green
+- 24 = Very Dark Brown
+- 25 = Green
+- 26 = Blue-black
+- 27 = Venetian Red
+- 28 = Brilliant Flame
+- 29 = Light Translucent Pinkish Brown
+- 30 = Rich Amber (yellow-orange)
+- 31 = Scarlet, flecked Gold
+- 32 = Blue-black
 
 # Princess Scale
 
