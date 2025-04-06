@@ -10,30 +10,30 @@ You can use the read tool to read in `new_tree.py` and `color_scales.md` wheneve
 
 ## Phase 2: Basic Class Structure
 
-- [ ] Create `TreeOfLife` class with constructor and basic attributes
+- [x] Create `TreeOfLife` class with constructor and basic attributes
 
-  - [ ] Define class skeleton with appropriate imports
-  - [ ] Implement constructor with default parameters
-  - [ ] Set up default scaling and spacing parameters
-  - [ ] Initialize default color schemes
+  - [x] Define class skeleton with appropriate imports
+  - [x] Implement constructor with default parameters
+  - [x] Set up default scaling and spacing parameters
+  - [x] Initialize default color schemes
 
-- [ ] Define color scheme ENUMs
+- [x] Define color scheme ENUMs
 
-  - [ ] Create ColorScheme enum with PLAIN, KING_SCALE, QUEEN_SCALE, PRINCE_SCALE, PRINCESS_SCALE
-  - [ ] Document enum values with descriptions
+  - [x] Create ColorScheme enum with PLAIN, KING_SCALE, QUEEN_SCALE, PRINCE_SCALE, PRINCESS_SCALE
+  - [x] Document enum values with descriptions
 
-- [ ] Create data structures to store Sephiroth and Paths information
+- [x] Create data structures to store Sephiroth and Paths information
 
-  - [ ] Define Sephirah class or namedtuple for storing Sephirah data
-  - [ ] Define Path class or namedtuple for storing path data
-  - [ ] Create structure to map Sephiroth numbers (1-10) to their data
-  - [ ] Create structure to map path numbers (11-32) to their data
-  - [ ] Store the coordinates and connections from original code
+  - [x] Define Sephirah class or namedtuple for storing Sephirah data
+  - [x] Define Path class or namedtuple for storing path data
+  - [x] Create structure to map Sephiroth numbers (1-10) to their data
+  - [x] Create structure to map path numbers (11-32) to their data
+  - [x] Store the coordinates and connections from original code
 
-- [ ] Implement basic setup methods
-  - [ ] Method to initialize Sephiroth positions and properties
-  - [ ] Method to initialize path connections and properties
-  - [ ] Method to handle Da'ath's special case
+- [x] Implement basic setup methods
+  - [x] Method to initialize Sephiroth positions and properties
+  - [x] Method to initialize path connections and properties
+  - [x] Method to handle Da'ath's special case
 
 ## Phase 3: Color Scheme Implementation
 
