@@ -252,6 +252,32 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Create a list of numbers from 11 to 32
     path_numbers = list(range(11, 33))
 
+    # Add astrological and elemental symbols that correspond to each path (in order of paths_from_image)
+    path_symbols = [
+        '🜁',  # Path 11: Air - Kether to Chokmah
+        '☿',  # Path 12: Mercury - Kether to Binah
+        '☽',  # Path 13: Moon - Kether to Tiphereth
+        '♀',  # Path 14: Venus - Chokmah to Binah
+        '♒',  # Path 15: Aquarius - Chokmah to Tiphereth
+        '♉',  # Path 16: Taurus - Chokmah to Chesed
+        '♊',  # Path 17: Gemini - Binah to Tiphereth
+        '♋',  # Path 18: Cancer - Binah to Geburah
+        '♌',  # Path 19: Leo - Chesed to Geburah
+        '♍',  # Path 20: Virgo - Chesed to Tiphereth
+        '♃',  # Path 21: Jupiter - Chesed to Netzach
+        '♎',  # Path 22: Libra - Geburah to Tiphereth
+        '🜄',  # Path 23: Water - Geburah to Hod
+        '♏',  # Path 24: Scorpio - Tiphereth to Netzach
+        '♐',  # Path 25: Sagittarius - Tiphereth to Yesod
+        '♑',  # Path 26: Capricorn - Tiphereth to Hod
+        '♂',  # Path 27: Mars - Netzach to Hod
+        '♈',  # Path 28: Aries - Netzach to Yesod
+        '♓',  # Path 29: Pisces - Netzach to Malkuth
+        '☉',  # Path 30: Sun - Hod to Yesod
+        '🜂',  # Path 31: Fire/Spirit - Hod to Malkuth
+        '♄'   # Path 32: Saturn/Earth - Yesod to Malkuth
+    ]
+
     # Define paths that need special orientation fixes (paths appearing upside down)
     # The indices are 0-based in the paths_from_image list
     paths_needing_orientation_fix = [
@@ -309,11 +335,19 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         else:
             rotation = angle_deg  # Rotate text to match path angle
 
-        # Draw the path number with proper orientation
+        # Create combined label with path number and symbol
+        # For vertical paths, stack the number and symbol
+        # For horizontal and diagonal paths, put the symbol to the right of the number
+        if is_vertical:
+            path_label = f"{path_numbers[idx]}\n{path_symbols[idx]}"
+        else:
+            path_label = f"{path_numbers[idx]} {path_symbols[idx]}"
+
+        # Draw the path number and symbol with proper orientation
         ax.text(mid_x, mid_y + special_offset_y,
-                str(path_numbers[idx]),
-                # Slightly smaller than Sephiroth numbers
-                fontsize=9 * sphere_scale_factor * 0.55,
+                path_label,
+                # Increased font size for better readability
+                fontsize=10 * sphere_scale_factor * 0.55,
                 fontweight='bold',
                 ha='center',
                 va='center',
@@ -321,7 +355,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 # Set the rotation to match the path direction
                 rotation=rotation,
                 rotation_mode='anchor',  # Rotate around the anchor point
-                # No box around the path numbers
+                bbox=dict(facecolor='white', alpha=0.7,
+                          edgecolor='none', pad=2),  # Add white background
                 zorder=zorder_path_numbers)  # Make text appear above paths
 
     # 5. Draw the Sephirot (Circles)
