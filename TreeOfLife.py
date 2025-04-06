@@ -532,9 +532,9 @@ class TreeOfLife:
 
             # If focusing on a specific sephirah, gray out all except the focused one
             if focus_sephirah is not None and seph_num != focus_sephirah:
-                # Gray out connected sephiroth by reducing opacity
-                alpha = 0.6
-                circle_face_color = '#AAAAAA'  # Gray out connected sephiroth
+                # Gray out connected sephiroth without reducing opacity
+                alpha = 1.0  # Changed from 0.6 to make fully opaque
+                circle_face_color = '#E0E0E0'  # Slightly darker gray for non-focused sephiroth
             else:
                 alpha = 1.0
                 circle_face_color = color  # Use the sephirah's color
