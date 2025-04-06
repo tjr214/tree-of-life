@@ -51,8 +51,9 @@ class ColorParser:
 
     # Regex patterns to extract color information
     SEPHIROTH_PATTERN = re.compile(
-        r"(\d+|Daath),\s+(\w+)\s+=\s+(.*?)(\(.*?\))")
-    PATH_PATTERN = re.compile(r"(\d+)\s+=\s+(.*?)(\(.*?\))")
+        r"-\s+(\d+|Daath),\s+(\w+)\s+=\s+(.*?)\(\s*#([A-Fa-f0-9]{6})\s*\)")
+    PATH_PATTERN = re.compile(
+        r"-\s+(\d+)\s+=\s+(.*?)\(\s*#([A-Fa-f0-9]{6})\s*\)")
     COLOR_HEX_PATTERN = re.compile(r"\(\s*#([A-Fa-f0-9]{6})\s*\)")
     FLECKED_PATTERN = re.compile(r"flecked\s+(.*?)\s+\(")
     RAYED_PATTERN = re.compile(r"rayed\s+(.*?)\s+\(")
@@ -125,7 +126,7 @@ class ColorParser:
 
                     match = ColorParser.SEPHIROTH_PATTERN.search(line)
                     if match:
-                        num_str, name, desc, hex_part = match.groups()
+                        num_str, name, desc, hex_color = match.groups()
 
                         # Handle special case for Da'ath
                         if num_str == "Daath":
@@ -133,13 +134,8 @@ class ColorParser:
                         else:
                             num = int(num_str)
 
-                        # Extract the hex color
-                        hex_match = ColorParser.COLOR_HEX_PATTERN.search(
-                            hex_part)
-                        if hex_match:
-                            color = f"#{hex_match.group(1)}"
-                        else:
-                            color = "#FFFFFF"  # Default white if no color found
+                        # Use the hex color directly from the regex match
+                        color = f"#{hex_color}"
 
                         # Check for special effects
                         effects = {}
@@ -190,16 +186,11 @@ class ColorParser:
 
                     match = ColorParser.PATH_PATTERN.search(line)
                     if match:
-                        num_str, desc, hex_part = match.groups()
+                        num_str, desc, hex_color = match.groups()
                         num = int(num_str)
 
-                        # Extract the hex color
-                        hex_match = ColorParser.COLOR_HEX_PATTERN.search(
-                            hex_part)
-                        if hex_match:
-                            color = f"#{hex_match.group(1)}"
-                        else:
-                            color = "#FFFFFF"  # Default white if no color found
+                        # Use the hex color directly from the regex match
+                        color = f"#{hex_color}"
 
                         # Check for special effects
                         effects = {}
