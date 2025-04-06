@@ -125,3 +125,4 @@ ax.text(
 - Current text color implementation for Sephiroth: Around line 690 in TreeOfLife.py
 - Current text color implementation for Paths: Around line 757 in TreeOfLife.py
 - Color utility functions: color_utils.py
+- Project Readme File: README.md
