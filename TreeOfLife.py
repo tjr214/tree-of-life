@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from typing import Tuple, Dict, Optional, NamedTuple, Any
+from typing import Tuple, Dict, Optional, NamedTuple, Any, List
+import numpy as np
 from pathlib import Path as FilePath
 
 # Import color-related functionality from color_utils
@@ -657,7 +658,7 @@ class TreeOfLife:
 
     def _add_path_number(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float, zorder: int) -> None:
         """
-        Add the path number at the midpoint of the path.
+        Add the path number at the midpoint of the path, including astrological/elemental symbols.
 
         Args:
             ax: Matplotlib axis
@@ -670,27 +671,89 @@ class TreeOfLife:
         mid_x = (x1 + x2) / 2
         mid_y = (y1 + y2) / 2
 
-        # Add small white circle as background for the path number
-        bg_circle = patches.Circle(
-            (mid_x, mid_y),
-            0.18 * self.sphere_scale_factor,
-            facecolor='white',
-            edgecolor='black',
-            linewidth=1,
-            alpha=0.9,
-            zorder=zorder - 0.5
-        )
-        ax.add_patch(bg_circle)
+        # Define astrological and elemental symbols for each path (ordered by path number 11-32)
+        path_symbols = {
+            11: '△̵',  # Air - Kether to Chokmah
+            12: '☿',   # Mercury - Kether to Binah
+            13: '☽',   # Moon - Kether to Tiphereth
+            14: '♀',   # Venus - Chokmah to Binah
+            15: '♒',   # Aquarius - Chokmah to Tiphereth
+            16: '♉',   # Taurus - Chokmah to Chesed
+            17: '♊',   # Gemini - Binah to Tiphereth
+            18: '♋',   # Cancer - Binah to Geburah
+            19: '♌',   # Leo - Chesed to Geburah
+            20: '♍',   # Virgo - Chesed to Tiphereth
+            21: '♃',   # Jupiter - Chesed to Netzach
+            22: '♎',   # Libra - Geburah to Tiphereth
+            23: '▽',   # Water - Geburah to Hod
+            24: '♏',   # Scorpio - Tiphereth to Netzach
+            25: '♐',   # Sagittarius - Tiphereth to Yesod
+            26: '♑',   # Capricorn - Tiphereth to Hod
+            27: '♂',   # Mars - Netzach to Hod
+            28: '♈',   # Aries - Netzach to Yesod
+            29: '♓',   # Pisces - Netzach to Malkuth
+            30: '☉',   # Sun - Hod to Yesod
+            31: '△ ⊙',  # Fire & Spirit - Hod to Malkuth
+            32: '♄\n▽̵'  # Saturn & Earth - Yesod to Malkuth
+        }
 
-        # Add the path number
+        # Define paths needing orientation fixes (appearing upside down)
+        paths_needing_orientation_fix = [12, 15, 20, 26, 28, 29]
+
+        # Define special path offsets for paths that need custom positioning
+        special_offset_y = 0
+
+        # Path 13 (Kether to Tiphereth) needs to be higher
+        if path_num == 13:
+            special_offset_y = 1.6 * self.spacing_factor
+
+        # Path 25 (Tiphereth to Yesod) needs to be raised a bit
+        if path_num == 25:
+            special_offset_y = 0.38 * self.spacing_factor
+
+        # Calculate the angle of the path for text rotation
+        angle_rad = np.arctan2(y2 - y1, x2 - x1)
+        angle_deg = np.degrees(angle_rad)
+
+        # Adjust angle for readability - text should be right-side up
+        if 90 < angle_deg < 270:
+            angle_deg -= 180
+
+        # Force flip for specific paths that are rendering upside down
+        if path_num in paths_needing_orientation_fix:
+            angle_deg += 180
+
+        # Determine if the path is vertical or horizontal
+        # within 5 degrees of vertical
+        is_vertical = abs(abs(angle_deg) - 90) < 5
+        is_horizontal = abs(angle_deg) < 5 or abs(
+            abs(angle_deg) - 180) < 5  # within 5 degrees of horizontal
+
+        # Set final rotation angle
+        if is_vertical or is_horizontal:
+            rotation = 0  # Keep horizontal for vertical and horizontal paths
+        else:
+            rotation = angle_deg  # Rotate text to match path angle
+
+        # Create combined label with path number and symbol
+        if path_num == 32 or is_vertical:
+            # For path 32 and vertical paths, stack number and symbol
+            path_label = f"{path_num}\n{path_symbols[path_num]}"
+        else:
+            # For horizontal and diagonal paths, put symbol next to number
+            path_label = f"{path_num} {path_symbols[path_num]}"
+
+        # Draw text without background or border
         ax.text(
-            mid_x, mid_y,
-            str(path_num),
-            color='black',
-            fontsize=9 * self.sphere_scale_factor,
+            mid_x, mid_y + special_offset_y,
+            path_label,
+            fontsize=9 * self.sphere_scale_factor * 0.55,  # Slightly smaller font
+            fontweight='bold',
             ha='center',
             va='center',
-            fontweight='bold',
+            color='black',
+            rotation=rotation,
+            rotation_mode='anchor',
             zorder=zorder
         )
 
