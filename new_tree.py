@@ -276,7 +276,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         '♓',  # Path 29: Pisces - Netzach to Malkuth
         '☉',  # Path 30: Sun - Hod to Yesod
         '△',  # Path 31: Fire - Hod to Malkuth (upward-pointing triangle)
-        '♄'   # Path 32: Saturn/Earth - Yesod to Malkuth
+        # Path 32: Saturn(top) & Earth(bottom, downward triangle with horizontal line) - Yesod to Malkuth
+        '♄\n▽̵'
     ]
 
     # Define paths that need special orientation fixes (paths appearing upside down)
@@ -339,7 +340,10 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         # Create combined label with path number and symbol
         # For vertical paths, stack the number and symbol
         # For horizontal and diagonal paths, put the symbol to the right of the number
-        if is_vertical:
+        # Special case for path 32 which always has stacked symbols
+        if idx == 21:  # Path 32 (last path, index 21)
+            path_label = f"{path_numbers[idx]}\n{path_symbols[idx]}"
+        elif is_vertical:
             path_label = f"{path_numbers[idx]}\n{path_symbols[idx]}"
         else:
             path_label = f"{path_numbers[idx]} {path_symbols[idx]}"
