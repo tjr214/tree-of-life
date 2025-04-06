@@ -40,24 +40,24 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         (2.0 * spacing_factor, 8.0 * spacing_factor + vertical_shift),
         # 2: Binah (Top left) - shifted down
         (-2.0 * spacing_factor, 8.0 * spacing_factor + vertical_shift),
-        # 3: Chesed (Mid right) - shifted down
-        (2.0 * spacing_factor, 5.0 * spacing_factor + vertical_shift),
-        # 4: Geburah (Mid left) - shifted down
-        (-2.0 * spacing_factor, 5.0 * spacing_factor + vertical_shift),
-        # 5: Tiphereth (Center) - shifted down
-        (0 * spacing_factor, 3.5 * spacing_factor + vertical_shift),
-        # 6: Netzach (Bottom right) - shifted down
-        (2.0 * spacing_factor, 2.0 * spacing_factor + vertical_shift),
-        # 7: Hod (Bottom left) - shifted down
-        (-2.0 * spacing_factor, 2.0 * spacing_factor + vertical_shift),
-        # 8: Yesod (Bottom center) - shifted down
-        (0 * spacing_factor, 1.0 * spacing_factor + vertical_shift),
+        # 3: Chesed (Mid right) - adjusted to make Chokmah-Chesed path equal to Kether-Chokmah path
+        (2.0 * spacing_factor, 5.5 * spacing_factor + vertical_shift),
+        # 4: Geburah (Mid left) - adjusted to make Binah-Geburah path equal to Kether-Binah path
+        (-2.0 * spacing_factor, 5.5 * spacing_factor + vertical_shift),
+        # 5: Tiphereth (Center) - exact geometric center of Chesed, Geburah, Netzach, Hod
+        (0 * spacing_factor, 4.25 * spacing_factor + vertical_shift),
+        # 6: Netzach (Bottom right) - adjusted to make Chesed-Netzach path equal to Chokmah-Chesed path
+        (2.0 * spacing_factor, 3.0 * spacing_factor + vertical_shift),
+        # 7: Hod (Bottom left) - adjusted to make Geburah-Hod path equal to Binah-Geburah path
+        (-2.0 * spacing_factor, 3.0 * spacing_factor + vertical_shift),
+        # 8: Yesod (Bottom center) - adjusted to make Tiphareth-Yesod distance equal to Tiphareth-Da'ath distance
+        (0 * spacing_factor, 1.75 * spacing_factor + vertical_shift),
         # 9: Malkuth (Bottom) - shifted down
         (0 * spacing_factor, -1.3 * spacing_factor + vertical_shift)
     ]
 
-    # Coordinate for the hidden Sephirah, Da'ath - also shifted down
-    daath_coord: Coord = (0 * spacing_factor, 6.5 *
+    # Coordinate for the hidden Sephirah, Da'ath - positioned at the geometric center of Chokmah, Binah, Chesed, and Geburah
+    daath_coord: Coord = (0 * spacing_factor, 6.75 *
                           spacing_factor + vertical_shift)
 
     # 2. Define the Paths connecting the Sephirot
