@@ -68,59 +68,59 @@ You can use the read tool to read in `new_tree.py` and `color_scales.md` wheneve
 
 ## Phase 4: Rendering Implementation
 
-- [ ] Implement base rendering logic
+- [x] Implement base rendering logic
 
-  - [ ] Create core render method structure
-  - [ ] Set up plot parameters and configuration
-  - [ ] Implement Sephiroth drawing logic
-  - [ ] Implement path drawing logic
-  - [ ] Implement Da'ath drawing logic
-  - [ ] Handle special case for Kether's radiant effect
+  - [x] Create core render method structure
+  - [x] Set up plot parameters and configuration
+  - [x] Implement Sephiroth drawing logic
+  - [x] Implement path drawing logic
+  - [x] Implement Da'ath drawing logic
+  - [x] Handle special case for Kether's radiant effect
 
-- [ ] Implement selective Sephirah rendering
+- [x] Implement selective Sephirah rendering
 
-  - [ ] Create method to focus on a specific Sephirah
-  - [ ] Implement zooming or framing logic for focus view
-  - [ ] Handle special layout adjustments for focused view
+  - [x] Create method to focus on a specific Sephirah
+  - [x] Implement zooming or framing logic for focus view
+  - [x] Handle special layout adjustments for focused view
 
-- [ ] Create method to determine which paths to include when rendering a single Sephirah
+- [x] Create method to determine which paths to include when rendering a single Sephirah
 
-  - [ ] Implement path filtering logic
-  - [ ] Create mapping of Sephiroth to their connected paths
-  - [ ] Ensure all relevant paths are included
+  - [x] Implement path filtering logic
+  - [x] Create mapping of Sephiroth to their connected paths
+  - [x] Ensure all relevant paths are included
 
-- [ ] Implement logic to gray out connected Sephiroth
+- [x] Implement logic to gray out connected Sephiroth
 
-  - [ ] Create method to modify colors for grayed out state
-  - [ ] Adjust opacity and saturation for connected Sephiroth
-  - [ ] Ensure visual hierarchy (focused Sephirah > paths > connected Sephiroth)
+  - [x] Create method to modify colors for grayed out state
+  - [x] Adjust opacity and saturation for connected Sephiroth
+  - [x] Ensure visual hierarchy (focused Sephirah > paths > connected Sephiroth)
 
-- [ ] Implement special color effects rendering
-  - [ ] Integrate flecked color rendering
-  - [ ] Integrate rayed color rendering
-  - [ ] Integrate tinged color rendering
-  - [ ] Implement any other special color effects
+- [x] Implement special color effects rendering
+  - [x] Integrate flecked color rendering
+  - [x] Integrate rayed color rendering
+  - [x] Integrate tinged color rendering
+  - [x] Implement any other special color effects
 
 ## Phase 5: Output Methods
 
-- [ ] Implement method to display the tree in a window
+- [x] Implement method to display the tree in a window
 
-  - [ ] Create display method with appropriate parameters
-  - [ ] Handle matplotlib figure configuration
-  - [ ] Implement interactive elements if needed
-  - [ ] Add window title and metadata
+  - [x] Create display method with appropriate parameters
+  - [x] Handle matplotlib figure configuration
+  - [x] Implement interactive elements if needed
+  - [x] Add window title and metadata
 
-- [ ] Implement method to save the tree to a file
+- [x] Implement method to save the tree to a file
 
-  - [ ] Create save method with filename parameter
-  - [ ] Support multiple file formats (png, svg, pdf)
-  - [ ] Handle file path validation and error cases
-  - [ ] Set appropriate DPI and quality settings
+  - [x] Create save method with filename parameter
+  - [x] Support multiple file formats (png, svg, pdf)
+  - [x] Handle file path validation and error cases
+  - [x] Set appropriate DPI and quality settings
 
-- [ ] Create a combined method to both display and save
-  - [ ] Implement method that calls both display and save
-  - [ ] Add parameter to control this behavior
-  - [ ] Ensure proper cleanup and resource management
+- [x] Create a combined method to both display and save
+  - [x] Implement method that calls both display and save
+  - [x] Add parameter to control this behavior
+  - [x] Ensure proper cleanup and resource management
 
 ## Phase 6: Testing and Refinement
 
@@ -162,12 +162,12 @@ You can use the read tool to read in `new_tree.py` and `color_scales.md` wheneve
 
 ## Phase 7: Final Implementation
 
-- [ ] Write example usage code
+- [x] Write example usage code
 
-  - [ ] Basic usage example script
-  - [ ] Color scheme switching example
-  - [ ] Selective rendering example
-  - [ ] Complete demonstration of all features
+  - [x] Basic usage example script
+  - [x] Color scheme switching example
+  - [x] Selective rendering example
+  - [x] Complete demonstration of all features
 
 - [ ] Create demonstration script
 
