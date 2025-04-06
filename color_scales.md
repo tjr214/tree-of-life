@@ -141,25 +141,25 @@ NOTE: "flecked" means "dotted with particles of".
 
 ## The Princess Scale Paths
 
-- 11 =
-- 12 =
-- 13 =
-- 14 =
-- 15 =
-- 16 =
-- 17 =
-- 18 =
-- 19 =
-- 20 =
-- 21 =
-- 22 =
-- 23 =
-- 24 =
-- 25 =
-- 26 =
-- 27 =
-- 28 =
-- 29 =
-- 30 =
-- 31 =
-- 32 =
+- 11 = Emerald, flecked Gold
+- 12 = Light Indigo, rayed Violet
+- 13 = Silver, rayed Sky Blue
+- 14 = Bright Rose, rayed Pale Green
+- 15 = White, tinged Purple
+- 16 = Rich Brown
+- 17 = Reddish-gray, inclined to Mauve
+- 18 = Dark Greenish-brown
+- 19 = Reddish Amber
+- 20 = Plum
+- 21 = Bright Blue, rayed Yellow
+- 22 = Pale Green
+- 23 = White, flecked Purple (like mother-of-pearl)
+- 24 = Livid Indigo Brown (like a black beetle)
+- 25 = Dark Vivid Blue
+- 26 = Cold Dark Gray, approaching Black
+- 27 = Red, rayed Azure or Emerald
+- 28 = Glowing Red
+- 29 = Stone Color
+- 30 = Yellow-orange, rayed Red
+- 31 = Vermilion, flecked Crimson and Green
+- 32 = Black, rayed Blue
