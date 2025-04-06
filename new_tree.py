@@ -32,19 +32,20 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     sephirot_coords: List[Coord] = [
         # 0: Kether (Top center)
         (0 * spacing_factor, 9 * spacing_factor),
-        # 1: Chokmah (Top right)
-        (1.5 * spacing_factor, 7.5 * spacing_factor),
-        (-1.5 * spacing_factor, 7.5 * spacing_factor),         # 2: Binah (Top left)
-        # 3: Chesed (Mid right)
-        (1.5 * spacing_factor, 5.5 * spacing_factor),
-        # 4: Geburah (Mid left)
-        (-1.5 * spacing_factor, 5.5 * spacing_factor),
+        # 1: Chokmah (Top right) - moved further right to match Chesed
+        (2.0 * spacing_factor, 7.5 * spacing_factor),
+        # 2: Binah (Top left) - moved further left to match Geburah
+        (-2.0 * spacing_factor, 7.5 * spacing_factor),
+        # 3: Chesed (Mid right) - moved further right
+        (2.0 * spacing_factor, 5.5 * spacing_factor),
+        # 4: Geburah (Mid left) - moved further left
+        (-2.0 * spacing_factor, 5.5 * spacing_factor),
         # 5: Tiphereth (Center) - moved to geometric center of Chesed, Geburah, Netzach, and Hod
         (0 * spacing_factor, 4.0 * spacing_factor),
-        # 6: Netzach (Bottom right)
-        (1.5 * spacing_factor, 2.5 * spacing_factor),
-        # 7: Hod (Bottom left)
-        (-1.5 * spacing_factor, 2.5 * spacing_factor),
+        # 6: Netzach (Bottom right) - adjusted to align with Chesed
+        (2.0 * spacing_factor, 2.5 * spacing_factor),
+        # 7: Hod (Bottom left) - adjusted to align with Geburah
+        (-2.0 * spacing_factor, 2.5 * spacing_factor),
         # 8: Yesod (Bottom center)
         (0 * spacing_factor, 1.5 * spacing_factor),
         # 9: Malkuth (Bottom) - adjusted position
@@ -115,7 +116,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     ax.set_facecolor('#EAEAEA')      # Set background color of the axes area
 
     # Set plot limits with some padding to accommodate the larger spheres and adjusted spacing
-    ax.set_xlim(-3.5, 3.5)  # Adjusted based on spacing factor
+    # Expanded to accommodate wider sephirot positioning
+    ax.set_xlim(-4.0, 4.0)
     # Extended lower limit to accommodate Malkuth's new position
     ax.set_ylim(-2.5, 14.5)
 
