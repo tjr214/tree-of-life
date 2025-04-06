@@ -1,4 +1,4 @@
-NOTE: "flecked" means "dotted with".
+NOTE: "flecked" means "dotted with particles of".
 
 # King Scale
 
@@ -129,9 +129,9 @@ NOTE: "flecked" means "dotted with".
 
 - 1, Kether = White, flecked Gold
 - 2, Chokmah = White, flecked Red, Blue and Yellow
-- 3, Binah =
-- Daath =
-- 4, Chesed =
+- 3, Binah = Gray, flecked Pink
+- Daath = Gray, flecked Gold
+- 4, Chesed = Deep Azure, flecked Yellow
 - 5, Geburah =
 - 6, Tiphareth =
 - 7, Netzach =
