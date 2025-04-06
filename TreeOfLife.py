@@ -315,6 +315,91 @@ class TreeOfLife:
         # Update the paths dictionary with the new colors
         self.paths = updated_paths
 
+    def _calculate_focus_bounds(self, sephiroth_to_draw: set, paths_to_draw: set) -> Tuple[float, float, float, float]:
+        """
+        Calculate the appropriate bounds for a focused diagram.
+
+        Args:
+            sephiroth_to_draw: Set of sephirah numbers (1-10) to be displayed
+            paths_to_draw: Set of path numbers (11-32) to be displayed
+
+        Returns:
+            Tuple of (min_x, max_x, min_y, max_y) for the plot limits
+        """
+        # Initialize with extreme values
+        min_x, max_x = float('inf'), float('-inf')
+        min_y, max_y = float('inf'), float('-inf')
+
+        # Check coordinates of all sephiroth to be drawn
+        for seph_num in sephiroth_to_draw:
+            if seph_num in self.sephiroth:
+                x, y = self.sephiroth[seph_num].coord
+                min_x = min(min_x, x)
+                max_x = max(max_x, x)
+                min_y = min(min_y, y)
+                max_y = max(max_y, y)
+
+        # Check if we should include Da'ath
+        if 1 in sephiroth_to_draw or 6 in sephiroth_to_draw:
+            x, y = self.daath.coord
+            min_x = min(min_x, x)
+            max_x = max(max_x, x)
+            min_y = min(min_y, y)
+            max_y = max(max_y, y)
+
+        # Consider midpoints of paths for path numbers/labels
+        for path_num in paths_to_draw:
+            if path_num in self.paths:
+                path = self.paths[path_num]
+                i, j = path.connects
+                # Convert from 0-based to 1-based
+                if i+1 in self.sephiroth and j+1 in self.sephiroth:
+                    x1, y1 = self.sephiroth[i+1].coord
+                    x2, y2 = self.sephiroth[j+1].coord
+                    # Path midpoint
+                    mid_x = (x1 + x2) / 2
+                    mid_y = (y1 + y2) / 2
+
+                    # Special cases for paths with offset labels
+                    special_offset_y = 0
+                    if path_num == 13:  # Kether to Tiphereth
+                        special_offset_y = 1.6 * self.spacing_factor
+                    elif path_num == 25:  # Tiphereth to Yesod
+                        special_offset_y = 0.38 * self.spacing_factor
+
+                    mid_y += special_offset_y
+
+                    min_x = min(min_x, mid_x)
+                    max_x = max(max_x, mid_x)
+                    min_y = min(min_y, mid_y)
+                    max_y = max(max_y, mid_y)
+
+        # Add padding (proportional to the circle radius and spacing factor)
+        padding_x = self.circle_radius * 2.5
+        padding_y = self.circle_radius * 2.5
+
+        width = max_x - min_x + padding_x * 2
+        height = max_y - min_y + padding_y * 2
+
+        # Ensure the aspect ratio is balanced
+        if width > height:
+            # If width is greater, increase height to match aspect ratio
+            height_diff = (width - height) / 2
+            min_y -= height_diff
+            max_y += height_diff
+        else:
+            # If height is greater, increase width to match aspect ratio
+            width_diff = (height - width) / 2
+            min_x -= width_diff
+            max_x += width_diff
+
+        return (
+            min_x - padding_x,
+            max_x + padding_x,
+            min_y - padding_y,
+            max_y + padding_y
+        )
+
     def render(self,
                focus_sephirah: Optional[int] = None,
                display: bool = True,
@@ -333,15 +418,62 @@ class TreeOfLife:
             dpi: Resolution in dots per inch for saving the figure
             show_title: Whether to display the title on the diagram
         """
-        # Setup the plot
-        fig, ax = plt.subplots(figsize=figsize)
+        # Determine which paths and Sephiroth to draw based on focus
+        if focus_sephirah is not None and 1 <= focus_sephirah <= 10:
+            paths_to_draw = self._get_connected_paths(focus_sephirah)
+            sephiroth_to_draw = self._get_connected_sephiroth(focus_sephirah)
+            # Always include the focus sephirah
+            sephiroth_to_draw.add(focus_sephirah)
+
+            # Calculate plot limits for the focused view
+            min_x, max_x, min_y, max_y = self._calculate_focus_bounds(
+                sephiroth_to_draw, paths_to_draw)
+
+            # Adjust figure size for focused view to maintain aspect ratio
+            width = max_x - min_x
+            height = max_y - min_y
+            aspect_ratio = width / height if height != 0 else 1.0
+
+            # Use a more appropriate figsize for the focused view
+            # Maintain the same figure area but adjust dimensions based on content aspect ratio
+            fig_area = figsize[0] * figsize[1]  # Original figure area
+
+            if aspect_ratio > 1.0:  # Wider than tall
+                new_height = (fig_area / aspect_ratio) ** 0.5
+                new_width = new_height * aspect_ratio
+            else:  # Taller than wide
+                new_width = (fig_area * aspect_ratio) ** 0.5
+                new_height = new_width / aspect_ratio
+
+            # Cap maximum dimension
+            max_dimension = max(figsize)
+            if new_width > max_dimension or new_height > max_dimension:
+                scale_factor = max_dimension / max(new_width, new_height)
+                new_width *= scale_factor
+                new_height *= scale_factor
+
+            adjusted_figsize = (new_width, new_height)
+        else:
+            # Draw all paths and Sephiroth
+            paths_to_draw = set(self.paths.keys())
+            sephiroth_to_draw = set(self.sephiroth.keys())
+            adjusted_figsize = figsize
+
+        # Setup the plot with potentially adjusted figure size
+        fig, ax = plt.subplots(figsize=adjusted_figsize)
+
         # Set background color of the figure
         fig.patch.set_facecolor('#EAEAEA')
         ax.set_facecolor('#EAEAEA')  # Set background color of the axes area
 
-        # Set plot limits with padding to accommodate the larger spheres and adjusted spacing
-        ax.set_xlim(-4.0, 4.0)
-        ax.set_ylim(-3.5, 15.0)
+        if focus_sephirah is not None and 1 <= focus_sephirah <= 10:
+            # Set the plot limits for the focused view
+            ax.set_xlim(min_x, max_x)
+            ax.set_ylim(min_y, max_y)
+        else:
+            # Set plot limits with padding to accommodate the larger spheres and adjusted spacing
+            ax.set_xlim(-4.0, 4.0)
+            ax.set_ylim(-3.5, 15.0)
 
         # Ensure aspect ratio is equal so circles are not distorted
         ax.set_aspect('equal', adjustable='box')
@@ -364,17 +496,6 @@ class TreeOfLife:
         # Draw Daath outline above outer paths, potentially below inner paths/circles
         zorder_daath = 2
         zorder_path_numbers = 4  # Draw path numbers on top of everything
-
-        # Determine which paths and Sephiroth to draw based on focus
-        if focus_sephirah is not None and 1 <= focus_sephirah <= 10:
-            paths_to_draw = self._get_connected_paths(focus_sephirah)
-            sephiroth_to_draw = self._get_connected_sephiroth(focus_sephirah)
-            # Always include the focus sephirah
-            sephiroth_to_draw.add(focus_sephirah)
-        else:
-            # Draw all paths and Sephiroth
-            paths_to_draw = set(self.paths.keys())
-            sephiroth_to_draw = set(self.sephiroth.keys())
 
         # Identify special paths that need different z-ordering
         path13_num = 13  # Kether to Tiphereth
