@@ -153,10 +153,19 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # First, identify the indices of the paths we're focusing on
     path13_idx = 2  # Kether to Tiphereth (index 2 in paths_from_image)
     path14_idx = 3  # Chokmah to Binah (index 3 in paths_from_image)
+    path15_idx = 4  # Chokmah to Tiphereth (index 4 in paths_from_image)
+    path17_idx = 6  # Binah to Tiphereth (index 6 in paths_from_image)
+    path19_idx = 8  # Chesed to Geburah (index 8 in paths_from_image)
+    path25_idx = 14  # Tiphereth to Yesod (index 14 in paths_from_image)
+    path27_idx = 16  # Netzach to Hod (index 16 in paths_from_image)
 
-    # Draw all paths except 13 and 14 (will handle these separately)
+    # Create lists of paths that should appear underneath or on top
+    paths_underneath = [path13_idx, path15_idx, path17_idx, path25_idx]
+    paths_on_top = [path14_idx, path19_idx, path27_idx]
+
+    # Draw all regular paths (those not in special lists)
     for idx, (i, j) in enumerate(paths_from_image):
-        if idx != path13_idx and idx != path14_idx:
+        if idx not in paths_underneath and idx not in paths_on_top:
             x1, y1 = sephirot_coords[i]
             x2, y2 = sephirot_coords[j]
 
@@ -174,41 +183,43 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                     solid_capstyle='round',
                     zorder=zorder_paths_inner)
 
-    # Now draw path 13 (Kether to Tiphereth) FIRST, with LOWER zorder
-    i, j = paths_from_image[path13_idx]
-    x1, y1 = sephirot_coords[i]
-    x2, y2 = sephirot_coords[j]
+    # Draw paths that should appear underneath
+    for path_idx in paths_underneath:
+        i, j = paths_from_image[path_idx]
+        x1, y1 = sephirot_coords[i]
+        x2, y2 = sephirot_coords[j]
 
-    # Draw path 13 with lower zorder to ensure it appears underneath
-    ax.plot([x1, x2], [y1, y2],
-            color=line_color_outer,
-            linewidth=line_width_outer,
-            solid_capstyle='round',
-            zorder=zorder_paths_outer - 1)  # Lower zorder for the outer line
+        # Draw path with lower zorder to ensure it appears underneath
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_outer,
+                linewidth=line_width_outer,
+                solid_capstyle='round',
+                zorder=zorder_paths_outer - 1)  # Lower zorder for the outer line
 
-    ax.plot([x1, x2], [y1, y2],
-            color=line_color_inner,
-            linewidth=line_width_inner,
-            solid_capstyle='round',
-            zorder=zorder_paths_inner - 1)  # Lower zorder for the inner line
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_inner,
+                linewidth=line_width_inner,
+                solid_capstyle='round',
+                zorder=zorder_paths_inner - 1)  # Lower zorder for the inner line
 
-    # Finally draw path 14 (Chokmah to Binah) LAST, with HIGHER zorder
-    i, j = paths_from_image[path14_idx]
-    x1, y1 = sephirot_coords[i]
-    x2, y2 = sephirot_coords[j]
+    # Draw paths that should appear on top
+    for path_idx in paths_on_top:
+        i, j = paths_from_image[path_idx]
+        x1, y1 = sephirot_coords[i]
+        x2, y2 = sephirot_coords[j]
 
-    # Draw path 14 with higher zorder to ensure it appears on top
-    ax.plot([x1, x2], [y1, y2],
-            color=line_color_outer,
-            linewidth=line_width_outer * 1.1,  # Slightly thicker for emphasis
-            solid_capstyle='round',
-            zorder=zorder_paths_outer + 2)  # Much higher zorder for the outer line
+        # Draw path with higher zorder to ensure it appears on top
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_outer,
+                linewidth=line_width_outer * 1.1,  # Slightly thicker for emphasis
+                solid_capstyle='round',
+                zorder=zorder_paths_outer + 2)  # Much higher zorder for the outer line
 
-    ax.plot([x1, x2], [y1, y2],
-            color=line_color_inner,
-            linewidth=line_width_inner * 1.1,  # Slightly thicker for emphasis
-            solid_capstyle='round',
-            zorder=zorder_paths_inner + 2)  # Much higher zorder for the inner line
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_inner,
+                linewidth=line_width_inner * 1.1,  # Slightly thicker for emphasis
+                solid_capstyle='round',
+                zorder=zorder_paths_inner + 2)  # Much higher zorder for the inner line
 
     # Add path numbers
     # The standard Hebrew letter path numbering starts at 11 and goes to 32
