@@ -44,16 +44,16 @@
 ## The Queen Scale Sephiroth
 
 - 1, Kether = White Brilliance
-- 2, Chokmah =
-- 3, Binah =
-- Daath =
-- 4, Chesed =
-- 5, Geburah =
-- 6, Tiphareth =
-- 7, Netzach =
-- 8, Hod =
-- 9, Yesod =
-- 10, Malkuth =
+- 2, Chokmah = Light Gray (dynamic, luminous vortex)
+- 3, Binah = Dark Indigo (almost Black)
+- Daath = Gray-white
+- 4, Chesed = Dark Blue
+- 5, Geburah = Scarlet Red
+- 6, Tiphareth = Yellow Gold
+- 7, Netzach = Emerald Green
+- 8, Hod = Orange
+- 9, Yesod = Violet
+- 10, Malkuth = Green
 
 ## The Queen Scale Paths
 
