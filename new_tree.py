@@ -34,82 +34,81 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # 1. Define Coordinates for the Sephirot with adjusted spacing
     # We apply the spacing factor to spread out the coordinates
     sephirot_coords: List[Coord] = [
-        # 0: Kether (Top center) - kept in original position
+        # 0: Kether (כתר) - Crown - Sephirah #1 - Divine Will/Light
         (0 * spacing_factor, 9 * spacing_factor),
-        # 1: Chokmah (Top right) - shifted down
+        # 1: Chokmah (חכמה) - Wisdom - Sephirah #2 - Creative Force
         (2.0 * spacing_factor, 8.0 * spacing_factor + vertical_shift),
-        # 2: Binah (Top left) - shifted down
+        # 2: Binah (בינה) - Understanding - Sephirah #3 - Divine Understanding
         (-2.0 * spacing_factor, 8.0 * spacing_factor + vertical_shift),
-        # 3: Chesed (Mid right) - adjusted to make Chokmah-Chesed path equal to Kether-Chokmah path
+        # 3: Chesed (חסד) - Mercy/Kindness - Sephirah #4 - Loving Grace
         (2.0 * spacing_factor, 5.5 * spacing_factor + vertical_shift),
-        # 4: Geburah (Mid left) - adjusted to make Binah-Geburah path equal to Kether-Binah path
+        # 4: Geburah (גבורה) - Severity/Strength - Sephirah #5 - Divine Judgment
         (-2.0 * spacing_factor, 5.5 * spacing_factor + vertical_shift),
-        # 5: Tiphereth (Center) - exact geometric center of Chesed, Geburah, Netzach, Hod
+        # 5: Tiphereth (תפארת) - Beauty/Harmony - Sephirah #6 - Balance & Truth
         (0 * spacing_factor, 4.25 * spacing_factor + vertical_shift),
-        # 6: Netzach (Bottom right) - adjusted to make Chesed-Netzach path equal to Chokmah-Chesed path
+        # 6: Netzach (נצח) - Victory/Eternity - Sephirah #7 - Divine Emotion
         (2.0 * spacing_factor, 3.0 * spacing_factor + vertical_shift),
-        # 7: Hod (Bottom left) - adjusted to make Geburah-Hod path equal to Binah-Geburah path
+        # 7: Hod (הוד) - Splendor/Glory - Sephirah #8 - Divine Intellect
         (-2.0 * spacing_factor, 3.0 * spacing_factor + vertical_shift),
-        # 8: Yesod (Bottom center) - adjusted to make Tiphareth-Yesod distance equal to Tiphareth-Da'ath distance
+        # 8: Yesod (יסוד) - Foundation - Sephirah #9 - Divine Connection
         (0 * spacing_factor, 1.75 * spacing_factor + vertical_shift),
-        # 9: Malkuth (Bottom) - raised further up from previous position
+        # 9: Malkuth (מלכות) - Kingdom - Sephirah #10 - Physical Manifestation
         (0 * spacing_factor, -0.7 * spacing_factor + vertical_shift)
     ]
 
-    # Coordinate for the hidden Sephirah, Da'ath - positioned at the geometric center of Chokmah, Binah, Chesed, and Geburah
+    # Coordinate for the hidden Sephirah, Da'ath (דעת) - Knowledge
+    # Positioned at the geometric center of Chokmah, Binah, Chesed, and Geburah
     daath_coord: Coord = (0 * spacing_factor, 6.75 *
                           spacing_factor + vertical_shift)
 
     # 2. Define the Paths connecting the Sephirot
     #    Each tuple contains the 0-based indices of the two Sephirot it connects.
-    #    There are 22 paths in total.
-    paths: List[PathIndices] = [
-        # Vertical Paths (Pillars)
-        (0, 5), (5, 8), (8, 9),  # Middle Pillar
-        (1, 3), (3, 6),          # Right Pillar
-        (2, 4), (4, 7),          # Left Pillar
+    #    There are 22 paths in total, corresponding to the 22 Hebrew letters.
 
-        # Horizontal Paths
-        (1, 2), (3, 4), (6, 7),
-
-        # Diagonal Paths
-        (0, 1), (0, 2),          # Kether connections
-        # Chokmah connections (Note: 1-4 is debated, but present in many diagrams like the source)
-        (1, 5), (1, 4),
-        # Binah connections (Note: 2-3 is debated, but present in many diagrams like the source)
-        (2, 5), (2, 3),
-        (3, 5), (3, 8),          # Chesed connections
-        (4, 5), (4, 6),          # Geburah connections
-        (5, 6), (5, 7),          # Tiphereth connections
-        (6, 8),                  # Netzach connection
-        (7, 8),                  # Hod connection
-        (6, 9),                  # Netzach to Malkuth (Added based on source image)
-        (7, 9),                  # Hod to Malkuth (Added based on source image)
-    ]
-
-    # Ensure path list consistency with standard diagrams and the source image.
-    # Standard diagrams often omit 1-4, 2-3, 6-9, 7-9. However, the *provided source image* clearly shows these paths.
-    # Let's refine the path list strictly based on the *visual evidence* in the provided image.
+    # We'll use this refined path list based on visual evidence in standard diagrams
     paths_from_image: List[PathIndices] = [
-        # From Kether (0)
-        (0, 1), (0, 2), (0, 5),
-        # From Chokmah (1)
-        (1, 2), (1, 3), (1, 5),
-        # From Binah (2)
-        (2, 4), (2, 5),
-        # From Chesed (3)
-        (3, 4), (3, 5), (3, 6),
-        # From Geburah (4)
-        (4, 5), (4, 7),
-        # From Tiphereth (5)
-        (5, 6), (5, 7), (5, 8),
-        # From Netzach (6)
-        (6, 7), (6, 8), (6, 9),
-        # From Hod (7)
-        (7, 8), (7, 9),
-        # From Yesod (8)
-        (8, 9)
-        # This list has 22 paths and matches the visual connections exactly. We'll use this one.
+        # Paths from Kether (0)
+        (0, 1),  # Kether to Chokmah (Path 11, א, The Fool, Air)
+        (0, 2),  # Kether to Binah (Path 12, ב, The Magus, Mercury)
+        (0, 5),  # Kether to Tiphereth (Path 13, Middle Pillar, ג, The Priestess, Moon)
+
+        # Paths from Chokmah (1)
+        (1, 2),  # Chokmah to Binah (Path 14, Horizontal Path, ד, The Empress, Venus)
+        (1, 5),  # Chokmah to Tiphereth (Path 15, Diagonal, ה, The Star, Aquarius)
+        (1, 3),  # Chokmah to Chesed (Path 16, Right Pillar, ו, The Hierophant, Taurus)
+
+
+        # Paths from Binah (2)
+        (2, 5),  # Binah to Tiphereth (Path 17, Diagonal, ז, The Lovers, Gemini)
+        (2, 4),  # Binah to Geburah (Path 18, Left Pillar, ח, The Chariot, Cancer)
+
+
+        # Paths from Chesed (3)
+        (3, 4),  # Chesed to Geburah (Path 19, Horizontal Path, ט, Lust, Leo)
+        (3, 5),  # Chesed to Tiphereth (Path 20, Diagonal, י, The Hermit, Virgo)
+        (3, 6),  # Chesed to Netzach (Path 21, Diagonal, כ, The Wheel of Fortune, Jupiter)
+
+        # Paths from Geburah (4)
+        (4, 5),  # Geburah to Tiphereth (Path 22, Diagonal, ל, Justice, Libra)
+        (4, 7),  # Geburah to Hod (Path 23, Diagonal, מ, The Hanged Man, Water)
+
+        # Paths from Tiphereth (5)
+        (5, 6),  # Tiphereth to Netzach (Path 24, Diagonal, נ, Death, Scorpio)
+        (5, 8),  # Tiphereth to Yesod (Path 25, Middle Pillar, ס, Art / Temperance, Sagittarius)
+        (5, 7),  # Tiphereth to Hod (Path 26, Diagonal, ע, The Devil, Capricorn)
+
+
+        # Paths from Netzach (6)
+        (6, 7),  # Netzach to Hod (Path 27, Horizontal Path, פ, The Tower, Mars)
+        (6, 8),  # Netzach to Yesod (Path 28, Diagonal, צ, The Emperor, Aries)
+        (6, 9),  # Netzach to Malkuth (Path 29, Diagonal, ק, The Moon, Pisces)
+
+        # Paths from Hod (7)
+        (7, 8),  # Hod to Yesod (Path 30, Diagonal, ר, The Sun, Sun)
+        (7, 9),  # Hod to Malkuth (Path 31, Diagonal, ש, The Vision & The Voice, Fire/Spirit)
+
+        # Path from Yesod (8)
+        (8, 9)   # Yesod to Malkuth (Path 32, Middle Pillar, ת, The World, Saturn, Earth)
     ]
 
     # 3. Setup the Plot
