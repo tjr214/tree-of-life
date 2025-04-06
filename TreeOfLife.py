@@ -535,16 +535,20 @@ class TreeOfLife:
                 # Gray out connected sephiroth without reducing opacity
                 alpha = 1.0  # Changed from 0.6 to make fully opaque
                 circle_face_color = '#E0E0E0'  # Slightly darker gray for non-focused sephiroth
+                circle_edge_color_override = '#AAAAAA'  # Border is slightly darker gray
+                text_color = '#AAAAAA'  # Match number to darker gray
             else:
                 alpha = 1.0
                 circle_face_color = color  # Use the sephirah's color
+                circle_edge_color_override = circle_edge_color  # Use default border color
+                text_color = 'black'  # Use default text color
 
             # Draw the circle
             circle = patches.Circle(
                 (x, y),
                 self.circle_radius,
                 facecolor=circle_face_color,
-                edgecolor=circle_edge_color,
+                edgecolor=circle_edge_color_override,
                 linewidth=circle_line_width,
                 alpha=alpha,
                 zorder=zorder_circles
@@ -562,7 +566,7 @@ class TreeOfLife:
             ax.text(
                 x, y,
                 str(seph_num),
-                color='black',
+                color=text_color,
                 fontsize=12 * self.sphere_scale_factor,
                 ha='center',
                 va='center',
