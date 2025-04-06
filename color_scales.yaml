@@ -302,3 +302,404 @@ scales:
       - number: 32
         color: Black
         hex: "#000000"
+
+  prince:
+    sephiroth:
+      - number: 1
+        name: Kether
+        color: White Brilliance
+        hex: "#FFFFFF"
+        description: "Pure white brilliance"
+
+      - number: 2
+        name: Chokmah
+        color: Blue Pearl Gray
+        hex: "#B0C4DE"
+        description: "Like mother-of-pearl"
+
+      - number: 3
+        name: Binah
+        color: Dark Brown
+        hex: "#654321"
+
+      - number: 0 # Special case
+        name: Daath
+        color: Pure Violet
+        hex: "#9B30FF"
+
+      - number: 4
+        name: Chesed
+        color: Deep Purple
+        hex: "#800080"
+
+      - number: 5
+        name: Geburah
+        color: Bright Scarlet
+        hex: "#FF2400"
+
+      - number: 6
+        name: Tiphareth
+        color: Rich Salmon
+        hex: "#FA8072"
+
+      - number: 7
+        name: Netzach
+        color: Bright Yellow-green
+        hex: "#ADFF2F"
+
+      - number: 8
+        name: Hod
+        color: Red-Russet
+        hex: "#A52A2A"
+
+      - number: 9
+        name: Yesod
+        color: Very Dark Purple
+        hex: "#4B0150"
+
+      - number: 10
+        name: Malkuth
+        color: Green, flecked with Gold
+        hex: "#008000"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+    paths:
+      - number: 11
+        color: Blue Green
+        hex: "#00CED1"
+
+      - number: 12
+        color: Light Gray
+        hex: "#D3D3D3"
+
+      - number: 13
+        color: Cold Pale Blue
+        hex: "#B0E0E6"
+
+      - number: 14
+        color: Early Spring Green
+        hex: "#00FF7F"
+
+      - number: 15
+        color: Bluish Mauve
+        hex: "#9370DB"
+
+      - number: 16
+        color: Deep Warm Olive
+        hex: "#556B2F"
+
+      - number: 17
+        color: Brownish Orange
+        hex: "#D2691E"
+
+      - number: 18
+        color: Rich Bright Russet
+        hex: "#CD5C5C"
+
+      - number: 19
+        color: Gray
+        hex: "#808080"
+
+      - number: 20
+        color: Green-gray
+        hex: "#8FBC8F"
+
+      - number: 21
+        color: Rich Purple
+        hex: "#8B008B"
+
+      - number: 22
+        color: Blue Green
+        hex: "#00CED1"
+
+      - number: 23
+        color: Deep Olive-green
+        hex: "#556B2F"
+
+      - number: 24
+        color: Very Dark Brown
+        hex: "#321414"
+
+      - number: 25
+        color: Green
+        hex: "#008000"
+
+      - number: 26
+        color: Blue-black
+        hex: "#000033"
+
+      - number: 27
+        color: Venetian Red
+        hex: "#C80815"
+
+      - number: 28
+        color: Brilliant Flame
+        hex: "#FF5E13"
+
+      - number: 29
+        color: Light Translucent Pinkish Brown
+        hex: "#D8BFD8"
+
+      - number: 30
+        color: Rich Amber
+        hex: "#FFBF00"
+        description: "Yellow-orange"
+
+      - number: 31
+        color: Scarlet, flecked Gold
+        hex: "#FF2400"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+      - number: 32
+        color: Blue-black
+        hex: "#000033"
+
+  princess:
+    sephiroth:
+      - number: 1
+        name: Kether
+        color: White, flecked Gold
+        hex: "#FFFFFF"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+      - number: 2
+        name: Chokmah
+        color: White, flecked Red, Blue and Yellow
+        hex: "#FFFFFF"
+        effect:
+          type: flecked
+          colors:
+            - color: Red
+              hex: "#FF0000"
+            - color: Blue
+              hex: "#0000FF"
+            - color: Yellow
+              hex: "#FFFF00"
+
+      - number: 3
+        name: Binah
+        color: Gray, flecked Pink
+        hex: "#808080"
+        effect:
+          type: flecked
+          color: Pink
+          hex: "#FFC0CB"
+
+      - number: 0 # Special case
+        name: Daath
+        color: Gray, flecked Gold
+        hex: "#808080"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+      - number: 4
+        name: Chesed
+        color: Deep Azure, flecked Yellow
+        hex: "#0000FF"
+        effect:
+          type: flecked
+          color: Yellow
+          hex: "#FFFF00"
+
+      - number: 5
+        name: Geburah
+        color: Red, flecked Black
+        hex: "#FF0000"
+        effect:
+          type: flecked
+          color: Black
+          hex: "#000000"
+
+      - number: 6
+        name: Tiphareth
+        color: Gold-amber
+        hex: "#FFC000"
+
+      - number: 7
+        name: Netzach
+        color: Olive, flecked Gold
+        hex: "#808000"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+      - number: 8
+        name: Hod
+        color: Yellowish Brown, flecked White
+        hex: "#8B8000"
+        effect:
+          type: flecked
+          color: White
+          hex: "#FFFFFF"
+
+      - number: 9
+        name: Yesod
+        color: Citrine, flecked Azure
+        hex: "#E4D00A"
+        effect:
+          type: flecked
+          color: Azure
+          hex: "#007FFF"
+
+      - number: 10
+        name: Malkuth
+        color: Black, rayed with Yellow
+        hex: "#000000"
+        effect:
+          type: rayed
+          color: Yellow
+          hex: "#FFFF00"
+
+    paths:
+      - number: 11
+        color: Emerald, flecked Gold
+        hex: "#50C878"
+        effect:
+          type: flecked
+          color: Gold
+          hex: "#FFD700"
+
+      - number: 12
+        color: Light Indigo, rayed Violet
+        hex: "#6A5ACD"
+        effect:
+          type: rayed
+          color: Violet
+          hex: "#8F00FF"
+
+      - number: 13
+        color: Silver, rayed Sky Blue
+        hex: "#C0C0C0"
+        effect:
+          type: rayed
+          color: Sky Blue
+          hex: "#87CEEB"
+
+      - number: 14
+        color: Bright Rose, rayed Pale Green
+        hex: "#FF007F"
+        effect:
+          type: rayed
+          color: Pale Green
+          hex: "#98FB98"
+
+      - number: 15
+        color: White, tinged Purple
+        hex: "#FFFFFF"
+        effect:
+          type: tinged
+          color: Purple
+          hex: "#800080"
+
+      - number: 16
+        color: Rich Brown
+        hex: "#8B4513"
+
+      - number: 17
+        color: Reddish-gray, inclined to Mauve
+        hex: "#B18F94"
+
+      - number: 18
+        color: Dark Greenish-brown
+        hex: "#556B2F"
+
+      - number: 19
+        color: Reddish Amber
+        hex: "#E49B0F"
+
+      - number: 20
+        color: Plum
+        hex: "#8E4585"
+
+      - number: 21
+        color: Bright Blue, rayed Yellow
+        hex: "#1E90FF"
+        effect:
+          type: rayed
+          color: Yellow
+          hex: "#FFFF00"
+
+      - number: 22
+        color: Pale Green
+        hex: "#98FB98"
+
+      - number: 23
+        color: White, flecked Purple
+        hex: "#FFFFFF"
+        effect:
+          type: flecked
+          color: Purple
+          hex: "#800080"
+        description: "Like mother-of-pearl"
+
+      - number: 24
+        color: Livid Indigo Brown
+        hex: "#4B3621"
+        description: "Like a black beetle"
+
+      - number: 25
+        color: Dark Vivid Blue
+        hex: "#00008B"
+
+      - number: 26
+        color: Cold Dark Gray, approaching Black
+        hex: "#1C1C1C"
+
+      - number: 27
+        color: Red, rayed Azure or Emerald
+        hex: "#FF0000"
+        effect:
+          type: rayed
+          colors:
+            - color: Azure
+              hex: "#007FFF"
+            - color: Emerald
+              hex: "#50C878"
+          description: "Either Azure or Emerald"
+
+      - number: 28
+        color: Glowing Red
+        hex: "#DC143C"
+
+      - number: 29
+        color: Stone Color
+        hex: "#827B60"
+
+      - number: 30
+        color: Yellow-orange, rayed Red
+        hex: "#FFAE42"
+        effect:
+          type: rayed
+          color: Red
+          hex: "#FF0000"
+
+      - number: 31
+        color: Vermilion, flecked Crimson and Green
+        hex: "#FF4D00"
+        effect:
+          type: flecked
+          colors:
+            - color: Crimson
+              hex: "#DC143C"
+            - color: Green
+              hex: "#008000"
+
+      - number: 32
+        color: Black, rayed Blue
+        hex: "#000000"
+        effect:
+          type: rayed
+          color: Blue
+          hex: "#0000FF"
