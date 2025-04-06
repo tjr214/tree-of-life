@@ -48,8 +48,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         (-2.0 * spacing_factor, 2.0 * spacing_factor),
         # 8: Yesod (Bottom center) - lowered to maintain middle pillar spacing
         (0 * spacing_factor, 1.0 * spacing_factor),
-        # 9: Malkuth (Bottom) - lowered to maintain middle pillar spacing
-        (0 * spacing_factor, -1.0 * spacing_factor)
+        # 9: Malkuth (Bottom) - shifted slightly further down
+        (0 * spacing_factor, -1.3 * spacing_factor)
     ]
 
     # Coordinate for the hidden Sephirah, Da'ath
@@ -119,7 +119,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Expanded to accommodate wider sephirot positioning
     ax.set_xlim(-4.0, 4.0)
     # Extended lower limit to accommodate Malkuth's new position
-    ax.set_ylim(-3.0, 14.5)
+    ax.set_ylim(-3.3, 14.5)
 
     # Ensure aspect ratio is equal so circles are not distorted
     ax.set_aspect('equal', adjustable='box')
