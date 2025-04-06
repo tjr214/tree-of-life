@@ -6,21 +6,17 @@ from typing import List, Tuple, Dict, Optional, Union, NamedTuple, Literal, Any
 from enum import Enum
 from pathlib import Path as FilePath
 import matplotlib.colors as mcolors
-import yaml  # Add yaml import
+
+# Import color-related functionality from color_utils
+from color_utils import (
+    ColorScheme, ColorEffect, ColorParser,
+    DEFAULT_SEPHIROTH_COLORS, DEFAULT_PATH_COLORS,
+    apply_color_effect, apply_path_effect, blend_colors
+)
 
 # Define type aliases for clarity
 Coord = Tuple[float, float]
 PathIndices = Tuple[int, int]
-ColorEffect = Dict[str, Any]  # Stores special color effect information
-
-
-class ColorScheme(Enum):
-    """Enum defining the available color schemes for the Tree of Life."""
-    PLAIN = "plain"  # Default color scheme from original implementation
-    KING_SCALE = "king"
-    QUEEN_SCALE = "queen"
-    PRINCE_SCALE = "prince"
-    PRINCESS_SCALE = "princess"
 
 
 class Sephirah(NamedTuple):
@@ -45,132 +41,8 @@ class Path(NamedTuple):
     color_effect: Optional[ColorEffect] = None
 
 
-class ColorParser:
-    """
-    A utility class to parse color scales from the color_scales.yaml file.
-    """
-
-    @staticmethod
-    def parse_color_scales(file_path: str) -> Dict[str, Dict[str, Dict[int, Dict[str, Any]]]]:
-        """
-        Parse the color_scales.yaml file to extract color information.
-
-        Args:
-            file_path: Path to the color_scales.yaml file
-
-        Returns:
-            Dictionary with structure:
-            {
-                'king': {
-                    'sephiroth': {1: {'color': '#FFFFFF', 'effects': {...}}, ...},
-                    'paths': {11: {'color': '#FFFFC0', 'effects': {...}}, ...}
-                },
-                'queen': {...},
-                ...
-            }
-        """
-        try:
-            with open(file_path, 'r') as f:
-                yaml_data = yaml.safe_load(f)
-        except FileNotFoundError:
-            print(f"Color scales file not found at {file_path}")
-            return {}
-        except yaml.YAMLError as e:
-            print(f"Error parsing YAML file: {e}")
-            return {}
-
-        # Initialize result dictionary
-        result = {
-            'king': {'sephiroth': {}, 'paths': {}},
-            'queen': {'sephiroth': {}, 'paths': {}},
-            'prince': {'sephiroth': {}, 'paths': {}},
-            'princess': {'sephiroth': {}, 'paths': {}}
-        }
-
-        # Process each scale from the YAML file
-        if 'scales' in yaml_data:
-            for scale_name, scale_data in yaml_data['scales'].items():
-                if scale_name not in result:
-                    continue  # Skip unexpected scales
-
-                # Process sephiroth
-                if 'sephiroth' in scale_data:
-                    for sephirah in scale_data['sephiroth']:
-                        number = sephirah['number']
-                        color_info = {
-                            'color': sephirah['hex'],
-                            'effects': None
-                        }
-
-                        # Handle special effects
-                        if 'effect' in sephirah:
-                            effect_type = sephirah['effect'].get('type')
-                            if effect_type:
-                                effects = {'type': effect_type}
-
-                                if 'color' in sephirah['effect'] and 'hex' in sephirah['effect']:
-                                    effects['color2'] = sephirah['effect']['color']
-                                    effects['color2_hex'] = sephirah['effect']['hex']
-                                elif 'colors' in sephirah['effect']:
-                                    # Handle multiple fleck colors
-                                    effects['colors'] = sephirah['effect']['colors']
-
-                                color_info['effects'] = effects
-
-                        result[scale_name]['sephiroth'][number] = color_info
-
-                # Process paths
-                if 'paths' in scale_data:
-                    for path in scale_data['paths']:
-                        number = path['number']
-                        color_info = {
-                            'color': path['hex'],
-                            'effects': None
-                        }
-
-                        # Handle special effects
-                        if 'effect' in path:
-                            effect_type = path['effect'].get('type')
-                            if effect_type:
-                                effects = {'type': effect_type}
-
-                                if 'color' in path['effect'] and 'hex' in path['effect']:
-                                    effects['color2'] = path['effect']['color']
-                                    effects['color2_hex'] = path['effect']['hex']
-                                elif 'colors' in path['effect']:
-                                    # Handle multiple fleck colors
-                                    effects['colors'] = path['effect']['colors']
-
-                                color_info['effects'] = effects
-
-                        result[scale_name]['paths'][number] = color_info
-
-        return result
-
-
 class TreeOfLife:
     """Class to create, manipulate and render the Kabbalistic Tree of Life diagram."""
-
-    # Default plain colors for sephiroth and paths based on the original implementation
-    DEFAULT_SEPHIROTH_COLORS = {
-        0: "#E6E6FA",   # Da'ath - Lavender
-        1: "#FFFFFF",   # Kether - White
-        2: "#AACCFF",   # Chokmah - Pale Blue
-        3: "#DC143C",   # Binah - Crimson
-        4: "#9400D3",   # Chesed - Deep Violet
-        5: "#FF7F00",   # Geburah - Orange
-        6: "#FFB6C1",   # Tiphereth - Pink
-        7: "#FFBF00",   # Netzach - Amber
-        8: "#E6E6FA",   # Hod - Lavender
-        9: "#4B0082",   # Yesod - Indigo
-        10: "#FFFF00"   # Malkuth - Yellow
-    }
-
-    DEFAULT_PATH_COLORS = {
-        # Use a neutral color for all paths in the default scheme
-        # This will be overridden by specific color schemes
-        i: "#FFFFFF" for i in range(11, 33)
-    }
 
     def __init__(self,
                  sphere_scale_factor: float = 1.75,
@@ -264,7 +136,7 @@ class TreeOfLife:
                 number=number,
                 name=name,
                 coord=coord,
-                color=self.DEFAULT_SEPHIROTH_COLORS[number]
+                color=DEFAULT_SEPHIROTH_COLORS[number]
             )
 
     def _init_paths(self) -> None:
@@ -304,7 +176,7 @@ class TreeOfLife:
             self.paths[number] = Path(
                 number=number,
                 connects=connects,
-                color=self.DEFAULT_PATH_COLORS[number]
+                color=DEFAULT_PATH_COLORS[number]
             )
 
     def _init_daath(self) -> None:
@@ -316,7 +188,7 @@ class TreeOfLife:
             number=0,
             name="Da'ath",
             coord=daath_coord,
-            color=self.DEFAULT_SEPHIROTH_COLORS[0]
+            color=DEFAULT_SEPHIROTH_COLORS[0]
         )
 
     def set_sephiroth_color_scheme(self, scheme: ColorScheme) -> None:
@@ -334,7 +206,7 @@ class TreeOfLife:
         if scheme == ColorScheme.PLAIN:
             # Use default colors for the plain scheme
             for number, sephirah in self.sephiroth.items():
-                color = self.DEFAULT_SEPHIROTH_COLORS[number]
+                color = DEFAULT_SEPHIROTH_COLORS[number]
                 updated_sephiroth[number] = Sephirah(
                     number=sephirah.number,
                     name=sephirah.name,
@@ -347,7 +219,7 @@ class TreeOfLife:
                 number=self.daath.number,
                 name=self.daath.name,
                 coord=self.daath.coord,
-                color=self.DEFAULT_SEPHIROTH_COLORS[0]
+                color=DEFAULT_SEPHIROTH_COLORS[0]
             )
         else:
             # Use colors from the parsed color scales file
@@ -407,7 +279,7 @@ class TreeOfLife:
         if scheme == ColorScheme.PLAIN:
             # Use default colors for the plain scheme
             for number, path in self.paths.items():
-                color = self.DEFAULT_PATH_COLORS[number]
+                color = DEFAULT_PATH_COLORS[number]
                 updated_paths[number] = Path(
                     number=path.number,
                     connects=path.connects,
@@ -442,278 +314,6 @@ class TreeOfLife:
 
         # Update the paths dictionary with the new colors
         self.paths = updated_paths
-
-    def _apply_color_effect(self, ax, element_type: str, number: int, x: float, y: float,
-                            color: str, effect: Optional[ColorEffect], radius: float = None) -> None:
-        """
-        Apply special color effects (flecked, rayed, tinged) to a Sephirah or Path.
-
-        Args:
-            ax: Matplotlib axis to draw on
-            element_type: Type of element ('sephirah' or 'path')
-            number: Element number (1-10 for Sephiroth, 11-32 for Paths)
-            x, y: Center coordinates
-            color: Base color
-            effect: Special color effect data
-            radius: Radius (for Sephiroth only)
-        """
-        if not effect:
-            return
-
-        effect_type = effect.get('type')
-
-        if effect_type == 'flecked':
-            # Get the second color for flecking - adapt to YAML structure
-            if 'color2_hex' in effect:
-                color2 = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                color2 = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                color2 = '#FFFFFF'  # Default
-
-            if element_type == 'sephirah' and radius:
-                # Draw small circles randomly distributed within the Sephirah
-                num_flecks = 50  # Number of flecks
-                # Use element number as seed for reproducibility
-                np.random.seed(number)
-
-                for _ in range(num_flecks):
-                    # Random position within the circle
-                    angle = np.random.uniform(0, 2 * np.pi)
-                    # Stay within 90% of radius
-                    r = np.random.uniform(0, radius * 0.9)
-                    fleck_x = x + r * np.cos(angle)
-                    fleck_y = y + r * np.sin(angle)
-
-                    # Random size for the fleck, proportional to the main circle
-                    fleck_size = np.random.uniform(0.02, 0.05) * radius
-
-                    # Draw the fleck
-                    fleck = patches.Circle(
-                        (fleck_x, fleck_y),
-                        fleck_size,
-                        facecolor=color2,
-                        edgecolor=None,
-                        alpha=0.8,
-                        zorder=5  # Above the main circle
-                    )
-                    ax.add_patch(fleck)
-
-            elif element_type == 'path':
-                # For paths, this will need to be implemented differently when drawing paths
-                pass
-
-        elif effect_type == 'rayed':
-            # Get the second color for rays - adapt to YAML structure
-            if 'color2_hex' in effect:
-                color2 = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                color2 = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                color2 = '#FFFFFF'  # Default
-
-            if element_type == 'sephirah' and radius:
-                # Draw rays emanating from the center
-                num_rays = 12  # Number of rays
-                ray_length = radius * 1.5  # Rays extend beyond the circle
-
-                for i in range(num_rays):
-                    angle = i * (2 * np.pi / num_rays)
-                    end_x = x + ray_length * np.cos(angle)
-                    end_y = y + ray_length * np.sin(angle)
-
-                    # Draw the ray as a line
-                    ax.plot(
-                        [x, end_x],
-                        [y, end_y],
-                        color=color2,
-                        linewidth=radius * 0.1,
-                        alpha=0.6,
-                        zorder=2  # Below the main circle but above background
-                    )
-
-            elif element_type == 'path':
-                # For paths, this will need to be implemented differently when drawing paths
-                pass
-
-        elif effect_type == 'tinged':
-            # For tinged, we slightly blend the color with another
-            # Get the tinge color - adapt to YAML structure
-            if 'color2_hex' in effect:
-                tinge_color = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                tinge_color = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                tinge_color = '#FFFFFF'  # Default
-
-            # Blend the colors with a subtle tinge
-            blended_color = self._blend_colors(color, tinge_color, 0.7)
-
-            # This is typically applied by giving the main color a slight tint
-            # The actual implementation will happen when drawing the elements
-            pass
-
-    def _apply_path_effect(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float,
-                           color: str, effect: Optional[ColorEffect]) -> None:
-        """
-        Apply special color effects to a path.
-
-        Args:
-            ax: Matplotlib axis
-            path_num: Path number (11-32)
-            x1, y1: Coordinates of the first endpoint
-            x2, y2: Coordinates of the second endpoint
-            color: Base color of the path
-            effect: Special color effect data
-        """
-        if not effect:
-            return
-
-        effect_type = effect.get('type')
-
-        if effect_type == 'flecked':
-            # Get the second color for flecking - adapt to YAML structure
-            if 'color2_hex' in effect:
-                color2 = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                color2 = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                color2 = '#FFFFFF'  # Default
-
-            # Calculate the path length and angle
-            dx = x2 - x1
-            dy = y2 - y1
-            path_length = np.sqrt(dx*dx + dy*dy)
-            angle = np.arctan2(dy, dx)
-
-            # Draw flecks along the path
-            # Scale number of flecks with path length
-            num_flecks = int(path_length * 15)
-            # Use path number as seed for reproducibility
-            np.random.seed(path_num)
-
-            for _ in range(num_flecks):
-                # Random position along the path
-                t = np.random.uniform(0.1, 0.9)  # Avoid endpoints
-                # Random offset perpendicular to the path
-                offset = np.random.uniform(-0.05, 0.05)
-
-                fleck_x = x1 + t * dx + offset * np.sin(angle)
-                fleck_y = y1 + t * dy - offset * np.cos(angle)
-
-                # Random size for the fleck
-                fleck_size = np.random.uniform(
-                    0.01, 0.03) * self.sphere_scale_factor
-
-                # Draw the fleck
-                fleck = patches.Circle(
-                    (fleck_x, fleck_y),
-                    fleck_size,
-                    facecolor=color2,
-                    edgecolor=None,
-                    alpha=0.8,
-                    zorder=3  # Above the path
-                )
-                ax.add_patch(fleck)
-
-        elif effect_type == 'rayed':
-            # Get the second color for rays - adapt to YAML structure
-            if 'color2_hex' in effect:
-                color2 = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                color2 = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                color2 = '#FFFFFF'  # Default
-
-            # Calculate the midpoint
-            mid_x = (x1 + x2) / 2
-            mid_y = (y1 + y2) / 2
-
-            # Draw rays emanating perpendicular to the path
-            num_rays = 8  # Number of rays
-            ray_length = 0.2 * self.sphere_scale_factor  # Length of rays
-
-            # Calculate path direction vector
-            dx = x2 - x1
-            dy = y2 - y1
-            path_length = np.sqrt(dx*dx + dy*dy)
-
-            # Normalize direction vector
-            if path_length > 0:
-                dx /= path_length
-                dy /= path_length
-
-                # Calculate perpendicular vector
-                perp_dx = -dy
-                perp_dy = dx
-
-                # Draw rays along the path
-                for t in np.linspace(0.2, 0.8, num_rays):
-                    # Position along the path
-                    ray_x = x1 + t * dx * path_length
-                    ray_y = y1 + t * dy * path_length
-
-                    # Draw rays in perpendicular directions
-                    ax.plot(
-                        [ray_x, ray_x + perp_dx * ray_length],
-                        [ray_y, ray_y + perp_dy * ray_length],
-                        color=color2,
-                        linewidth=1.5,
-                        alpha=0.7,
-                        zorder=2.5
-                    )
-
-                    ax.plot(
-                        [ray_x, ray_x - perp_dx * ray_length],
-                        [ray_y, ray_y - perp_dy * ray_length],
-                        color=color2,
-                        linewidth=1.5,
-                        alpha=0.7,
-                        zorder=2.5
-                    )
-
-        elif effect_type == 'tinged':
-            # For tinged paths, we'd normally blend the colors
-            # Get the tinge color - adapt to YAML structure
-            if 'color2_hex' in effect:
-                tinge_color = effect['color2_hex']
-            elif 'colors' in effect and len(effect['colors']) > 0:
-                # Use the first color in the colors list if available
-                tinge_color = effect['colors'][0].get('hex', '#FFFFFF')
-            else:
-                tinge_color = '#FFFFFF'  # Default
-
-            # The blended color would be used to draw the path
-            # This is handled during the main path drawing
-            pass
-
-    def _blend_colors(self, color1: str, color2: str, ratio: float = 0.8) -> str:
-        """
-        Blend two colors together with the given ratio.
-
-        Args:
-            color1: First color (as hex string)
-            color2: Second color (as hex string)
-            ratio: Ratio of the first color (0.0 to 1.0)
-
-        Returns:
-            Blended color as hex string
-        """
-        # Convert hex strings to RGB
-        rgb1 = mcolors.to_rgb(color1)
-        rgb2 = mcolors.to_rgb(color2)
-
-        # Blend the colors
-        blended_rgb = tuple(c1 * ratio + c2 * (1 - ratio)
-                            for c1, c2 in zip(rgb1, rgb2))
-
-        # Convert back to hex
-        return mcolors.to_hex(blended_rgb)
 
     def render(self,
                focus_sephirah: Optional[int] = None,
@@ -834,8 +434,8 @@ class TreeOfLife:
 
             # Apply special effects if any
             if path.color_effect and path_color != '#888888':
-                self._apply_path_effect(
-                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+                apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect, self.sphere_scale_factor)
 
             # Add path number at the midpoint
             self._add_path_number(ax, path_num, x1, y1,
@@ -875,8 +475,8 @@ class TreeOfLife:
 
             # Apply special effects if any
             if path.color_effect and path_color != '#888888':
-                self._apply_path_effect(
-                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+                apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect, self.sphere_scale_factor)
 
             # Add path number at the midpoint
             self._add_path_number(ax, path_num, x1, y1,
@@ -916,8 +516,8 @@ class TreeOfLife:
 
             # Apply special effects if any
             if path.color_effect and path_color != '#888888':
-                self._apply_path_effect(
-                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect)
+                apply_path_effect(
+                    ax, path_num, x1, y1, x2, y2, path.color, path.color_effect, self.sphere_scale_factor)
 
             # Add path number at the midpoint
             self._add_path_number(ax, path_num, x1, y1,
@@ -954,7 +554,7 @@ class TreeOfLife:
 
             # Apply special color effects if any
             if sephirah.color_effect and (focus_sephirah is None or seph_num == focus_sephirah):
-                self._apply_color_effect(
+                apply_color_effect(
                     ax, 'sephirah', seph_num, x, y, color,
                     sephirah.color_effect, self.circle_radius
                 )
