@@ -6,6 +6,7 @@ from typing import List, Tuple, Dict, Optional, Union, NamedTuple, Literal, Any
 from enum import Enum
 from pathlib import Path as FilePath
 import matplotlib.colors as mcolors
+import yaml  # Add yaml import
 
 # Define type aliases for clarity
 Coord = Tuple[float, float]
@@ -16,10 +17,10 @@ ColorEffect = Dict[str, Any]  # Stores special color effect information
 class ColorScheme(Enum):
     """Enum defining the available color schemes for the Tree of Life."""
     PLAIN = "plain"  # Default color scheme from original implementation
-    KING_SCALE = "king_scale"
-    QUEEN_SCALE = "queen_scale"
-    PRINCE_SCALE = "prince_scale"
-    PRINCESS_SCALE = "princess_scale"
+    KING_SCALE = "king"
+    QUEEN_SCALE = "queen"
+    PRINCE_SCALE = "prince"
+    PRINCESS_SCALE = "princess"
 
 
 class Sephirah(NamedTuple):
@@ -46,189 +47,103 @@ class Path(NamedTuple):
 
 class ColorParser:
     """
-    A utility class to parse color scales from the color_scales.md file.
+    A utility class to parse color scales from the color_scales.yaml file.
     """
-
-    # Regex patterns to extract color information
-    SEPHIROTH_PATTERN = re.compile(
-        r"-\s+(\d+|Daath),\s+(\w+)\s+=\s+(.*?)\(\s*#([A-Fa-f0-9]{6})\s*\)")
-    PATH_PATTERN = re.compile(
-        r"-\s+(\d+)\s+=\s+(.*?)\(\s*#([A-Fa-f0-9]{6})\s*\)")
-    COLOR_HEX_PATTERN = re.compile(r"\(\s*#([A-Fa-f0-9]{6})\s*\)")
-    FLECKED_PATTERN = re.compile(r"flecked\s+(.*?)\s+\(")
-    RAYED_PATTERN = re.compile(r"rayed\s+(.*?)\s+\(")
-    TINGED_PATTERN = re.compile(r"tinged\s+(.*?)\s+\(")
 
     @staticmethod
     def parse_color_scales(file_path: str) -> Dict[str, Dict[str, Dict[int, Dict[str, Any]]]]:
         """
-        Parse the color_scales.md file to extract color information.
+        Parse the color_scales.yaml file to extract color information.
 
         Args:
-            file_path: Path to the color_scales.md file
+            file_path: Path to the color_scales.yaml file
 
         Returns:
             Dictionary with structure:
             {
-                'king_scale': {
+                'king': {
                     'sephiroth': {1: {'color': '#FFFFFF', 'effects': {...}}, ...},
                     'paths': {11: {'color': '#FFFFC0', 'effects': {...}}, ...}
                 },
-                'queen_scale': {...},
+                'queen': {...},
                 ...
             }
         """
         try:
             with open(file_path, 'r') as f:
-                content = f.read()
+                yaml_data = yaml.safe_load(f)
         except FileNotFoundError:
             print(f"Color scales file not found at {file_path}")
+            return {}
+        except yaml.YAMLError as e:
+            print(f"Error parsing YAML file: {e}")
             return {}
 
         # Initialize result dictionary
         result = {
-            'king_scale': {'sephiroth': {}, 'paths': {}},
-            'queen_scale': {'sephiroth': {}, 'paths': {}},
-            'prince_scale': {'sephiroth': {}, 'paths': {}},
-            'princess_scale': {'sephiroth': {}, 'paths': {}}
+            'king': {'sephiroth': {}, 'paths': {}},
+            'queen': {'sephiroth': {}, 'paths': {}},
+            'prince': {'sephiroth': {}, 'paths': {}},
+            'princess': {'sephiroth': {}, 'paths': {}}
         }
 
-        # Split content by scale sections
-        sections = content.split('# ')[1:]  # Skip the first empty section
+        # Process each scale from the YAML file
+        if 'scales' in yaml_data:
+            for scale_name, scale_data in yaml_data['scales'].items():
+                if scale_name not in result:
+                    continue  # Skip unexpected scales
 
-        for section in sections:
-            lines = section.strip().split('\n')
-            scale_name = lines[0].lower().replace(' ', '_')
-
-            if scale_name not in result:
-                continue  # Skip unexpected sections
-
-            # Find the sephiroth and paths subsections
-            sephiroth_idx = -1
-            paths_idx = -1
-
-            for i, line in enumerate(lines):
-                if "## The " in line and "Sephiroth" in line:
-                    sephiroth_idx = i
-                elif "## The " in line and "Paths" in line:
-                    paths_idx = i
-
-            # Parse Sephiroth
-            if sephiroth_idx >= 0:
-                end_idx = paths_idx if paths_idx > sephiroth_idx else len(
-                    lines)
-                sephiroth_lines = lines[sephiroth_idx+1:end_idx]
-
-                for line in sephiroth_lines:
-                    line = line.strip()
-                    if not line or line.startswith('##'):
-                        continue
-
-                    match = ColorParser.SEPHIROTH_PATTERN.search(line)
-                    if match:
-                        num_str, name, desc, hex_color = match.groups()
-
-                        # Handle special case for Da'ath
-                        if num_str == "Daath":
-                            num = 0  # Use 0 for Da'ath
-                        else:
-                            num = int(num_str)
-
-                        # Use the hex color directly from the regex match
-                        color = f"#{hex_color}"
-
-                        # Check for special effects
-                        effects = {}
-
-                        flecked_match = ColorParser.FLECKED_PATTERN.search(
-                            desc)
-                        if flecked_match:
-                            effects['type'] = 'flecked'
-                            effects['color2'] = flecked_match.group(1)
-                            # Look for the second color's hex in the description
-                            if "flecked" in line and "with" in line and "#" in line.split("with")[1]:
-                                fleck_hex = re.search(
-                                    r'#([A-Fa-f0-9]{6})', line.split("with")[1])
-                                if fleck_hex:
-                                    effects['color2_hex'] = f"#{fleck_hex.group(1)}"
-
-                        rayed_match = ColorParser.RAYED_PATTERN.search(desc)
-                        if rayed_match:
-                            effects['type'] = 'rayed'
-                            effects['color2'] = rayed_match.group(1)
-                            # Look for the second color's hex
-                            if "rayed" in line and "with" in line and "#" in line.split("with")[1]:
-                                ray_hex = re.search(
-                                    r'#([A-Fa-f0-9]{6})', line.split("with")[1])
-                                if ray_hex:
-                                    effects['color2_hex'] = f"#{ray_hex.group(1)}"
-
-                        tinged_match = ColorParser.TINGED_PATTERN.search(desc)
-                        if tinged_match:
-                            effects['type'] = 'tinged'
-                            effects['color2'] = tinged_match.group(1)
-                            # Tinged typically doesn't have a second hex specified
-
-                        # Store the result
-                        result[scale_name]['sephiroth'][num] = {
-                            'color': color,
-                            'effects': effects if effects else None
+                # Process sephiroth
+                if 'sephiroth' in scale_data:
+                    for sephirah in scale_data['sephiroth']:
+                        number = sephirah['number']
+                        color_info = {
+                            'color': sephirah['hex'],
+                            'effects': None
                         }
 
-            # Parse Paths
-            if paths_idx >= 0:
-                path_lines = lines[paths_idx+1:]
+                        # Handle special effects
+                        if 'effect' in sephirah:
+                            effect_type = sephirah['effect'].get('type')
+                            if effect_type:
+                                effects = {'type': effect_type}
 
-                for line in path_lines:
-                    line = line.strip()
-                    if not line or line.startswith('##'):
-                        continue
+                                if 'color' in sephirah['effect'] and 'hex' in sephirah['effect']:
+                                    effects['color2'] = sephirah['effect']['color']
+                                    effects['color2_hex'] = sephirah['effect']['hex']
+                                elif 'colors' in sephirah['effect']:
+                                    # Handle multiple fleck colors
+                                    effects['colors'] = sephirah['effect']['colors']
 
-                    match = ColorParser.PATH_PATTERN.search(line)
-                    if match:
-                        num_str, desc, hex_color = match.groups()
-                        num = int(num_str)
+                                color_info['effects'] = effects
 
-                        # Use the hex color directly from the regex match
-                        color = f"#{hex_color}"
+                        result[scale_name]['sephiroth'][number] = color_info
 
-                        # Check for special effects
-                        effects = {}
-
-                        flecked_match = ColorParser.FLECKED_PATTERN.search(
-                            desc)
-                        if flecked_match:
-                            effects['type'] = 'flecked'
-                            effects['color2'] = flecked_match.group(1)
-                            # Look for the second color's hex in the description
-                            if "flecked" in line and "with" in line and "#" in line.split("with")[1]:
-                                fleck_hex = re.search(
-                                    r'#([A-Fa-f0-9]{6})', line.split("with")[1])
-                                if fleck_hex:
-                                    effects['color2_hex'] = f"#{fleck_hex.group(1)}"
-
-                        rayed_match = ColorParser.RAYED_PATTERN.search(desc)
-                        if rayed_match:
-                            effects['type'] = 'rayed'
-                            effects['color2'] = rayed_match.group(1)
-                            # Look for the second color's hex
-                            if "rayed" in line and "with" in line and "#" in line.split("with")[1]:
-                                ray_hex = re.search(
-                                    r'#([A-Fa-f0-9]{6})', line.split("with")[1])
-                                if ray_hex:
-                                    effects['color2_hex'] = f"#{ray_hex.group(1)}"
-
-                        tinged_match = ColorParser.TINGED_PATTERN.search(desc)
-                        if tinged_match:
-                            effects['type'] = 'tinged'
-                            effects['color2'] = tinged_match.group(1)
-                            # Tinged typically doesn't have a second hex specified
-
-                        # Store the result
-                        result[scale_name]['paths'][num] = {
-                            'color': color,
-                            'effects': effects if effects else None
+                # Process paths
+                if 'paths' in scale_data:
+                    for path in scale_data['paths']:
+                        number = path['number']
+                        color_info = {
+                            'color': path['hex'],
+                            'effects': None
                         }
+
+                        # Handle special effects
+                        if 'effect' in path:
+                            effect_type = path['effect'].get('type')
+                            if effect_type:
+                                effects = {'type': effect_type}
+
+                                if 'color' in path['effect'] and 'hex' in path['effect']:
+                                    effects['color2'] = path['effect']['color']
+                                    effects['color2_hex'] = path['effect']['hex']
+                                elif 'colors' in path['effect']:
+                                    # Handle multiple fleck colors
+                                    effects['colors'] = path['effect']['colors']
+
+                                color_info['effects'] = effects
+
+                        result[scale_name]['paths'][number] = color_info
 
         return result
 
@@ -262,7 +177,7 @@ class TreeOfLife:
                  spacing_factor: float = 1.5,
                  sephiroth_color_scheme: ColorScheme = ColorScheme.PLAIN,
                  path_color_scheme: ColorScheme = ColorScheme.PLAIN,
-                 color_scales_file: str = "color_scales.md"):
+                 color_scales_file: str = "color_scales.yaml"):  # Changed file extension
         """
         Initialize the Tree of Life with configurable parameters.
 
@@ -548,8 +463,14 @@ class TreeOfLife:
         effect_type = effect.get('type')
 
         if effect_type == 'flecked':
-            # Get the second color for flecking
-            color2 = effect.get('color2_hex', '#FFFFFF')
+            # Get the second color for flecking - adapt to YAML structure
+            if 'color2_hex' in effect:
+                color2 = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                color2 = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                color2 = '#FFFFFF'  # Default
 
             if element_type == 'sephirah' and radius:
                 # Draw small circles randomly distributed within the Sephirah
@@ -584,8 +505,14 @@ class TreeOfLife:
                 pass
 
         elif effect_type == 'rayed':
-            # Get the second color for rays
-            color2 = effect.get('color2_hex', '#FFFFFF')
+            # Get the second color for rays - adapt to YAML structure
+            if 'color2_hex' in effect:
+                color2 = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                color2 = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                color2 = '#FFFFFF'  # Default
 
             if element_type == 'sephirah' and radius:
                 # Draw rays emanating from the center
@@ -613,8 +540,156 @@ class TreeOfLife:
 
         elif effect_type == 'tinged':
             # For tinged, we slightly blend the color with another
+            # Get the tinge color - adapt to YAML structure
+            if 'color2_hex' in effect:
+                tinge_color = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                tinge_color = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                tinge_color = '#FFFFFF'  # Default
+
+            # Blend the colors with a subtle tinge
+            blended_color = self._blend_colors(color, tinge_color, 0.7)
+
             # This is typically applied by giving the main color a slight tint
             # The actual implementation will happen when drawing the elements
+            pass
+
+    def _apply_path_effect(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float,
+                           color: str, effect: Optional[ColorEffect]) -> None:
+        """
+        Apply special color effects to a path.
+
+        Args:
+            ax: Matplotlib axis
+            path_num: Path number (11-32)
+            x1, y1: Coordinates of the first endpoint
+            x2, y2: Coordinates of the second endpoint
+            color: Base color of the path
+            effect: Special color effect data
+        """
+        if not effect:
+            return
+
+        effect_type = effect.get('type')
+
+        if effect_type == 'flecked':
+            # Get the second color for flecking - adapt to YAML structure
+            if 'color2_hex' in effect:
+                color2 = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                color2 = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                color2 = '#FFFFFF'  # Default
+
+            # Calculate the path length and angle
+            dx = x2 - x1
+            dy = y2 - y1
+            path_length = np.sqrt(dx*dx + dy*dy)
+            angle = np.arctan2(dy, dx)
+
+            # Draw flecks along the path
+            # Scale number of flecks with path length
+            num_flecks = int(path_length * 15)
+            # Use path number as seed for reproducibility
+            np.random.seed(path_num)
+
+            for _ in range(num_flecks):
+                # Random position along the path
+                t = np.random.uniform(0.1, 0.9)  # Avoid endpoints
+                # Random offset perpendicular to the path
+                offset = np.random.uniform(-0.05, 0.05)
+
+                fleck_x = x1 + t * dx + offset * np.sin(angle)
+                fleck_y = y1 + t * dy - offset * np.cos(angle)
+
+                # Random size for the fleck
+                fleck_size = np.random.uniform(
+                    0.01, 0.03) * self.sphere_scale_factor
+
+                # Draw the fleck
+                fleck = patches.Circle(
+                    (fleck_x, fleck_y),
+                    fleck_size,
+                    facecolor=color2,
+                    edgecolor=None,
+                    alpha=0.8,
+                    zorder=3  # Above the path
+                )
+                ax.add_patch(fleck)
+
+        elif effect_type == 'rayed':
+            # Get the second color for rays - adapt to YAML structure
+            if 'color2_hex' in effect:
+                color2 = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                color2 = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                color2 = '#FFFFFF'  # Default
+
+            # Calculate the midpoint
+            mid_x = (x1 + x2) / 2
+            mid_y = (y1 + y2) / 2
+
+            # Draw rays emanating perpendicular to the path
+            num_rays = 8  # Number of rays
+            ray_length = 0.2 * self.sphere_scale_factor  # Length of rays
+
+            # Calculate path direction vector
+            dx = x2 - x1
+            dy = y2 - y1
+            path_length = np.sqrt(dx*dx + dy*dy)
+
+            # Normalize direction vector
+            if path_length > 0:
+                dx /= path_length
+                dy /= path_length
+
+                # Calculate perpendicular vector
+                perp_dx = -dy
+                perp_dy = dx
+
+                # Draw rays along the path
+                for t in np.linspace(0.2, 0.8, num_rays):
+                    # Position along the path
+                    ray_x = x1 + t * dx * path_length
+                    ray_y = y1 + t * dy * path_length
+
+                    # Draw rays in perpendicular directions
+                    ax.plot(
+                        [ray_x, ray_x + perp_dx * ray_length],
+                        [ray_y, ray_y + perp_dy * ray_length],
+                        color=color2,
+                        linewidth=1.5,
+                        alpha=0.7,
+                        zorder=2.5
+                    )
+
+                    ax.plot(
+                        [ray_x, ray_x - perp_dx * ray_length],
+                        [ray_y, ray_y - perp_dy * ray_length],
+                        color=color2,
+                        linewidth=1.5,
+                        alpha=0.7,
+                        zorder=2.5
+                    )
+
+        elif effect_type == 'tinged':
+            # For tinged paths, we'd normally blend the colors
+            # Get the tinge color - adapt to YAML structure
+            if 'color2_hex' in effect:
+                tinge_color = effect['color2_hex']
+            elif 'colors' in effect and len(effect['colors']) > 0:
+                # Use the first color in the colors list if available
+                tinge_color = effect['colors'][0].get('hex', '#FFFFFF')
+            else:
+                tinge_color = '#FFFFFF'  # Default
+
+            # The blended color would be used to draw the path
+            # This is handled during the main path drawing
             pass
 
     def _blend_colors(self, color1: str, color2: str, ratio: float = 0.8) -> str:
@@ -1058,117 +1133,3 @@ class TreeOfLife:
                 zorder=1  # Below the main circle
             )
             ax.add_patch(glow)
-
-    def _apply_path_effect(self, ax, path_num: int, x1: float, y1: float, x2: float, y2: float,
-                           color: str, effect: Optional[ColorEffect]) -> None:
-        """
-        Apply special color effects to a path.
-
-        Args:
-            ax: Matplotlib axis
-            path_num: Path number (11-32)
-            x1, y1: Coordinates of the first endpoint
-            x2, y2: Coordinates of the second endpoint
-            color: Base color of the path
-            effect: Special color effect data
-        """
-        if not effect:
-            return
-
-        effect_type = effect.get('type')
-
-        if effect_type == 'flecked':
-            # Get the second color for flecking
-            color2 = effect.get('color2_hex', '#FFFFFF')
-
-            # Calculate the path length and angle
-            dx = x2 - x1
-            dy = y2 - y1
-            path_length = np.sqrt(dx*dx + dy*dy)
-            angle = np.arctan2(dy, dx)
-
-            # Draw flecks along the path
-            # Scale number of flecks with path length
-            num_flecks = int(path_length * 15)
-            # Use path number as seed for reproducibility
-            np.random.seed(path_num)
-
-            for _ in range(num_flecks):
-                # Random position along the path
-                t = np.random.uniform(0.1, 0.9)  # Avoid endpoints
-                # Random offset perpendicular to the path
-                offset = np.random.uniform(-0.05, 0.05)
-
-                fleck_x = x1 + t * dx + offset * np.sin(angle)
-                fleck_y = y1 + t * dy - offset * np.cos(angle)
-
-                # Random size for the fleck
-                fleck_size = np.random.uniform(
-                    0.01, 0.03) * self.sphere_scale_factor
-
-                # Draw the fleck
-                fleck = patches.Circle(
-                    (fleck_x, fleck_y),
-                    fleck_size,
-                    facecolor=color2,
-                    edgecolor=None,
-                    alpha=0.8,
-                    zorder=3  # Above the path
-                )
-                ax.add_patch(fleck)
-
-        elif effect_type == 'rayed':
-            # Get the second color for rays
-            color2 = effect.get('color2_hex', '#FFFFFF')
-
-            # Calculate the midpoint
-            mid_x = (x1 + x2) / 2
-            mid_y = (y1 + y2) / 2
-
-            # Draw rays emanating perpendicular to the path
-            num_rays = 8  # Number of rays
-            ray_length = 0.2 * self.sphere_scale_factor  # Length of rays
-
-            # Calculate path direction vector
-            dx = x2 - x1
-            dy = y2 - y1
-            path_length = np.sqrt(dx*dx + dy*dy)
-
-            # Normalize direction vector
-            if path_length > 0:
-                dx /= path_length
-                dy /= path_length
-
-                # Calculate perpendicular vector
-                perp_dx = -dy
-                perp_dy = dx
-
-                # Draw rays along the path
-                for t in np.linspace(0.2, 0.8, num_rays):
-                    # Position along the path
-                    ray_x = x1 + t * dx * path_length
-                    ray_y = y1 + t * dy * path_length
-
-                    # Draw rays in perpendicular directions
-                    ax.plot(
-                        [ray_x, ray_x + perp_dx * ray_length],
-                        [ray_y, ray_y + perp_dy * ray_length],
-                        color=color2,
-                        linewidth=1.5,
-                        alpha=0.7,
-                        zorder=2.5
-                    )
-
-                    ax.plot(
-                        [ray_x, ray_x - perp_dx * ray_length],
-                        [ray_y, ray_y - perp_dy * ray_length],
-                        color=color2,
-                        linewidth=1.5,
-                        alpha=0.7,
-                        zorder=2.5
-                    )
-
-        elif effect_type == 'tinged':
-            # For tinged paths, we'd normally blend the colors
-            # This is handled during the main path drawing
-            pass
