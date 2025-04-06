@@ -133,11 +133,11 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Define visual parameters
     line_color_outer: str = 'black'
     line_color_inner: str = 'white'
-    # Further increased thickness for paths to accommodate future text/symbols
-    line_width_outer: float = 11.5 * \
-        (sphere_scale_factor * 0.7)  # Even thicker than before
+    # Further increased thickness for paths to accommodate path numbers
+    line_width_outer: float = 14.0 * \
+        (sphere_scale_factor * 0.7)  # Increased thickness for path numbers
     # Further increased thickness while maintaining the outer/inner ratio
-    line_width_inner: float = 8.0 * (sphere_scale_factor * 0.7)
+    line_width_inner: float = 10.0 * (sphere_scale_factor * 0.7)
     circle_edge_color: str = 'black'
     circle_face_color: str = 'white'
     circle_line_width: float = 1.5 * \
@@ -147,6 +147,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     zorder_circles: int = 3     # Draw circles on top of lines
     # Draw Daath outline above outer paths, potentially below inner paths/circles
     zorder_daath: int = 2
+    zorder_path_numbers: int = 4  # Draw path numbers on top of everything
 
     # 4. Draw the Paths
     # Draw the thicker black lines first (as outlines)
@@ -168,6 +169,44 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 linewidth=line_width_inner,
                 solid_capstyle='round',
                 zorder=zorder_paths_inner)
+
+    # Add path numbers
+    # The standard Hebrew letter path numbering starts at 11 and goes to 32
+    # Create a list of numbers from 11 to 32
+    path_numbers = list(range(11, 33))
+
+    # Add path numbers to each path
+    for idx, (i, j) in enumerate(paths_from_image):
+        x1, y1 = sephirot_coords[i]
+        x2, y2 = sephirot_coords[j]
+
+        # Calculate the midpoint of the path for text placement
+        mid_x = (x1 + x2) / 2
+        mid_y = (y1 + y2) / 2
+
+        # Special adjustments for specific paths
+        special_offset_y = 0
+
+        # Path 25 (Tiphereth to Yesod) - The 14th path in our list (0-indexed)
+        # This is the connection between sephirot indices 5 and 8
+        if (i == 5 and j == 8) or (i == 8 and j == 5):
+            # Raise the number for path 25 to avoid overlap with path 27
+            # Fine-tuned from 0.35 to raise it by an ultra tiny bit
+            special_offset_y = 0.38 * spacing_factor  # Precise positioning adjustment
+
+        # Draw the path number - centered directly on the path with any special offsets
+        ax.text(mid_x, mid_y + special_offset_y,
+                str(path_numbers[idx]),
+                # Slightly smaller than Sephiroth numbers
+                fontsize=9 * sphere_scale_factor * 0.55,
+                fontweight='bold',
+                ha='center',
+                va='center',
+                color='black',
+                # More prominent white background to ensure visibility on the path
+                bbox=dict(facecolor='white', alpha=0.85,
+                          edgecolor='black', linewidth=0.5, boxstyle='round,pad=0.4'),
+                zorder=zorder_path_numbers)  # Make text appear above paths
 
     # 5. Draw the Sephirot (Circles)
     for i, (x, y) in enumerate(sephirot_coords):
