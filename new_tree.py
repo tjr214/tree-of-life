@@ -84,7 +84,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
 
 
         # Paths from Chesed (3)
-        (3, 4),  # Chesed to Geburah (Path 19, Horizontal Path, ט, Lust, Leo)
+        # Chesed to Geburah (Path 19, Horizontal Path, ט, Lust, Leo)
+        (3, 4),
         (3, 5),  # Chesed to Tiphereth (Path 20, Diagonal, י, The Hermit, Virgo)
         (3, 6),  # Chesed to Netzach (Path 21, Diagonal, כ, The Wheel of Fortune, Jupiter)
 
