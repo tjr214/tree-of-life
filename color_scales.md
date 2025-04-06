@@ -3,16 +3,16 @@
 ## The King Scale Sephiroth
 
 - 1, Kether = Brilliance
-- 2, Chokmah =
-- 3, Binah =
-- Daath =
-- 4, Chesed =
-- 5, Geburah =
-- 6, Tiphareth =
-- 7, Netzach =
-- 8, Hod =
-- 9, Yesod =
-- 10, Malkuth =
+- 2, Chokmah = Pure Soft Blue
+- 3, Binah = Crimson
+- Daath = Lavender
+- 4, Chesed = Deep Violet
+- 5, Geburah = Bright Orange
+- 6, Tiphareth = Clear Pink Rose
+- 7, Netzach = Amber
+- 8, Hod = Lavender
+- 9, Yesod = Indigo
+- 10, Malkuth = Bright Yellow
 
 ## The King Scale Paths
 
