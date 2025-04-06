@@ -275,7 +275,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         '♈',  # Path 28: Aries - Netzach to Yesod
         '♓',  # Path 29: Pisces - Netzach to Malkuth
         '☉',  # Path 30: Sun - Hod to Yesod
-        '△',  # Path 31: Fire - Hod to Malkuth (upward-pointing triangle)
+        '△ ⊙',  # Path 31: Fire (primary) & Spirit (secondary) - Hod to Malkuth
         # Path 32: Saturn(top) & Earth(bottom, downward triangle with horizontal line) - Yesod to Malkuth
         '♄\n▽̵'
     ]
