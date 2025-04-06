@@ -1,3 +1,5 @@
+NOTE: "flecked" means "dotted with".
+
 # King Scale
 
 ## The King Scale Sephiroth
@@ -125,8 +127,8 @@
 
 ## The Princess Scale Sephiroth
 
-- 1, Kether = White Brilliance
-- 2, Chokmah =
+- 1, Kether = White, flecked Gold
+- 2, Chokmah = White, flecked Red, Blue and Yellow
 - 3, Binah =
 - Daath =
 - 4, Chesed =
