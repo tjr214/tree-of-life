@@ -140,8 +140,9 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     line_width_inner: float = 10.0 * (sphere_scale_factor * 0.7)
     circle_edge_color: str = 'black'
     circle_face_color: str = 'white'
-    circle_line_width: float = 1.5 * \
-        (sphere_scale_factor * 0.6)  # Adjusted for visual balance
+    # Increase the border thickness by changing the multiplier from 1.5 to 3.0
+    circle_line_width: float = 3.0 * \
+        (sphere_scale_factor * 0.6)  # Increased for thicker sephiroth borders
     zorder_paths_outer: int = 1  # Draw black lines first
     zorder_paths_inner: int = 2  # Draw white lines on top
     zorder_circles: int = 3     # Draw circles on top of lines
@@ -161,11 +162,17 @@ def draw_tree_of_life(output_filename: str = None) -> None:
 
     # Create lists of paths that should appear underneath or on top
     paths_underneath = [path13_idx, path15_idx, path17_idx, path25_idx]
-    paths_on_top = [path14_idx, path19_idx, path27_idx]
+
+    # All horizontal paths should be handled the same way:
+    # Above paths they cross but below sephirot they connect
+    paths_special = [path14_idx, path19_idx, path27_idx]
+
+    # No paths are on top of everything now
+    paths_on_top = []
 
     # Draw all regular paths (those not in special lists)
     for idx, (i, j) in enumerate(paths_from_image):
-        if idx not in paths_underneath and idx not in paths_on_top:
+        if idx not in paths_underneath and idx not in paths_on_top and idx not in paths_special:
             x1, y1 = sephirot_coords[i]
             x2, y2 = sephirot_coords[j]
 
@@ -202,7 +209,26 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 solid_capstyle='round',
                 zorder=zorder_paths_inner - 1)  # Lower zorder for the inner line
 
-    # Draw paths that should appear on top
+    # Draw special paths - above other paths they cross but below sephirot
+    for path_idx in paths_special:
+        i, j = paths_from_image[path_idx]
+        x1, y1 = sephirot_coords[i]
+        x2, y2 = sephirot_coords[j]
+
+        # Draw path with higher zorder than paths it crosses but lower than sephirot circles
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_outer,
+                linewidth=line_width_outer * 1.1,  # Slightly thicker for emphasis
+                solid_capstyle='round',
+                zorder=zorder_paths_outer + 1)  # Higher than other paths but lower than circles
+
+        ax.plot([x1, x2], [y1, y2],
+                color=line_color_inner,
+                linewidth=line_width_inner * 1.1,  # Slightly thicker for emphasis
+                solid_capstyle='round',
+                zorder=zorder_paths_inner + 1)  # Higher than other paths but lower than circles
+
+    # Draw paths that should appear on top of everything (none now)
     for path_idx in paths_on_top:
         i, j = paths_from_image[path_idx]
         x1, y1 = sephirot_coords[i]
@@ -226,6 +252,17 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Create a list of numbers from 11 to 32
     path_numbers = list(range(11, 33))
 
+    # Define paths that need special orientation fixes (paths appearing upside down)
+    # The indices are 0-based in the paths_from_image list
+    paths_needing_orientation_fix = [
+        1,   # Path 12: Kether to Binah
+        4,   # Path 15: Chokmah to Tiphereth
+        9,   # Path 20: Chesed to Tiphereth
+        15,  # Path 26: Tiphereth to Hod
+        17,  # Path 28: Netzach to Yesod
+        18   # Path 29: Netzach to Malkuth
+    ]
+
     # Add path numbers to each path
     for idx, (i, j) in enumerate(paths_from_image):
         x1, y1 = sephirot_coords[i]
@@ -245,7 +282,34 @@ def draw_tree_of_life(output_filename: str = None) -> None:
             # Fine-tuned from 0.35 to raise it by an ultra tiny bit
             special_offset_y = 0.38 * spacing_factor  # Precise positioning adjustment
 
-        # Draw the path number - centered directly on the path with any special offsets
+        # Calculate the angle of the path for text rotation
+        angle_rad = np.arctan2(y2 - y1, x2 - x1)
+        angle_deg = np.degrees(angle_rad)
+
+        # Adjust angle for readability - text should be right-side up
+        # If angle is between 90 and 270 degrees, flip it 180 degrees
+        if 90 < angle_deg < 270:
+            angle_deg -= 180
+
+        # Force flip for specific paths that are rendering upside down despite the adjustment
+        if idx in paths_needing_orientation_fix:
+            angle_deg += 180
+
+        # For vertical paths (Middle Pillar), keep text horizontal
+        # within 5 degrees of vertical
+        is_vertical = abs(abs(angle_deg) - 90) < 5
+
+        # For horizontal paths (Path 14, 19, 27), keep text horizontal
+        is_horizontal = abs(angle_deg) < 5 or abs(
+            abs(angle_deg) - 180) < 5  # within 5 degrees of horizontal
+
+        # Set final rotation angle
+        if is_vertical or is_horizontal:
+            rotation = 0  # Keep horizontal for vertical and horizontal paths
+        else:
+            rotation = angle_deg  # Rotate text to match path angle
+
+        # Draw the path number with proper orientation
         ax.text(mid_x, mid_y + special_offset_y,
                 str(path_numbers[idx]),
                 # Slightly smaller than Sephiroth numbers
@@ -254,6 +318,9 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 ha='center',
                 va='center',
                 color='black',
+                # Set the rotation to match the path direction
+                rotation=rotation,
+                rotation_mode='anchor',  # Rotate around the anchor point
                 # No box around the path numbers
                 zorder=zorder_path_numbers)  # Make text appear above paths
 
