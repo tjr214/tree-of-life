@@ -1,0 +1,304 @@
+---
+# Color Scales YAML representation
+# Note: "flecked" means "dotted with particles of"
+
+scales:
+  king:
+    sephiroth:
+      - number: 1
+        name: Kether
+        color: Brilliance
+        hex: "#FFFFFF"
+        description: "Pure white brilliance"
+
+      - number: 2
+        name: Chokmah
+        color: Pure Soft Blue
+        hex: "#AACCFF"
+
+      - number: 3
+        name: Binah
+        color: Crimson
+        hex: "#DC143C"
+
+      - number: 0 # Special case
+        name: Daath
+        color: Lavender
+        hex: "#E6E6FA"
+
+      - number: 4
+        name: Chesed
+        color: Deep Violet
+        hex: "#9400D3"
+
+      - number: 5
+        name: Geburah
+        color: Bright Orange
+        hex: "#FF7F00"
+
+      - number: 6
+        name: Tiphareth
+        color: Clear Pink Rose
+        hex: "#FFB6C1"
+
+      - number: 7
+        name: Netzach
+        color: Amber
+        hex: "#FFBF00"
+
+      - number: 8
+        name: Hod
+        color: Lavender
+        hex: "#E6E6FA"
+
+      - number: 9
+        name: Yesod
+        color: Indigo
+        hex: "#4B0082"
+
+      - number: 10
+        name: Malkuth
+        color: Bright Yellow
+        hex: "#FFFF00"
+
+    paths:
+      - number: 11
+        color: Bright Pale Yellow
+        hex: "#FFFFC0"
+
+      - number: 12
+        color: Yellow
+        hex: "#FFFF00"
+
+      - number: 13
+        color: Pale Blue
+        hex: "#ADD8E6"
+
+      - number: 14
+        color: Green
+        hex: "#00FF00"
+
+      - number: 15
+        color: Violet
+        hex: "#8F00FF"
+
+      - number: 16
+        color: Red-orange
+        hex: "#FF4500"
+
+      - number: 17
+        color: Orange
+        hex: "#FFA500"
+
+      - number: 18
+        color: Amber
+        hex: "#FFBF00"
+
+      - number: 19
+        color: Yellow, golden
+        hex: "#FFD700"
+
+      - number: 20
+        color: Yellow-green
+        hex: "#9ACD32"
+
+      - number: 21
+        color: Violet
+        hex: "#8F00FF"
+
+      - number: 22
+        color: Green
+        hex: "#00FF00"
+
+      - number: 23
+        color: Deep Blue
+        hex: "#0000CD"
+
+      - number: 24
+        color: Blue-green
+        hex: "#00CED1"
+
+      - number: 25
+        color: Blue
+        hex: "#0000FF"
+
+      - number: 26
+        color: Indigo
+        hex: "#191970"
+        description: "Usually very dark"
+
+      - number: 27
+        color: Red
+        hex: "#FF0000"
+
+      - number: 28
+        color: Red
+        hex: "#FF0000"
+
+      - number: 29
+        color: Red-violet
+        hex: "#C71585"
+
+      - number: 30
+        color: Orange
+        hex: "#FFA500"
+
+      - number: 31
+        color: Glowing Orange-scarlet
+        hex: "#FF2400"
+
+      - number: 32
+        color: Indigo
+        hex: "#4B0082"
+
+  queen:
+    sephiroth:
+      - number: 1
+        name: Kether
+        color: White Brilliance
+        hex: "#FFFFFF"
+
+      - number: 2
+        name: Chokmah
+        color: Light Gray
+        hex: "#D3D3D3"
+        description: "Dynamic, luminous vortex"
+
+      - number: 3
+        name: Binah
+        color: Dark Indigo
+        hex: "#0A0A2A"
+        description: "Almost Black"
+
+      - number: 0 # Special case
+        name: Daath
+        color: Gray-white
+        hex: "#EBEBEB"
+
+      - number: 4
+        name: Chesed
+        color: Dark Blue
+        hex: "#00008B"
+
+      - number: 5
+        name: Geburah
+        color: Scarlet Red
+        hex: "#FF2400"
+
+      - number: 6
+        name: Tiphareth
+        color: Yellow Gold
+        hex: "#FFD700"
+
+      - number: 7
+        name: Netzach
+        color: Emerald Green
+        hex: "#50C878"
+
+      - number: 8
+        name: Hod
+        color: Orange
+        hex: "#FFA500"
+
+      - number: 9
+        name: Yesod
+        color: Violet
+        hex: "#8F00FF"
+
+      - number: 10
+        name: Malkuth
+        color: Green
+        hex: "#008000"
+
+    paths:
+      - number: 11
+        color: Sky Blue
+        hex: "#87CEEB"
+
+      - number: 12
+        color: Light Purple
+        hex: "#B19CD9"
+
+      - number: 13
+        color: Silver
+        hex: "#C0C0C0"
+
+      - number: 14
+        color: Sky Blue
+        hex: "#87CEEB"
+
+      - number: 15
+        color: Sky Blue
+        hex: "#87CEEB"
+
+      - number: 16
+        color: Deep Indigo
+        hex: "#4B0082"
+
+      - number: 17
+        color: Pale Mauve
+        hex: "#E0B0FF"
+
+      - number: 18
+        color: Maroon
+        hex: "#800000"
+
+      - number: 19
+        color: Deep Purple
+        hex: "#551A8B"
+
+      - number: 20
+        color: Slate Gray
+        hex: "#708090"
+
+      - number: 21
+        color: Blue
+        hex: "#0000FF"
+
+      - number: 22
+        color: Blue
+        hex: "#0000FF"
+
+      - number: 23
+        color: Sea Green
+        hex: "#2E8B57"
+
+      - number: 24
+        color: Dull Brown
+        hex: "#8B4513"
+
+      - number: 25
+        color: Yellow
+        hex: "#FFFF00"
+
+      - number: 26
+        color: Black
+        hex: "#000000"
+
+      - number: 27
+        color: Red
+        hex: "#FF0000"
+
+      - number: 28
+        color: Dark Rose Red
+        hex: "#B22222"
+
+      - number: 29
+        color: Buff, flecked Silver-white
+        hex: "#F0DC82"
+        effect:
+          type: flecked
+          color: Silver-white
+          hex: "#F0F0F0"
+
+      - number: 30
+        color: Gold-yellow
+        hex: "#DAA520"
+
+      - number: 31
+        color: Vermilion
+        hex: "#FF4D00"
+
+      - number: 32
+        color: Black
+        hex: "#000000"
