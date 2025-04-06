@@ -52,8 +52,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         (-2.0 * spacing_factor, 3.0 * spacing_factor + vertical_shift),
         # 8: Yesod (Bottom center) - adjusted to make Tiphareth-Yesod distance equal to Tiphareth-Da'ath distance
         (0 * spacing_factor, 1.75 * spacing_factor + vertical_shift),
-        # 9: Malkuth (Bottom) - slightly raised from previous position
-        (0 * spacing_factor, -1.0 * spacing_factor + vertical_shift)
+        # 9: Malkuth (Bottom) - raised further up from previous position
+        (0 * spacing_factor, -0.7 * spacing_factor + vertical_shift)
     ]
 
     # Coordinate for the hidden Sephirah, Da'ath - positioned at the geometric center of Chokmah, Binah, Chesed, and Geburah
@@ -122,8 +122,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # Set plot limits with some padding to accommodate the larger spheres and adjusted spacing
     # Expanded to accommodate wider sephirot positioning
     ax.set_xlim(-4.0, 4.0)
-    # Extended lower limit to accommodate Malkuth's new position
-    ax.set_ylim(-4.0, 14.5)
+    # Adjusted to center the diagram vertically
+    ax.set_ylim(-3.5, 15.0)
 
     # Ensure aspect ratio is equal so circles are not distorted
     ax.set_aspect('equal', adjustable='box')
