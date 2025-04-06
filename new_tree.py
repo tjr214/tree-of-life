@@ -254,7 +254,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
 
     # Add astrological and elemental symbols that correspond to each path (in order of paths_from_image)
     path_symbols = [
-        '🜁',  # Path 11: Air - Kether to Chokmah
+        # Path 11: Air - Kether to Chokmah (triangle with horizontal line)
+        '△̵',
         '☿',  # Path 12: Mercury - Kether to Binah
         '☽',  # Path 13: Moon - Kether to Tiphereth
         '♀',  # Path 14: Venus - Chokmah to Binah
@@ -266,7 +267,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         '♍',  # Path 20: Virgo - Chesed to Tiphereth
         '♃',  # Path 21: Jupiter - Chesed to Netzach
         '♎',  # Path 22: Libra - Geburah to Tiphereth
-        '🜄',  # Path 23: Water - Geburah to Hod
+        '▽',  # Path 23: Water - Geburah to Hod (downward-pointing triangle)
         '♏',  # Path 24: Scorpio - Tiphereth to Netzach
         '♐',  # Path 25: Sagittarius - Tiphereth to Yesod
         '♑',  # Path 26: Capricorn - Tiphereth to Hod
@@ -274,7 +275,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         '♈',  # Path 28: Aries - Netzach to Yesod
         '♓',  # Path 29: Pisces - Netzach to Malkuth
         '☉',  # Path 30: Sun - Hod to Yesod
-        '🜂',  # Path 31: Fire/Spirit - Hod to Malkuth
+        '△',  # Path 31: Fire - Hod to Malkuth (upward-pointing triangle)
         '♄'   # Path 32: Saturn/Earth - Yesod to Malkuth
     ]
 
