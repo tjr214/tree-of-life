@@ -85,16 +85,16 @@
 ## The Prince Scale Sephiroth
 
 - 1, Kether = White Brilliance
-- 2, Chokmah =
-- 3, Binah =
-- Daath =
-- 4, Chesed =
-- 5, Geburah =
-- 6, Tiphareth =
-- 7, Netzach =
-- 8, Hod =
-- 9, Yesod =
-- 10, Malkuth =
+- 2, Chokmah = Blue Pearl Gray (like mother-of-pearl)
+- 3, Binah = Dark Brown
+- Daath = Pure Violet
+- 4, Chesed = Deep Purple
+- 5, Geburah = Bright Scarlet
+- 6, Tiphareth = Rich Salmon
+- 7, Netzach = Bright Yellow-green
+- 8, Hod = Red-Russet
+- 9, Yesod = Very Dark Purple
+- 10, Malkuth = Green, flecked with Gold
 
 ## The Prince Scale Paths
 
