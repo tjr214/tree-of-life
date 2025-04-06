@@ -153,6 +153,18 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                                 zorder=zorder_circles)  # Ensure circles are on top
         ax.add_patch(circle)
 
+    # Add the traditional numbering (1-10) to each Sephirah
+    for i, (x, y) in enumerate(sephirot_coords):
+        # Traditional numbering starts at 1, so add 1 to the 0-based index
+        number = i + 1
+        ax.text(x, y, str(number),
+                fontsize=12,
+                fontweight='bold',
+                ha='center',
+                va='center',
+                color='black',
+                zorder=zorder_circles + 1)  # Make text appear above circles
+
     # 6. Draw Da'ath (Dotted Circle)
     daath_circle = patches.Circle(daath_coord, radius=circle_radius,
                                   facecolor='none',  # No fill
@@ -175,7 +187,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
 # --- Execute the function ---
 if __name__ == "__main__":
     # To display the plot:
-    draw_tree_of_life()
+    # draw_tree_of_life()
 
     # To save the plot to a file (e.g., tree_of_life.png):
-    # draw_tree_of_life(output_filename="tree_of_life.png")
+    draw_tree_of_life(output_filename="tree_of_life.png")
