@@ -191,7 +191,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 ax.add_patch(glow)
 
             # Add rays of light emanating from Kether (shorter rays)
-            num_rays = 12
+            num_rays = 12  # 12 rays of the crown...
             ray_length = circle_radius * 1.4  # Reduced from 2.2 to make rays shorter
             for angle in np.linspace(0, 2*np.pi, num_rays, endpoint=False):
                 dx = ray_length * np.cos(angle)
