@@ -579,8 +579,8 @@ class TreeOfLife:
                 self._add_kether_radiant_effect(ax, x, y)
 
         # Draw Da'ath (the hidden Sephirah) if it should be included
-        # (either showing all sephiroth or if it's connected to the focused sephirah)
-        if focus_sephirah is None or 0 in sephiroth_to_draw:
+        # (either showing all sephiroth or if Kether or Tiphareth is focused)
+        if focus_sephirah is None or focus_sephirah == 1 or focus_sephirah == 6:
             x, y = self.daath.coord
             color = self.daath.color
 
@@ -601,7 +601,7 @@ class TreeOfLife:
         if show_title:
             if focus_sephirah is not None:
                 sephirah_name = self.sephiroth[focus_sephirah].name
-                title = f"Tree of Life - Focus on {sephirah_name} (Sephirah {focus_sephirah})"
+                title = f"Focus on {sephirah_name} (Sephirah {focus_sephirah})"
                 fig.suptitle(title, fontsize=14)
             else:
                 pass
