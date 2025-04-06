@@ -68,8 +68,8 @@ def draw_tree_of_life(output_filename: str = None) -> None:
     # We'll use this refined path list based on visual evidence in standard diagrams
     paths_from_image: List[PathIndices] = [
         # Paths from Kether (0)
-        (0, 1),  # Kether to Chokmah (Path 11, א, The Fool, Air)
-        (0, 2),  # Kether to Binah (Path 12, ב, The Magus, Mercury)
+        (0, 1),  # Kether to Chokmah (Path 11, Diagonal, א, The Fool, Air)
+        (0, 2),  # Kether to Binah (Path 12, Diagonal, ב, The Magus, Mercury)
         (0, 5),  # Kether to Tiphereth (Path 13, Middle Pillar, ג, The Priestess, Moon)
 
         # Paths from Chokmah (1)
