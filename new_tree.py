@@ -303,6 +303,13 @@ def draw_tree_of_life(output_filename: str = None) -> None:
         # Special adjustments for specific paths
         special_offset_y = 0
 
+        # Path 13 (Kether to Tiphereth) - The 2nd path in our list (0-indexed)
+        # This is the connection between sephirot indices 0 and 5
+        if (i == 0 and j == 5) or (i == 5 and j == 0):
+            # Move the label for path 13 higher above path 14
+            # Increased offset to position label higher above path 14
+            special_offset_y = 1.6 * spacing_factor
+
         # Path 25 (Tiphereth to Yesod) - The 14th path in our list (0-indexed)
         # This is the connection between sephirot indices 5 and 8
         if (i == 5 and j == 8) or (i == 8 and j == 5):
