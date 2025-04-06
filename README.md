@@ -12,6 +12,16 @@ This library provides a flexible, object-oriented implementation for rendering t
 - Focusing on individual Sephiroth with connected paths
 - Special color effects (flecked, rayed, tinged)
 - High-quality output for both display and saving to file
+- Modular architecture with separation of concerns
+
+## Project Structure
+
+The codebase is organized into modules with clear separation of concerns:
+
+- `TreeOfLife.py`: The main class that handles the tree structure and rendering functionality
+- `color_utils.py`: Contains color-related functionality including schemes, effects, and parsing
+
+This modular architecture makes the code more maintainable and allows for easier extension.
 
 ## Installation
 
@@ -20,7 +30,7 @@ This library provides a flexible, object-oriented implementation for rendering t
 - Python 3.6+
 - matplotlib
 - numpy
-- networkx
+- PyYAML
 - Pillow
 
 Install the required packages:
@@ -34,7 +44,8 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from TreeOfLife import TreeOfLife, ColorScheme
+from TreeOfLife import TreeOfLife
+from color_utils import ColorScheme
 
 # Create a Tree of Life instance with default settings
 tree = TreeOfLife()
@@ -103,7 +114,15 @@ python demonstration.py
 
 This will create a range of example files in the `output` directory.
 
-## Color Schemes
+## Color System
+
+The color system is now implemented in a separate module (`color_utils.py`), making it easy to:
+
+- Add new color schemes
+- Implement custom color effects
+- Modify color parsing logic without affecting the main Tree of Life structure
+
+### Color Schemes
 
 The TreeOfLife class supports the following color schemes:
 
@@ -113,9 +132,9 @@ The TreeOfLife class supports the following color schemes:
 - **Prince Scale**: Corresponds to the elemental/planetary associations in Yetzirah (World of Formation)
 - **Princess Scale**: Corresponds to the elemental/planetary associations in Assiah (World of Action/Material)
 
-Color definitions are loaded from `color_scales.md`.
+Color definitions are loaded from `color_scales.yaml`, which allows for easy customization of colors without modifying the code.
 
-## Special Color Effects
+### Special Color Effects
 
 The implementation supports special color effects found in the traditional color scales:
 
@@ -123,10 +142,18 @@ The implementation supports special color effects found in the traditional color
 - **Rayed**: Colors with rays of another color emanating from it
 - **Tinged**: Colors slightly modified with a tinge of another color
 
+## Extending the Codebase
+
+The modular architecture makes it easy to extend the functionality:
+
+1. To add new color schemes: Update the `ColorScheme` enum and corresponding entries in `color_scales.yaml`
+2. To add new color effects: Implement the effect in the `apply_color_effect` and `apply_path_effect` functions
+3. To modify the Tree structure: Update the appropriate methods in the `TreeOfLife` class
+
 ## License
 
 This code is available for academic and personal use.
 
 ## Acknowledgments
 
-This implementation is a refactoring of the original `new_tree.py` script, enhancing it with object-oriented design, greater flexibility, and richer visualization options.
+This implementation is a refactoring of the original `new_tree.py` script, enhancing it with object-oriented design, greater flexibility, richer visualization options, and a modular architecture.
