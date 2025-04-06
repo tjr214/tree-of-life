@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import numpy as np  # Required for the glow effect
 from typing import List, Tuple, Dict
 
 # Define type aliases for clarity
@@ -164,12 +165,52 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 zorder=zorder_paths_inner)
 
     # 5. Draw the Sephirot (Circles)
-    for (x, y) in sephirot_coords:
-        circle = patches.Circle((x, y), radius=circle_radius,
-                                facecolor=circle_face_color,
-                                edgecolor=circle_edge_color,
-                                linewidth=circle_line_width,
-                                zorder=zorder_circles)  # Ensure circles are on top
+    for i, (x, y) in enumerate(sephirot_coords):
+        # Special effect for Kether (index 0)
+        if i == 0:  # Kether
+            # Create a radiant/emanating effect for Kether
+            # First draw a series of concentric circles with decreasing opacity
+            num_rings = 12
+            max_radius = circle_radius * 1.25  # Reduced from 1.8 to make halo smaller
+            base_alpha = 0.8  # Increased slightly for better visibility with smaller halo
+
+            # Create white glow effect with multiple circles
+            for r in np.linspace(max_radius, circle_radius, num_rings):
+                alpha = base_alpha * \
+                    ((r - circle_radius) / (max_radius - circle_radius))
+                glow = patches.Circle((x, y), radius=r,
+                                      facecolor='#FFFFFF',  # Pure white color
+                                      edgecolor='none',
+                                      alpha=alpha,
+                                      zorder=zorder_circles - 1)  # Below the main circle
+                ax.add_patch(glow)
+
+            # Add rays of light emanating from Kether (shorter rays)
+            num_rays = 12
+            ray_length = circle_radius * 1.4  # Reduced from 2.2 to make rays shorter
+            for angle in np.linspace(0, 2*np.pi, num_rays, endpoint=False):
+                dx = ray_length * np.cos(angle)
+                dy = ray_length * np.sin(angle)
+                # Draw a line from just outside the circle to the ray endpoint
+                ax.plot([x + np.cos(angle)*circle_radius*1.05, x + dx],  # Start closer to the circle
+                        [y + np.sin(angle)*circle_radius*1.05, y + dy],
+                        color='#FFFFFF',     # Pure white
+                        alpha=0.7,           # Slightly more opaque for better visibility
+                        linewidth=1.2,       # Slightly thinner lines
+                        zorder=zorder_circles - 1)  # Below the main circle
+
+            # Now draw the main Kether circle with a slightly brighter color
+            circle = patches.Circle((x, y), radius=circle_radius,
+                                    facecolor='#FFFFFF',  # Pure white for Kether
+                                    edgecolor=circle_edge_color,
+                                    linewidth=circle_line_width,
+                                    zorder=zorder_circles)
+        else:  # All other Sephirot
+            circle = patches.Circle((x, y), radius=circle_radius,
+                                    facecolor=circle_face_color,
+                                    edgecolor=circle_edge_color,
+                                    linewidth=circle_line_width,
+                                    zorder=zorder_circles)  # Ensure circles are on top
         ax.add_patch(circle)
 
     # Add the traditional numbering (1-10) to each Sephirah
