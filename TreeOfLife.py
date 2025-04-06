@@ -590,18 +590,6 @@ class TreeOfLife:
             )
             ax.add_patch(circle)
 
-            # Add the name "Da'ath" below the circle
-            ax.text(
-                x, y - self.circle_radius - 0.15,
-                "Da'ath",
-                color='black',
-                fontsize=11 * self.sphere_scale_factor,
-                ha='center',
-                va='top',
-                fontstyle='italic',
-                zorder=zorder_circles + 1
-            )
-
         # Add title if focusing on a specific sephirah
         if focus_sephirah is not None:
             sephirah_name = self.sephiroth[focus_sephirah].name
