@@ -57,28 +57,28 @@
 
 ## The Queen Scale Paths
 
-- 11 =
-- 12 =
-- 13 =
-- 14 =
-- 15 =
-- 16 =
-- 17 =
-- 18 =
-- 19 =
-- 20 =
-- 21 =
-- 22 =
-- 23 =
-- 24 =
-- 25 =
-- 26 =
-- 27 =
-- 28 =
-- 29 =
-- 30 =
-- 31 =
-- 32 =
+- 11 = Sky Blue
+- 12 = Light Purple
+- 13 = Silver
+- 14 = Sky Blue
+- 15 = Sky Blue
+- 16 = Deep Indigo
+- 17 = Pale Mauve
+- 18 = Maroon
+- 19 = Deep Purple
+- 20 = Slate Gray
+- 21 = Blue
+- 22 = Blue
+- 23 = Sea Green
+- 24 = Dull Brown
+- 25 = Yellow
+- 26 = Black
+- 27 = Red
+- 28 = Dark Rose Red
+- 29 = Buff, flecked Silver-white
+- 30 = Gold-yellow
+- 31 = Vermilion
+- 32 = Black
 
 # Prince Scale
 
