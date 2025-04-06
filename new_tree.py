@@ -203,9 +203,7 @@ def draw_tree_of_life(output_filename: str = None) -> None:
                 ha='center',
                 va='center',
                 color='black',
-                # More prominent white background to ensure visibility on the path
-                bbox=dict(facecolor='white', alpha=0.85,
-                          edgecolor='black', linewidth=0.5, boxstyle='round,pad=0.4'),
+                # No box around the path numbers
                 zorder=zorder_path_numbers)  # Make text appear above paths
 
     # 5. Draw the Sephirot (Circles)
