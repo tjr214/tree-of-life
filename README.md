@@ -45,8 +45,7 @@ pip install -r requirements.txt
 ### Basic Usage
 
 ```python
-from TreeOfLife import TreeOfLife
-from color_utils import ColorScheme
+from tol import TreeOfLife, ColorScheme
 
 # Create a Tree of Life instance with default settings
 tree = TreeOfLife()
@@ -118,7 +117,6 @@ The `show_title` parameter (default is `False`) controls whether titles are disp
 
 This repository includes two example scripts:
 
-- `example_usage.py`: Basic examples of using the TreeOfLife class
 - `demonstration.py`: Comprehensive demonstration of all features
 
 Run the demonstration script to generate examples of all supported features:
