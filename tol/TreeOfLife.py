@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path as FilePath
 
 # Import color-related functionality from color_utils
-from color_utils import (
+from .color_utils import (
     ColorScheme, ColorEffect, ColorParser,
     DEFAULT_SEPHIROTH_COLORS, DEFAULT_PATH_COLORS,
     apply_color_effect, apply_path_effect, blend_colors,

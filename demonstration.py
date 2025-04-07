@@ -11,7 +11,7 @@ This script demonstrates all features of the TreeOfLife class, including:
 
 import os
 import matplotlib.pyplot as plt
-from TreeOfLife import TreeOfLife, ColorScheme
+from tol import TreeOfLife, ColorScheme
 
 
 def main():
