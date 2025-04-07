@@ -131,8 +131,8 @@ class TreeOfLife:
 
         # Planetary symbol mapping for Sephiroth
         self._planet_map = {
-            1: "♇",  # Pluto (Kether)
-            2: "⛢",  # Uranus (Chokmah)
+            1: "♇",  # Pluto (Kether) - corrected symbol
+            2: "♅",  # Uranus (Chokmah) - corrected symbol
             3: "♄",  # Saturn (Binah)
             0: "♆",  # Neptune (Da'ath)
             4: "♃",  # Jupiter (Chesed)
