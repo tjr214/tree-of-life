@@ -68,7 +68,7 @@ git clone https://github.com/tjr214/tol-gen.git
 cd tol-gen
 
 # Install in development mode
-pip install -e .
+# pip install -e .
 ```
 
 ## Usage
