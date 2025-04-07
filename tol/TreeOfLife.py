@@ -872,8 +872,13 @@ class TreeOfLife:
                     display_text = ""  # Default to blank if mode is invalid
                     fontsize = 12 * self.sphere_scale_factor
 
-                # Use contrasting text color for better visibility
-                text_color = get_contrasting_text_color(color)
+                # Determine text color based on whether we're in focus mode
+                if focus_sephirah is not None:
+                    # In focus mode, always use the gray text color to match other non-focused spheres
+                    text_color = '#AAAAAA'
+                else:
+                    # In normal mode, use contrasting color based on background
+                    text_color = get_contrasting_text_color(color)
 
                 ax.text(
                     x, y,
