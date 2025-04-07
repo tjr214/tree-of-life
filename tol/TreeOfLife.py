@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from typing import Tuple, Dict, Optional, NamedTuple, Any
+from typing import Tuple, Dict, Optional, NamedTuple, Any, Set
 import numpy as np
 from pathlib import Path as FilePath
+from enum import Enum
 
 # Import color-related functionality from color_utils
 from .color_utils import (
@@ -95,6 +96,95 @@ class TreeOfLife:
         # Apply the initial color schemes
         self.set_sephiroth_color_scheme(sephiroth_color_scheme)
         self.set_path_color_scheme(path_color_scheme)
+
+        # Initialize text display settings
+        self.show_sephiroth_text: bool = True
+        self.show_path_text: bool = True
+        self.sephiroth_text_mode: SephirothTextMode = SephirothTextMode.NUMBER
+
+        # Initialize text mode mappings
+        self._init_text_mappings()
+
+    class SephirothTextMode(Enum):
+        """Enum for available Sephiroth text display modes."""
+        NUMBER = "number"
+        TRIGRAM = "trigram"
+        HEBREW = "hebrew"
+        PLANET = "planet"
+
+    def _init_text_mappings(self) -> None:
+        """Initialize mappings for different text display modes."""
+        # I Ching Trigram mapping for Sephiroth
+        self._trigram_map = {
+            1: "☯",  # The Supreme Ultimate (Kether)
+            2: "⚊",  # Solid Line (Chokmah)
+            3: "⚋",  # Broken Line (Binah)
+            0: "☰",  # Heaven (Da'ath)
+            4: "☱",  # Lake (Chesed)
+            5: "☳",  # Thunder (Geburah)
+            6: "☲",  # Fire/Sun (Tiphereth)
+            7: "☶",  # Mountain (Netzach)
+            8: "☴",  # Wind (Hod)
+            9: "☵",  # Water/Moon (Yesod)
+            10: "☷"  # Earth (Malkuth)
+        }
+
+        # Planetary symbol mapping for Sephiroth
+        self._planet_map = {
+            1: "♇",  # Pluto (Kether)
+            2: "⛢",  # Uranus (Chokmah)
+            3: "♄",  # Saturn (Binah)
+            0: "♆",  # Neptune (Da'ath)
+            4: "♃",  # Jupiter (Chesed)
+            5: "♂",  # Mars (Geburah)
+            6: "☉",  # Sun (Tiphereth)
+            7: "♀",  # Venus (Netzach)
+            8: "☿",  # Mercury (Hod)
+            9: "☽",  # Moon (Yesod)
+            10: "⊕"  # Earth (Malkuth)
+        }
+
+        # Hebrew name mapping for Sephiroth
+        self._hebrew_map = {
+            1: "כתר",       # Kether
+            2: "חכמה",      # Chokmah
+            3: "בינה",      # Binah
+            0: "דעת",       # Da'ath
+            4: "חסד",       # Chesed
+            5: "גבורה",     # Geburah
+            6: "תפארת",     # Tiphereth
+            7: "נצח",       # Netzach
+            8: "הוד",       # Hod
+            9: "יסוד",      # Yesod
+            10: "מלכות"     # Malkuth
+        }
+
+    def set_sephiroth_text_visibility(self, visible: bool) -> None:
+        """
+        Set whether Sephiroth text should be displayed.
+
+        Args:
+            visible: Whether to show text on Sephiroth
+        """
+        self.show_sephiroth_text = visible
+
+    def set_path_text_visibility(self, visible: bool) -> None:
+        """
+        Set whether Path text should be displayed.
+
+        Args:
+            visible: Whether to show text on Paths
+        """
+        self.show_path_text = visible
+
+    def set_sephiroth_text_mode(self, mode: 'SephirothTextMode') -> None:
+        """
+        Set the display mode for Sephiroth text.
+
+        Args:
+            mode: The text display mode (NUMBER, TRIGRAM, HEBREW, PLANET)
+        """
+        self.sephiroth_text_mode = mode
 
     def _load_color_data(self) -> Dict[str, Dict[str, Dict[int, Dict[str, Any]]]]:
         """Load color data from the color scales file."""
@@ -688,17 +778,36 @@ class TreeOfLife:
                     sephirah.color_effect, self.circle_radius
                 )
 
-            # Add sephirah number in the center
-            ax.text(
-                x, y,
-                str(seph_num),
-                color=text_color,
-                fontsize=12 * self.sphere_scale_factor,
-                ha='center',
-                va='center',
-                fontweight='bold',
-                zorder=zorder_circles + 1
-            )
+            # Add sephirah text in the center (if enabled)
+            if self.show_sephiroth_text:
+                # Get text to display based on current mode
+                if self.sephiroth_text_mode == self.SephirothTextMode.NUMBER:
+                    display_text = str(seph_num)
+                    fontsize = 12 * self.sphere_scale_factor
+                elif self.sephiroth_text_mode == self.SephirothTextMode.TRIGRAM:
+                    display_text = self._trigram_map[seph_num]
+                    fontsize = 14 * self.sphere_scale_factor  # Slightly larger for symbols
+                elif self.sephiroth_text_mode == self.SephirothTextMode.HEBREW:
+                    display_text = self._hebrew_map[seph_num]
+                    fontsize = 10 * self.sphere_scale_factor  # Slightly smaller for Hebrew
+                elif self.sephiroth_text_mode == self.SephirothTextMode.PLANET:
+                    display_text = self._planet_map[seph_num]
+                    fontsize = 14 * self.sphere_scale_factor  # Slightly larger for symbols
+                else:
+                    # Default to number if mode is invalid
+                    display_text = str(seph_num)
+                    fontsize = 12 * self.sphere_scale_factor
+
+                ax.text(
+                    x, y,
+                    display_text,
+                    color=text_color,
+                    fontsize=fontsize,
+                    ha='center',
+                    va='center',
+                    fontweight='bold',
+                    zorder=zorder_circles + 1
+                )
 
             # Special case for Kether (1) - Add radiant effect
             if seph_num == 1:
@@ -728,6 +837,39 @@ class TreeOfLife:
                 zorder=zorder_daath
             )
             ax.add_patch(circle)
+
+            # Add Da'ath text if enabled
+            if self.show_sephiroth_text:
+                # Get text to display based on current mode
+                if self.sephiroth_text_mode == self.SephirothTextMode.NUMBER:
+                    display_text = "0"  # Da'ath is typically number 0
+                    fontsize = 12 * self.sphere_scale_factor
+                elif self.sephiroth_text_mode == self.SephirothTextMode.TRIGRAM:
+                    display_text = self._trigram_map[0]  # Use Da'ath trigram
+                    fontsize = 14 * self.sphere_scale_factor
+                elif self.sephiroth_text_mode == self.SephirothTextMode.HEBREW:
+                    display_text = self._hebrew_map[0]  # Use Hebrew for Da'ath
+                    fontsize = 10 * self.sphere_scale_factor
+                elif self.sephiroth_text_mode == self.SephirothTextMode.PLANET:
+                    # Use planet symbol for Da'ath
+                    display_text = self._planet_map[0]
+                    fontsize = 14 * self.sphere_scale_factor
+                else:
+                    display_text = "0"  # Default to 0 if mode is invalid
+                    fontsize = 12 * self.sphere_scale_factor
+
+                # Use gray text for Da'ath
+                ax.text(
+                    x, y,
+                    display_text,
+                    color='#555555',
+                    fontsize=fontsize,
+                    ha='center',
+                    va='center',
+                    fontweight='bold',
+                    alpha=0.8,
+                    zorder=zorder_daath + 1
+                )
 
         # Add title if enabled
         if show_title:
@@ -806,6 +948,10 @@ class TreeOfLife:
             x2, y2: Coordinates of the second endpoint
             zorder: Z-order for drawing
         """
+        # Only proceed if path text should be shown
+        if not self.show_path_text:
+            return
+
         # Calculate midpoint
         mid_x = (x1 + x2) / 2
         mid_y = (y1 + y2) / 2

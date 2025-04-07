@@ -21,19 +21,19 @@ Enhance the TreeOfLife class to support:
 
 ### 2. Implement Text Visibility Toggles
 
-- [ ] Add class attributes to track text display preferences:
-  - [ ] `self.show_sephiroth_text: bool = True`
-  - [ ] `self.show_path_text: bool = True`
-- [ ] Add setter methods:
-  - [ ] `set_sephiroth_text_visibility(self, visible: bool)`
-  - [ ] `set_path_text_visibility(self, visible: bool)`
-- [ ] Update render method:
-  - [ ] Add conditional check before rendering Sephiroth text
-  - [ ] Add conditional check before rendering Path text
+- [x] Add class attributes to track text display preferences:
+  - [x] `self.show_sephiroth_text: bool = True`
+  - [x] `self.show_path_text: bool = True`
+- [x] Add setter methods:
+  - [x] `set_sephiroth_text_visibility(self, visible: bool)`
+  - [x] `set_path_text_visibility(self, visible: bool)`
+- [x] Update render method:
+  - [x] Add conditional check before rendering Sephiroth text
+  - [x] Add conditional check before rendering Path text
 
 ### 3. Implement Sephiroth Text Display Modes
 
-- [ ] Create enum for Sephiroth text display modes:
+- [x] Create enum for Sephiroth text display modes:
   ```python
   class SephirothTextMode(Enum):
       NUMBER = "number"
@@ -41,79 +41,34 @@ Enhance the TreeOfLife class to support:
       HEBREW = "hebrew"
       PLANET = "planet"
   ```
-- [ ] Add class attribute to track current text mode:
-  - [ ] `self.sephiroth_text_mode: SephirothTextMode = SephirothTextMode.NUMBER`
-- [ ] Add setter method:
-  - [ ] `set_sephiroth_text_mode(self, mode: SephirothTextMode)`
-- [ ] Create mappings for different text modes:
-  - [ ] I Ching Trigram mapping:
-    ```python
-    self._trigram_map = {
-        1: "☯",  # The Supreme Ultimate (Kether)
-        2: "⚊",  # Solid Line (Chokmah)
-        3: "⚋",  # Broken Line (Binah)
-        0: "☰",  # Heaven (Da'ath)
-        4: "☱",  # Lake (Chesed)
-        5: "☳",  # Thunder (Geburah)
-        6: "☲",  # Fire/Sun (Tiphereth)
-        7: "☶",  # Mountain (Netzach)
-        8: "☴",  # Wind (Hod)
-        9: "☵",  # Water/Moon (Yesod)
-        10: "☷"  # Earth (Malkuth)
-    }
-    ```
-  - [ ] Planetary symbol mapping:
-    ```python
-    self._planet_map = {
-        1: "♇",  # Pluto (Kether)
-        2: "⛢",  # Uranus (Chokmah)
-        3: "♄",  # Saturn (Binah)
-        0: "♆",  # Neptune (Da'ath)
-        4: "♃",  # Jupiter (Chesed)
-        5: "♂",  # Mars (Geburah)
-        6: "☉",  # Sun (Tiphereth)
-        7: "♀",  # Venus (Netzach)
-        8: "☿",  # Mercury (Hod)
-        9: "☽",  # Moon (Yesod)
-        10: "⊕"  # Earth (Malkuth)
-    }
-    ```
-  - [ ] Hebrew name mapping:
-    ```python
-    self._hebrew_map = {
-        1: "כתר",       # Kether
-        2: "חכמה",      # Chokmah
-        3: "בינה",      # Binah
-        0: "דעת",       # Da'ath
-        4: "חסד",       # Chesed
-        5: "גבורה",     # Geburah
-        6: "תפארת",     # Tiphereth
-        7: "נצח",       # Netzach
-        8: "הוד",       # Hod
-        9: "יסוד",      # Yesod
-        10: "מלכות"     # Malkuth
-    }
-    ```
+- [x] Add class attribute to track current text mode:
+  - [x] `self.sephiroth_text_mode: SephirothTextMode = SephirothTextMode.NUMBER`
+- [x] Add setter method:
+  - [x] `set_sephiroth_text_mode(self, mode: SephirothTextMode)`
+- [x] Create mappings for different text modes:
+  - [x] I Ching Trigram mapping
+  - [x] Planetary symbol mapping
+  - [x] Hebrew name mapping
 
 ### 4. Modify Text Rendering Logic
 
-- [ ] Update the text rendering code in the render method:
-  - [ ] For Sephiroth numbers (around line 679):
-    - [ ] Check `self.show_sephiroth_text` before rendering text
-    - [ ] Switch text content based on `self.sephiroth_text_mode`
-    - [ ] Maintain dynamic text color based on background
-  - [ ] For Path numbers (in `_add_path_number`, around line 798):
-    - [ ] Check `self.show_path_text` before rendering path text
-- [ ] Ensure proper text sizing and positioning:
-  - [ ] Adjust font size for Hebrew text (potentially smaller)
-  - [ ] Adjust font size for trigram and planetary symbols
-  - [ ] Ensure proper right-to-left rendering for Hebrew text
+- [x] Update the text rendering code in the render method:
+  - [x] For Sephiroth numbers (around line 679):
+    - [x] Check `self.show_sephiroth_text` before rendering text
+    - [x] Switch text content based on `self.sephiroth_text_mode`
+    - [x] Maintain dynamic text color based on background
+  - [x] For Path numbers (in `_add_path_number`, around line 798):
+    - [x] Check `self.show_path_text` before rendering path text
+- [x] Ensure proper text sizing and positioning:
+  - [x] Adjust font size for Hebrew text (potentially smaller)
+  - [x] Adjust font size for trigram and planetary symbols
+  - [x] Ensure proper right-to-left rendering for Hebrew text
 
 ### 5. Update Da'ath Rendering
 
-- [ ] Update the Da'ath hidden Sephirah rendering to respect the same text settings:
-  - [ ] Apply text visibility toggle
-  - [ ] Apply correct text display mode
+- [x] Update the Da'ath hidden Sephirah rendering to respect the same text settings:
+  - [x] Apply text visibility toggle
+  - [x] Apply correct text display mode
 
 ### 6. Testing
 
