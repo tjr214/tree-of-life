@@ -7,6 +7,7 @@ This script demonstrates all features of the TreeOfLife class, including:
 1. All color schemes
 2. Focused rendering for each Sephirah
 3. Special color effects
+4. Text rendering options and visibility toggles
 """
 
 import os
@@ -132,6 +133,83 @@ def main():
             display=False,
             save_to_file=os.path.join(
                 output_dir, f"special_effects_{scheme.value}.png")
+        )
+
+    # Part 5: Text Rendering Options
+    print("\nPart 5: Demonstrating text rendering options...")
+
+    # Use King Scale for this part
+    tree.set_sephiroth_color_scheme(ColorScheme.KING_SCALE)
+    tree.set_path_color_scheme(ColorScheme.KING_SCALE)
+
+    # 5.1: Text Display Modes
+    print("  Demonstrating different Sephiroth text display modes...")
+
+    # Demonstrate each text mode
+    display_modes = [
+        (tree.SephirothTextMode.NUMBER, "numbers"),
+        (tree.SephirothTextMode.TRIGRAM, "trigrams"),
+        (tree.SephirothTextMode.HEBREW, "hebrew"),
+        (tree.SephirothTextMode.PLANET, "planets")
+    ]
+
+    for mode, name in display_modes:
+        print(f"    Rendering with {name} text mode...")
+        tree.set_sephiroth_text_mode(mode)
+        tree.render(
+            display=False,
+            save_to_file=os.path.join(output_dir, f"text_mode_{name}.png")
+        )
+
+    # 5.2: Text Visibility Options
+    print("  Demonstrating text visibility options...")
+
+    # Reset to number mode for visibility demos
+    tree.set_sephiroth_text_mode(tree.SephirothTextMode.NUMBER)
+
+    # No Sephiroth text
+    print("    Rendering with Sephiroth text hidden...")
+    tree.set_sephiroth_text_visibility(False)
+    tree.set_path_text_visibility(True)
+    tree.render(
+        display=False,
+        save_to_file=os.path.join(output_dir, "text_no_sephiroth.png")
+    )
+
+    # No Path text
+    print("    Rendering with Path text hidden...")
+    tree.set_sephiroth_text_visibility(True)
+    tree.set_path_text_visibility(False)
+    tree.render(
+        display=False,
+        save_to_file=os.path.join(output_dir, "text_no_paths.png")
+    )
+
+    # No text at all
+    print("    Rendering with all text hidden...")
+    tree.set_sephiroth_text_visibility(False)
+    tree.set_path_text_visibility(False)
+    tree.render(
+        display=False,
+        save_to_file=os.path.join(output_dir, "text_none.png")
+    )
+
+    # Reset text visibility for future use
+    tree.set_sephiroth_text_visibility(True)
+    tree.set_path_text_visibility(True)
+
+    # 5.3: Text Modes in Focused View
+    print("  Demonstrating text modes in focused view...")
+
+    # Focus on Tiphereth with each text mode
+    for mode, name in display_modes:
+        print(f"    Rendering focused view with {name} text mode...")
+        tree.set_sephiroth_text_mode(mode)
+        tree.render(
+            focus_sephirah=6,  # Tiphereth
+            display=False,
+            save_to_file=os.path.join(output_dir, f"focus_text_{name}.png"),
+            show_title=True
         )
 
     print("\nAll demonstrations complete! Generated images saved to the 'output' directory.")

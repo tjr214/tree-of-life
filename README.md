@@ -12,6 +12,8 @@ This library provides a flexible, object-oriented implementation for rendering t
 - Focusing on individual Sephiroth with connected paths
 - Special color effects (flecked, rayed, tinged)
 - Dynamic text coloring for optimal readability
+- Multiple text display modes (numbers, Hebrew, I Ching trigrams, planetary symbols)
+- Text visibility toggles for both Sephiroth and Paths
 - High-quality output for both display and saving to file
 - Modular architecture with separation of concerns
 
@@ -112,6 +114,49 @@ The `show_title` parameter (default is `False`) controls whether titles are disp
 - When `show_title=True` and a specific Sephirah is focused, the title will display "Tree of Life - Focus on [Sephirah Name] (Sephirah [Number])"
 - When `show_title=True` and no Sephirah is focused, no title will be displayed
 - When `show_title=False`, no title will be displayed in any case
+
+### Text Rendering Options
+
+The TreeOfLife class provides several options for customizing text rendering:
+
+#### Text Display Modes for Sephiroth
+
+You can switch between different display modes for Sephiroth text:
+
+```python
+# Display traditional numbers (1-10, default)
+tree.set_sephiroth_text_mode(tree.SephirothTextMode.NUMBER)
+
+# Display I Ching trigrams
+tree.set_sephiroth_text_mode(tree.SephirothTextMode.TRIGRAM)
+
+# Display Hebrew names of Sephiroth
+tree.set_sephiroth_text_mode(tree.SephirothTextMode.HEBREW)
+
+# Display planetary symbols
+tree.set_sephiroth_text_mode(tree.SephirothTextMode.PLANET)
+```
+
+#### Text Visibility Controls
+
+You can toggle text visibility for both Sephiroth and Paths:
+
+```python
+# Hide Sephiroth text (numbers/symbols)
+tree.set_sephiroth_text_visibility(False)
+
+# Hide Path text (numbers and astrological symbols)
+tree.set_path_text_visibility(False)
+
+# Show the diagram with no text
+tree.render()
+
+# Re-enable text
+tree.set_sephiroth_text_visibility(True)
+tree.set_path_text_visibility(True)
+```
+
+These settings work in both normal and focused views, giving you complete control over the visual presentation of your Tree of Life diagrams.
 
 ## Example Scripts
 
