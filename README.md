@@ -268,7 +268,7 @@ The modular architecture makes it easy to extend the functionality:
 
 ## License
 
-This code is available for academic and personal use.
+This code is available for academic and personal magickal use.
 
 ## Acknowledgments
 
