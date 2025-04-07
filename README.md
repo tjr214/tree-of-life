@@ -272,4 +272,4 @@ This code is available for academic and personal magickal use.
 
 ## Acknowledgments
 
-This implementation is a refactoring of the original `new_tree.py` script, enhancing it with object-oriented design, greater flexibility, richer visualization options, and a modular architecture.
+This implementation is a refactoring of the original `new_tree.py` script (also created by the author), enhancing it with object-oriented design, greater flexibility, richer visualization options, and a modular architecture.
