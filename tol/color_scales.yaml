@@ -24,7 +24,8 @@ scales:
       - number: 0 # Special case
         name: Daath
         color: Lavender
-        hex: "#E6E6FA"
+        # hex: "#E6E6FA"
+        hex: "#D3D3FF"
 
       - number: 4
         name: Chesed
@@ -49,7 +50,8 @@ scales:
       - number: 8
         name: Hod
         color: Lavender
-        hex: "#E6E6FA"
+        # hex: "#E6E6FA"
+        hex: "#D3D3FF"
 
       - number: 9
         name: Yesod
