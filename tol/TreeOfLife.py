@@ -828,14 +828,8 @@ class TreeOfLife:
                 # in the vertical pillar between Kether and Tiphereth
                 if focus_sephirah not in [1, 6]:  # If not Kether or Tiphereth
                     color = '#E0E0E0'  # Use a grayish color for Da'ath's background
-                    text_color = '#AAAAAA'  # Use the same gray text color as other grayed-out Sephiroth
-                else:
-                    # Use contrasting text color for better visibility when Da'ath is highlighted
-                    text_color = get_contrasting_text_color(color)
             else:
                 daath_border_color = circle_edge_color
-                # Use contrasting text color for normal mode
-                text_color = get_contrasting_text_color(color)
 
             # Da'ath is typically drawn with a dashed line
             circle = patches.Circle(
@@ -878,10 +872,13 @@ class TreeOfLife:
                     display_text = ""  # Default to blank if mode is invalid
                     fontsize = 12 * self.sphere_scale_factor
 
+                # Use contrasting text color for better visibility
+                text_color = get_contrasting_text_color(color)
+
                 ax.text(
                     x, y,
                     display_text,
-                    color=text_color,  # Now using the text_color set above
+                    color=text_color,
                     fontsize=fontsize,
                     ha='center',
                     va='center',
