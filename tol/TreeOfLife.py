@@ -146,17 +146,17 @@ class TreeOfLife:
 
         # Hebrew name mapping for Sephiroth
         self._hebrew_map = {
-            1: "כתר",       # Kether
-            2: "חכמה",      # Chokmah
-            3: "בינה",      # Binah
-            0: "דעת",       # Da'ath
-            4: "חסד",       # Chesed
-            5: "גבורה",     # Geburah
-            6: "תפארת",     # Tiphereth
-            7: "נצח",       # Netzach
-            8: "הוד",       # Hod
-            9: "יסוד",      # Yesod
-            10: "מלכות"     # Malkuth
+            1: "רתכ",       # Kether (reversed from כתר)
+            2: "המכח",      # Chokmah (reversed from חכמה)
+            3: "הניב",      # Binah (reversed from בינה)
+            0: "תעד",       # Da'ath (reversed from דעת)
+            4: "דסח",       # Chesed (reversed from חסד)
+            5: "הרובג",     # Geburah (reversed from גבורה)
+            6: "תראפת",     # Tiphereth (reversed from תפארת)
+            7: "חצנ",       # Netzach (reversed from נצח)
+            8: "דוה",       # Hod (reversed from הוד)
+            9: "דוסי",      # Yesod (reversed from יסוד)
+            10: "תוכלמ"     # Malkuth (reversed from מלכות)
         }
 
     def set_sephiroth_text_visibility(self, visible: bool) -> None:
