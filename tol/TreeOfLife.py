@@ -819,17 +819,29 @@ class TreeOfLife:
             x, y = self.daath.coord
             color = self.daath.color
 
-            # Use gray border when Kether or Tiphareth is focused
-            if focus_sephirah == 1 or focus_sephirah == 6:
+            # If focusing on a specific sephirah, gray out Da'ath unless it's directly connected
+            if focus_sephirah is not None:
+                # Use gray for Da'ath when in focus mode
                 daath_border_color = '#AAAAAA'
+
+                # Da'ath isn't directly connected to any nodes, but logically appears
+                # in the vertical pillar between Kether and Tiphereth
+                if focus_sephirah not in [1, 6]:  # If not Kether or Tiphereth
+                    color = '#E0E0E0'  # Use a grayish color for Da'ath's background
+                    text_color = '#AAAAAA'  # Use the same gray text color as other grayed-out Sephiroth
+                else:
+                    # Use contrasting text color for better visibility when Da'ath is highlighted
+                    text_color = get_contrasting_text_color(color)
             else:
                 daath_border_color = circle_edge_color
+                # Use contrasting text color for normal mode
+                text_color = get_contrasting_text_color(color)
 
             # Da'ath is typically drawn with a dashed line
             circle = patches.Circle(
                 (x, y),
                 self.circle_radius,
-                facecolor='none',  # Transparent fill
+                facecolor=color,  # Use actual color instead of transparent fill
                 edgecolor=daath_border_color,
                 linewidth=circle_line_width * 0.7,
                 linestyle='dashed',
@@ -837,6 +849,13 @@ class TreeOfLife:
                 zorder=zorder_daath
             )
             ax.add_patch(circle)
+
+            # Apply special color effects if any
+            if self.daath.color_effect and (focus_sephirah is None or focus_sephirah in [1, 6]):
+                apply_color_effect(
+                    ax, 'sephirah', 0, x, y, color,
+                    self.daath.color_effect, self.circle_radius
+                )
 
             # Add Da'ath text if enabled
             if self.show_sephiroth_text:
@@ -859,11 +878,10 @@ class TreeOfLife:
                     display_text = ""  # Default to blank if mode is invalid
                     fontsize = 12 * self.sphere_scale_factor
 
-                # Use gray text for Da'ath
                 ax.text(
                     x, y,
                     display_text,
-                    color='#555555',
+                    color=text_color,  # Now using the text_color set above
                     fontsize=fontsize,
                     ha='center',
                     va='center',
