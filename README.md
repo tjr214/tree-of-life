@@ -64,7 +64,7 @@ To install the package for development:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/tol-gen.git
+git clone https://github.com/tjr214/tol-gen.git
 cd tol-gen
 
 # Install in development mode
