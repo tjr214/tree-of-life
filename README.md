@@ -2,9 +2,11 @@
 
 A Python library for generating customizable diagrams of the Kabbalistic Tree of Life.
 
-![Tree of Life Example](output/full_tree_king.png)
+![Tree of Life Example](sample-output/full_tree_king.png)
 
 ## Overview
+
+The Tree of Life (עץ החיים) is a mystical symbol used in the Kabbalah tradition, representing the path to spiritual enlightenment and a map of the universe. It consists of 10 nodes called Sephiroth (singular: Sephirah) connected by 22 paths, each associated with various mystical and esoteric meanings.
 
 This library provides a flexible, object-oriented implementation for rendering the Kabbalistic Tree of Life. It supports:
 
@@ -17,12 +19,25 @@ This library provides a flexible, object-oriented implementation for rendering t
 - High-quality output for both display and saving to file
 - Modular architecture with separation of concerns
 
+### Visual Examples
+
+Here are some examples of the different visualization options:
+
+| Description            | Example                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| Full Tree (King Scale) | ![Full Tree King Scale](sample-output/full_tree_king.png) |
+| Focus on Tiphereth     | ![Tiphereth Focus](sample-output/focus_6_tiphereth.png)   |
+| Hebrew Text Mode       | ![Hebrew Text](sample-output/text_mode_hebrew.png)        |
+| Planetary Symbols      | ![Planetary Symbols](sample-output/text_mode_planets.png) |
+
 ## Project Structure
 
 The codebase is organized into modules with clear separation of concerns:
 
 - `TreeOfLife.py`: The main class that handles the tree structure and rendering functionality
 - `color_utils.py`: Contains color-related functionality including schemes, effects, and parsing
+- `color_scales.yaml`: Defines the color schemes and special effects for Sephiroth and Paths
+- `demonstration.py`: Example script demonstrating the library's capabilities
 
 This modular architecture makes the code more maintainable and allows for easier extension.
 
@@ -30,11 +45,12 @@ This modular architecture makes the code more maintainable and allows for easier
 
 ### Requirements
 
-- Python 3.6+
+- Python 3.11+
 - matplotlib
 - numpy
 - PyYAML
 - Pillow
+- rich
 
 Install the required packages:
 
@@ -42,7 +58,30 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
+### Local Installation
+
+To install the package for development:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/tol-gen.git
+cd tol-gen
+
+# Install in development mode
+pip install -e .
+```
+
 ## Usage
+
+### Command Line Demo
+
+To run the demonstration script that generates all example visualizations:
+
+```bash
+python demonstration.py
+```
+
+This will create a variety of example files in the `sample-output` directory, showing different aspects of the library.
 
 ### Basic Usage
 
@@ -111,7 +150,7 @@ tree.render(
 
 The `show_title` parameter (default is `False`) controls whether titles are displayed on the diagram:
 
-- When `show_title=True` and a specific Sephirah is focused, the title will display "Tree of Life - Focus on [Sephirah Name] (Sephirah [Number])"
+- When `show_title=True` and a specific Sephirah is focused, the title will display "Focus on [Sephirah Name] (Sephirah [Number])"
 - When `show_title=True` and no Sephirah is focused, no title will be displayed
 - When `show_title=False`, no title will be displayed in any case
 
@@ -158,9 +197,18 @@ tree.set_path_text_visibility(True)
 
 These settings work in both normal and focused views, giving you complete control over the visual presentation of your Tree of Life diagrams.
 
+### Path Numbering and Symbols
+
+The 22 paths in the Tree of Life (numbered 11-32) are traditionally associated with the Hebrew alphabet and astrological symbols. The library automatically renders these paths with both their traditional number and the corresponding symbol:
+
+- Paths 11-31: Hebrew letters and their astrological/elemental correspondences
+- Path 32: Saturn (♄), associated with the Hebrew letter Tav (ת)
+
+The path text is automatically positioned along each path with correct orientation for readability.
+
 ## Example Scripts
 
-This repository includes two example scripts:
+This repository includes a comprehensive demonstration script:
 
 - `demonstration.py`: Comprehensive demonstration of all features
 
@@ -170,7 +218,7 @@ Run the demonstration script to generate examples of all supported features:
 python demonstration.py
 ```
 
-This will create a range of example files in the `output` directory.
+This will create a range of example files in the `sample-output` directory.
 
 ## Color System
 
