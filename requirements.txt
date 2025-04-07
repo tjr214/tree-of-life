@@ -1,6 +1,5 @@
 rich
 matplotlib
-networkx
 numpy
 Pillow
 pyyaml
