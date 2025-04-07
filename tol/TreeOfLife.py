@@ -100,7 +100,7 @@ class TreeOfLife:
         # Initialize text display settings
         self.show_sephiroth_text: bool = True
         self.show_path_text: bool = True
-        self.sephiroth_text_mode: SephirothTextMode = SephirothTextMode.NUMBER
+        self.sephiroth_text_mode: self.SephirothTextMode = self.SephirothTextMode.NUMBER
 
         # Initialize text mode mappings
         self._init_text_mappings()
