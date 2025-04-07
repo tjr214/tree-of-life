@@ -174,3 +174,5 @@ node_modules/
 .pythonlibs/
 
 .aider*
+
+sample-output/
