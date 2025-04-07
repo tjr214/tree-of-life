@@ -80,8 +80,11 @@ class TreeOfLife:
         # Initialize special case for Da'ath (the hidden Sephirah)
         self.daath = None
 
+        # Get absolute path for the color scales file
+        module_dir = FilePath(__file__).parent
+        self.color_scales_file = str(module_dir / color_scales_file)
+
         # Parse the color scales file
-        self.color_scales_file = color_scales_file
         self.color_data = self._load_color_data()
 
         # Initialize the Sephiroth and Paths
