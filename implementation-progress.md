@@ -89,8 +89,8 @@ Enhance the TreeOfLife class to support:
 - [x] Document the new features in the class comments
 - [x] Add examples to new demonstration script
 - [ ] Add ALL examples to `demonstration.py`. Follow the same style, format and function as `demonstration.py`
-- [ ] Update the repo README.md with the new features
-- [ ] Update the library README.md, as well
+- [ ] Update the repo `/README.md` with the new features
+- [ ] Update the library `/tol/README.md`, as well
 
 ## Implementation Details
 
