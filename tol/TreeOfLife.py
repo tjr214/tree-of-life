@@ -842,7 +842,8 @@ class TreeOfLife:
             if self.show_sephiroth_text:
                 # Get text to display based on current mode
                 if self.sephiroth_text_mode == self.SephirothTextMode.NUMBER:
-                    display_text = "0"  # Da'ath is typically number 0
+                    # For NUMBER mode, Da'ath should display no text (blank)
+                    display_text = ""  # Empty string for Da'ath in NUMBER mode
                     fontsize = 12 * self.sphere_scale_factor
                 elif self.sephiroth_text_mode == self.SephirothTextMode.TRIGRAM:
                     display_text = self._trigram_map[0]  # Use Da'ath trigram
@@ -855,7 +856,7 @@ class TreeOfLife:
                     display_text = self._planet_map[0]
                     fontsize = 14 * self.sphere_scale_factor
                 else:
-                    display_text = "0"  # Default to 0 if mode is invalid
+                    display_text = ""  # Default to blank if mode is invalid
                     fontsize = 12 * self.sphere_scale_factor
 
                 # Use gray text for Da'ath
