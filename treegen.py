@@ -36,7 +36,7 @@ import sys
 import argparse
 import yaml
 import signal
-from typing import Dict, Any, Optional, Tuple, List, Union
+from typing import Dict, Any, Optional
 
 from rich.console import Console
 from rich.panel import Panel
