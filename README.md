@@ -23,12 +23,12 @@ This library provides a flexible, object-oriented implementation for rendering t
 
 Here are some examples of the different visualization options:
 
-| Description            | Example                                                   |
-| ---------------------- | --------------------------------------------------------- |
-| Full Tree (King Scale) | ![Full Tree King Scale](ref/img/tree-grid.png)            |
-| Focus on Tiphereth     | ![Tiphereth Focus](sample-output/focus_6_tiphereth.png)   |
-| Hebrew Text Mode       | ![Hebrew Text](sample-output/text_mode_hebrew.png)        |
-| Planetary Symbols      | ![Planetary Symbols](sample-output/text_mode_planets.png) |
+| Description            | Example                                             |
+| ---------------------- | --------------------------------------------------- |
+| Full Tree (King Scale) | ![Full Tree King Scale](ref/img/king-tree.png)      |
+| Focus on Tiphereth     | ![Tiphereth Focus](ref/img/tiphereth-focus.png)     |
+| Hebrew Text Mode       | ![Hebrew Text](ref/img/text_mode_hebrew.png)        |
+| Planetary Symbols      | ![Planetary Symbols](ref/img/text_mode_planets.png) |
 
 ## Project Structure
 
