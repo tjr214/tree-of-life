@@ -315,7 +315,7 @@ def create_tree_from_config(config: Dict[str, Any]) -> TreeOfLife:
         sys.exit(1)
 
 
-def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool) -> None:
+def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_filename: Optional[str] = None) -> None:
     """
     Render the Tree of Life visualization.
 
@@ -323,6 +323,7 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool) -> None
         tree: Configured TreeOfLife object.
         config: Configuration dictionary with rendering parameters.
         display: Whether to display the visualization instead of saving to file.
+        config_filename: Optional name of the config file, used as base for output filename.
     """
     # Extract rendering parameters
     focus_sephirah = config["rendering"]["focus_sephirah"]
@@ -332,17 +333,33 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool) -> None
 
     # Generate output filename if not displaying
     if not display:
-        # Determine output filename based on configuration
-        if focus_sephirah:
-            sephirah_names = [
-                "kether", "chokmah", "binah", "chesed", "geburah",
-                "tiphereth", "netzach", "hod", "yesod", "malkuth"
-            ]
-            output_file = f"tree_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}.png"
+        if config_filename:
+            # Use the config filename base for the output file
+            base_name = os.path.splitext(os.path.basename(config_filename))[0]
+
+            # Determine suffix based on configuration
+            if focus_sephirah:
+                sephirah_names = [
+                    "kether", "chokmah", "binah", "chesed", "geburah",
+                    "tiphereth", "netzach", "hod", "yesod", "malkuth"
+                ]
+                suffix = f"_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}"
+            else:
+                suffix = ""
+
+            output_file = f"{base_name}{suffix}.png"
         else:
-            seph_scheme = config["color_schemes"]["sephiroth"]
-            path_scheme = config["color_schemes"]["path"]
-            output_file = f"tree_{seph_scheme.lower()}_{path_scheme.lower()}.png"
+            # Fallback to the old method if no config filename is provided
+            if focus_sephirah:
+                sephirah_names = [
+                    "kether", "chokmah", "binah", "chesed", "geburah",
+                    "tiphereth", "netzach", "hod", "yesod", "malkuth"
+                ]
+                output_file = f"tree_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}.png"
+            else:
+                seph_scheme = config["color_schemes"]["sephiroth"]
+                path_scheme = config["color_schemes"]["path"]
+                output_file = f"tree_{seph_scheme.lower()}_{path_scheme.lower()}.png"
     else:
         output_file = None
 
@@ -394,18 +411,27 @@ def main() -> None:
 
     # Determine mode of operation
     if args.config_file is None:
-        # No config file provided - run interactive mode and save to default file
+        # No config file provided - run interactive mode and ask for filename
         console.print(
             "[bold blue]Running in interactive configuration mode[/]")
         config = run_interactive_config()
-        save_config_to_yaml(config, "tree_of_life_config.yaml")
+
+        # Ask for config filename
+        console.print("\n[bold cyan]Configuration File:[/]")
+        default_filename = "tree_of_life_config.yaml"
+        config_filename = Prompt.ask(
+            "Enter filename to save configuration",
+            default=default_filename
+        )
+
+        save_config_to_yaml(config, config_filename)
 
         # Create Tree of Life object
         tree = create_tree_from_config(config)
 
         # Ask if the user wants to render now
         if Confirm.ask("\nRender the Tree of Life now?", default=True):
-            render_tree(tree, config, args.display)
+            render_tree(tree, config, args.display, config_filename)
 
     elif not os.path.exists(args.config_file):
         # Non-existent config file - run interactive mode and save to specified file
@@ -422,7 +448,7 @@ def main() -> None:
 
         # Ask if the user wants to render now
         if Confirm.ask("\nRender the Tree of Life now?", default=True):
-            render_tree(tree, config, args.display)
+            render_tree(tree, config, args.display, args.config_file)
 
     else:
         # Existing config file - load and render
@@ -435,7 +461,7 @@ def main() -> None:
         tree = create_tree_from_config(config)
 
         # Render the Tree of Life
-        render_tree(tree, config, args.display)
+        render_tree(tree, config, args.display, args.config_file)
 
 
 if __name__ == "__main__":
