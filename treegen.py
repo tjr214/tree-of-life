@@ -66,6 +66,23 @@ def handle_exit(signal_received=None, frame=None) -> None:
     sys.exit(0)
 
 
+def ensure_yaml_extension(filename: str) -> str:
+    """
+    Ensures a filename ends with .yaml extension if no extension is provided.
+
+    Args:
+        filename: The filename to check and possibly modify
+
+    Returns:
+        The filename with .yaml extension if no extension was originally present
+    """
+    # Check if the filename has any extension
+    if not os.path.splitext(filename)[1]:
+        # No extension found, add .yaml
+        return f"{filename}.yaml"
+    return filename
+
+
 def display_banner() -> None:
     """
     Display an 80s/90s style ASCII art banner for the application.
@@ -231,7 +248,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "config_file",
         nargs="?",
-        help="YAML configuration file path (optional)"
+        help="YAML configuration file path (optional, .yaml extension will be added if no extension is specified)"
     )
 
     parser.add_argument(
@@ -252,7 +269,13 @@ def parse_arguments() -> argparse.Namespace:
         help="Show this help message and exit"
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # If config_file is provided, ensure it has a .yaml extension
+    if args.config_file:
+        args.config_file = ensure_yaml_extension(args.config_file)
+
+    return args
 
 
 def run_interactive_config() -> Dict[str, Any]:
@@ -448,6 +471,9 @@ def save_config_to_yaml(config: Dict[str, Any], filename: str) -> None:
     The function ensures the target directory exists and adds helpful
     header comments to the YAML file.
     """
+    # Ensure filename has .yaml extension
+    filename = ensure_yaml_extension(filename)
+
     # Ensure directory exists
     os.makedirs(os.path.dirname(os.path.abspath(filename)), exist_ok=True)
 
@@ -474,6 +500,9 @@ def load_config_from_yaml(filename: str) -> Dict[str, Any]:
     Raises:
         SystemExit: If there is an error loading the configuration file.
     """
+    # Ensure filename has .yaml extension
+    filename = ensure_yaml_extension(filename)
+
     try:
         # Open and parse the YAML file
         with open(filename, 'r') as file:
@@ -719,13 +748,28 @@ def main() -> None:
 
         # Handle non-existent config file (without --new)
         elif args.config_file:
-            console.print(
-                f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
-            console.print(
-                "[yellow]Use --new flag to create a new configuration.[/]")
-            console.print(
-                "[yellow]Run without arguments to see help screen.[/]")
-            sys.exit(1)
+            # Check if the file exists with .yaml extension
+            yaml_filename = ensure_yaml_extension(args.config_file)
+            if os.path.exists(yaml_filename):
+                console.print(
+                    f"[bold blue]Loading configuration from:[/] [cyan]{yaml_filename}[/]")
+
+                # Load configuration from file
+                config = load_config_from_yaml(yaml_filename)
+
+                # Create Tree of Life object
+                tree = create_tree_from_config(config)
+
+                # Render the Tree of Life
+                render_tree(tree, config, args.display, yaml_filename)
+            else:
+                console.print(
+                    f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
+                console.print(
+                    "[yellow]Use --new flag to create a new configuration.[/]")
+                console.print(
+                    "[yellow]Run without arguments to see help screen.[/]")
+                sys.exit(1)
 
     except (KeyboardInterrupt, EOFError):
         handle_exit()
