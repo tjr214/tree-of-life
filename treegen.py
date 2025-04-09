@@ -97,7 +97,7 @@ def display_help_screen() -> None:
 
     # Main title
     console.print(
-        "\n[bold cyan]✨ Welcome to the Tree of Life Generator! ✨[/]\n")
+        "\n[bold cyan]✨ Welcome to the Tree of Life Image Generator! ✨[/]\n")
 
     # Introduction
     intro_text = (
