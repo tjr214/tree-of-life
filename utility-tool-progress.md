@@ -110,7 +110,7 @@ Create a colorful 80s/90s-style ASCII art banner using `rich` library styling
 - [x] Add comprehensive error handling
 - [x] Polish user experience with rich styling
 - [x] Test all operation modes and edge cases
-- [ ] Document the code thoroughly with comments
+- [x] Document the code thoroughly with comments
 - [x] Complete implementation with proper typing
 
 ## Testing Strategy
@@ -143,8 +143,11 @@ We have successfully implemented the TreeOfLife Generator CLI tool with the foll
 8. **Error Handling**: Added robust error handling throughout the application for graceful failure.
 
 9. **Three Operation Modes**:
+
    - Interactive mode with custom filename when no arguments
    - Interactive mode saving to specified file when non-existent filename is given
    - Load and render mode when existing file is provided
+
+10. **Comprehensive Documentation**: Added detailed documentation throughout the code, including descriptive function docstrings, section comments, and explanations for each major component.
 
 The implementation follows proper Python typing and provides a rich, user-friendly interface for working with the Tree of Life visualization library.

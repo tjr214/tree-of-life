@@ -5,6 +5,26 @@ Tree of Life Generator - Command Line Utility
 
 A CLI tool to configure, save, load, and render Tree of Life visualizations.
 This tool provides a rich, interactive interface for working with the TreeOfLife class.
+
+Features:
+- Interactive configuration with colorful prompts and tables
+- Save/load configurations as YAML files
+- Render visualizations to PNG files or display on screen
+- Multiple operation modes based on command-line arguments
+- Comprehensive validation of all Tree of Life parameters
+
+Usage:
+    # Interactive configuration mode (prompts for saving location)
+    ./treegen.py
+    
+    # Interactive configuration mode (saves to specified file)
+    ./treegen.py my_config.yaml
+    
+    # Load existing configuration and render
+    ./treegen.py existing_config.yaml
+    
+    # Load existing configuration and display instead of saving
+    ./treegen.py existing_config.yaml --display
 """
 
 import os
@@ -28,7 +48,12 @@ console = Console()
 
 
 def display_banner() -> None:
-    """Display an 80s/90s style ASCII art banner for the application."""
+    """
+    Display an 80s/90s style ASCII art banner for the application.
+
+    This function creates a visually appealing header with the application name
+    using ASCII art and Rich library styling features including colors and panels.
+    """
     # ASCII art created with FIGlet (font: slant)
     banner = r"""
     ___________                     ________   ___      .__ _______
@@ -55,7 +80,14 @@ def display_banner() -> None:
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse command-line arguments."""
+    """
+    Parse command-line arguments for the application.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments with the following attributes:
+            - config_file: Optional path to a YAML configuration file
+            - display: Boolean flag indicating whether to display the visualization
+    """
     parser = argparse.ArgumentParser(
         description="Tree of Life visualization generator",
         epilog="Run without arguments for interactive mode"
@@ -80,8 +112,18 @@ def run_interactive_config() -> Dict[str, Any]:
     """
     Run interactive configuration prompts to configure a Tree of Life visualization.
 
+    This function presents a series of user-friendly prompts for configuring all
+    aspects of the Tree of Life, organized into logical sections:
+    - Basic parameters (scale and spacing)
+    - Color schemes (for Sephiroth and paths)
+    - Text display options (mode and visibility)
+    - Rendering options (focus, size, quality, title)
+
+    Each section includes helpful explanations and tables where appropriate.
+
     Returns:
-        Dict[str, Any]: Configuration dictionary with all TreeOfLife parameters.
+        Dict[str, Any]: Nested configuration dictionary with all TreeOfLife parameters
+        structured in sections for basic, color schemes, text display, and rendering.
     """
     config = {
         "basic": {},
@@ -93,7 +135,7 @@ def run_interactive_config() -> Dict[str, Any]:
     console.print("\n[bold cyan]===== Tree of Life Configuration =====[/]")
     console.print("[dim]Enter values or press Enter for defaults[/]")
 
-    # --- Basic Parameters ---
+    # --- Basic Parameters Section ---
     console.print("\n[bold green]Basic Parameters:[/]")
 
     config["basic"]["sphere_scale_factor"] = FloatPrompt.ask(
@@ -106,15 +148,16 @@ def run_interactive_config() -> Dict[str, Any]:
         default=1.5
     )
 
-    # --- Color Schemes ---
+    # --- Color Schemes Section ---
     console.print("\n[bold green]Color Schemes:[/]")
 
-    # Create color scheme choices table
+    # Create color scheme choices table for visual clarity
     scheme_table = Table(title="Available Color Schemes")
     scheme_table.add_column("Number", justify="center", style="cyan")
     scheme_table.add_column("Scheme Name", style="green")
     scheme_table.add_column("Description", style="yellow")
 
+    # Define available color schemes with descriptions
     schemes = [
         (1, "PLAIN", "Simple default colors"),
         (2, "KING_SCALE", "Elemental/planetary associations in Atziluth"),
@@ -123,36 +166,39 @@ def run_interactive_config() -> Dict[str, Any]:
         (5, "PRINCESS_SCALE", "Elemental/planetary associations in Assiah")
     ]
 
+    # Populate the table with color scheme information
     for num, name, desc in schemes:
         scheme_table.add_row(str(num), name, desc)
 
+    # Display the color scheme table
     console.print(scheme_table)
 
-    # Prompt for Sephiroth color scheme
+    # Prompt for Sephiroth color scheme selection
     sephiroth_scheme = IntPrompt.ask(
         "Sephiroth color scheme (1-5)",
-        default=2,  # KING_SCALE
+        default=2,  # KING_SCALE as default
         choices=[str(i) for i in range(1, 6)]
     )
     config["color_schemes"]["sephiroth"] = schemes[sephiroth_scheme-1][1]
 
-    # Prompt for Path color scheme
+    # Prompt for Path color scheme selection
     path_scheme = IntPrompt.ask(
         "Path color scheme (1-5)",
-        default=2,  # KING_SCALE
+        default=2,  # KING_SCALE as default
         choices=[str(i) for i in range(1, 6)]
     )
     config["color_schemes"]["path"] = schemes[path_scheme-1][1]
 
-    # --- Text Display Options ---
+    # --- Text Display Options Section ---
     console.print("\n[bold green]Text Display Options:[/]")
 
-    # Create text mode choices table
+    # Create text mode choices table for visual clarity
     text_mode_table = Table(title="Sephiroth Text Display Modes")
     text_mode_table.add_column("Number", justify="center", style="cyan")
     text_mode_table.add_column("Mode", style="green")
     text_mode_table.add_column("Description", style="yellow")
 
+    # Define available text modes with descriptions
     text_modes = [
         (1, "NUMBER", "Traditional enumeration (1-10)"),
         (2, "TRIGRAM", "I Ching trigrams corresponding to each Sephirah"),
@@ -160,20 +206,22 @@ def run_interactive_config() -> Dict[str, Any]:
         (4, "PLANET", "Planetary symbols corresponding to each Sephirah")
     ]
 
+    # Populate the table with text mode information
     for num, name, desc in text_modes:
         text_mode_table.add_row(str(num), name, desc)
 
+    # Display the text mode table
     console.print(text_mode_table)
 
-    # Prompt for text display mode
+    # Prompt for text display mode selection
     text_mode = IntPrompt.ask(
         "Sephiroth text mode (1-4)",
-        default=1,  # NUMBER
+        default=1,  # NUMBER as default
         choices=[str(i) for i in range(1, 5)]
     )
     config["text_display"]["sephiroth_mode"] = text_modes[text_mode-1][1]
 
-    # Prompt for text visibility
+    # Prompt for text visibility settings
     config["text_display"]["sephiroth_visible"] = Confirm.ask(
         "Show Sephiroth text?",
         default=True
@@ -184,16 +232,17 @@ def run_interactive_config() -> Dict[str, Any]:
         default=True
     )
 
-    # --- Rendering Options ---
+    # --- Rendering Options Section ---
     console.print("\n[bold green]Rendering Options:[/]")
 
-    # Prompt for focus Sephirah
+    # Prompt for focus Sephirah setting
     focus_choice = Confirm.ask(
         "Focus on a specific Sephirah?",
         default=False
     )
 
     if focus_choice:
+        # Display list of Sephiroth names for selection
         sephiroth_names = [
             "1: Kether", "2: Chokmah", "3: Binah", "4: Chesed", "5: Geburah",
             "6: Tiphereth", "7: Netzach", "8: Hod", "9: Yesod", "10: Malkuth"
@@ -202,28 +251,30 @@ def run_interactive_config() -> Dict[str, Any]:
         for name in sephiroth_names:
             console.print(f"  [cyan]{name}[/]")
 
+        # Prompt for specific Sephirah to focus on
         focus_num = IntPrompt.ask(
             "Enter Sephirah number to focus on (1-10)",
-            default=6,  # Tiphereth
+            default=6,  # Tiphereth (central Sephirah) as default
             choices=[str(i) for i in range(1, 11)]
         )
         config["rendering"]["focus_sephirah"] = focus_num
     else:
         config["rendering"]["focus_sephirah"] = None
 
-    # Prompt for figure size
+    # Prompt for figure size dimensions
     console.print("[dim]Figure size in inches (width, height)[/]")
-    width = FloatPrompt.ask("Width", default=7.5)
+    width = FloatPrompt.ask("Width", default=7.5)  # Default width
+    # Default height (letter paper)
     height = FloatPrompt.ask("Height", default=11.0)
     config["rendering"]["figsize"] = [width, height]
 
-    # Prompt for DPI
+    # Prompt for DPI (image quality)
     config["rendering"]["dpi"] = IntPrompt.ask(
         "DPI (dots per inch) [cyan](higher = better quality, larger file)[/]",
-        default=300
+        default=300  # Standard print quality
     )
 
-    # Prompt for title
+    # Prompt for title display
     config["rendering"]["show_title"] = Confirm.ask(
         "Show title on the diagram?",
         default=False
@@ -234,11 +285,14 @@ def run_interactive_config() -> Dict[str, Any]:
 
 def save_config_to_yaml(config: Dict[str, Any], filename: str) -> None:
     """
-    Save configuration dictionary to a YAML file.
+    Save configuration dictionary to a YAML file with descriptive comments.
 
     Args:
         config: Configuration dictionary with TreeOfLife parameters.
         filename: Path to save the YAML file.
+
+    The function ensures the target directory exists and adds helpful
+    header comments to the YAML file.
     """
     # Ensure directory exists
     os.makedirs(os.path.dirname(os.path.abspath(filename)), exist_ok=True)
@@ -255,22 +309,28 @@ def save_config_to_yaml(config: Dict[str, Any], filename: str) -> None:
 
 def load_config_from_yaml(filename: str) -> Dict[str, Any]:
     """
-    Load configuration from a YAML file.
+    Load configuration from a YAML file with error handling.
 
     Args:
         filename: Path to the YAML configuration file.
 
     Returns:
         Dict[str, Any]: Configuration dictionary with TreeOfLife parameters.
+
+    Raises:
+        SystemExit: If there is an error loading the configuration file.
     """
     try:
+        # Open and parse the YAML file
         with open(filename, 'r') as file:
             config = yaml.safe_load(file)
 
+        # Confirm successful load to user
         console.print(
             f"\n[bold green]Loaded configuration from:[/] [cyan]{filename}[/]")
         return config
     except Exception as e:
+        # Handle any errors (file not found, parse errors, etc.)
         console.print(f"[bold red]Error loading configuration:[/] {e}")
         sys.exit(1)
 
@@ -279,11 +339,17 @@ def create_tree_from_config(config: Dict[str, Any]) -> TreeOfLife:
     """
     Create a TreeOfLife object from configuration dictionary.
 
+    This function maps configuration dictionary values to the appropriate
+    TreeOfLife parameters and method calls.
+
     Args:
         config: Configuration dictionary with TreeOfLife parameters.
 
     Returns:
-        TreeOfLife: Configured TreeOfLife object.
+        TreeOfLife: Configured TreeOfLife object ready for rendering.
+
+    Raises:
+        SystemExit: If there is an error creating the TreeOfLife object.
     """
     try:
         # Create Tree of Life with basic parameters
@@ -292,7 +358,7 @@ def create_tree_from_config(config: Dict[str, Any]) -> TreeOfLife:
             spacing_factor=config["basic"]["spacing_factor"]
         )
 
-        # Set color schemes
+        # Set color schemes by looking up enum values from string names
         sephiroth_scheme = getattr(
             ColorScheme, config["color_schemes"]["sephiroth"])
         path_scheme = getattr(ColorScheme, config["color_schemes"]["path"])
@@ -300,32 +366,40 @@ def create_tree_from_config(config: Dict[str, Any]) -> TreeOfLife:
         tree.set_sephiroth_color_scheme(sephiroth_scheme)
         tree.set_path_color_scheme(path_scheme)
 
-        # Set text display options
+        # Set text display options by looking up enum values from string names
         sephiroth_mode = getattr(
             tree.SephirothTextMode, config["text_display"]["sephiroth_mode"])
         tree.set_sephiroth_text_mode(sephiroth_mode)
 
+        # Set visibility options
         tree.set_sephiroth_text_visibility(
             config["text_display"]["sephiroth_visible"])
         tree.set_path_text_visibility(config["text_display"]["path_visible"])
 
         return tree
     except Exception as e:
+        # Handle any errors during TreeOfLife creation
         console.print(f"[bold red]Error creating Tree of Life:[/] {e}")
         sys.exit(1)
 
 
 def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_filename: Optional[str] = None) -> None:
     """
-    Render the Tree of Life visualization.
+    Render the Tree of Life visualization to a file or display it on screen.
+
+    This function handles the final rendering step, setting up appropriate filenames
+    based on the configuration and handling either display or file output.
 
     Args:
         tree: Configured TreeOfLife object.
         config: Configuration dictionary with rendering parameters.
         display: Whether to display the visualization instead of saving to file.
         config_filename: Optional name of the config file, used as base for output filename.
+
+    Raises:
+        SystemExit: If there is an error during rendering.
     """
-    # Extract rendering parameters
+    # Extract rendering parameters from configuration
     focus_sephirah = config["rendering"]["focus_sephirah"]
     figsize = tuple(config["rendering"]["figsize"])
     dpi = config["rendering"]["dpi"]
@@ -334,11 +408,12 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
     # Generate output filename if not displaying
     if not display:
         if config_filename:
-            # Use the config filename base for the output file
+            # Use the config filename base for the output file (intelligent naming)
             base_name = os.path.splitext(os.path.basename(config_filename))[0]
 
             # Determine suffix based on configuration
             if focus_sephirah:
+                # List of Sephiroth names for filename generation
                 sephirah_names = [
                     "kether", "chokmah", "binah", "chesed", "geburah",
                     "tiphereth", "netzach", "hod", "yesod", "malkuth"
@@ -357,13 +432,15 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
                 ]
                 output_file = f"tree_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}.png"
             else:
+                # Use color schemes in filename if no focus
                 seph_scheme = config["color_schemes"]["sephiroth"]
                 path_scheme = config["color_schemes"]["path"]
                 output_file = f"tree_{seph_scheme.lower()}_{path_scheme.lower()}.png"
     else:
+        # No output file if displaying
         output_file = None
 
-    # Show rendering information
+    # Show rendering information to user
     console.print("\n[bold green]Rendering Tree of Life:[/]")
     if focus_sephirah:
         console.print(f"  Focus: [cyan]Sephirah {focus_sephirah}[/]")
@@ -384,6 +461,7 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
 
     # Render the tree
     try:
+        # Call the TreeOfLife render method with appropriate parameters
         tree.render(
             focus_sephirah=focus_sephirah,
             display=display,
@@ -393,30 +471,45 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
             show_title=show_title
         )
 
+        # Confirm successful save if not displaying
         if not display:
             console.print(
                 f"\n[bold green]Visualization saved to:[/] [cyan]{output_file}[/]")
     except Exception as e:
+        # Handle rendering errors
         console.print(f"[bold red]Error rendering Tree of Life:[/] {e}")
         sys.exit(1)
 
 
 def main() -> None:
-    """Main function for the Tree of Life Generator CLI tool."""
+    """
+    Main function for the Tree of Life Generator CLI tool.
+
+    This function implements the core workflow of the application:
+    1. Parse command-line arguments
+    2. Display the banner
+    3. Determine mode of operation:
+       - Interactive configuration (no config file)
+       - Interactive configuration (new config file)
+       - Load and render (existing config file)
+    4. Create TreeOfLife object and render visualization
+    """
     # Parse command-line arguments
     args = parse_arguments()
 
     # Display the banner
     display_banner()
 
-    # Determine mode of operation
+    # Determine mode of operation based on arguments
     if args.config_file is None:
-        # No config file provided - run interactive mode and ask for filename
+        # MODE 1: No config file provided - run interactive mode and ask for filename
         console.print(
             "[bold blue]Running in interactive configuration mode[/]")
+
+        # Run interactive configuration
         config = run_interactive_config()
 
-        # Ask for config filename
+        # Ask for config filename to save
         console.print("\n[bold cyan]Configuration File:[/]")
         default_filename = "tree_of_life_config.yaml"
         config_filename = Prompt.ask(
@@ -424,6 +517,7 @@ def main() -> None:
             default=default_filename
         )
 
+        # Save configuration to file
         save_config_to_yaml(config, config_filename)
 
         # Create Tree of Life object
@@ -434,13 +528,16 @@ def main() -> None:
             render_tree(tree, config, args.display, config_filename)
 
     elif not os.path.exists(args.config_file):
-        # Non-existent config file - run interactive mode and save to specified file
+        # MODE 2: Non-existent config file - run interactive mode and save to specified file
         console.print(
             f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
         console.print(
             "[bold blue]Running in interactive configuration mode[/]")
 
+        # Run interactive configuration
         config = run_interactive_config()
+
+        # Save configuration to specified file
         save_config_to_yaml(config, args.config_file)
 
         # Create Tree of Life object
@@ -451,10 +548,11 @@ def main() -> None:
             render_tree(tree, config, args.display, args.config_file)
 
     else:
-        # Existing config file - load and render
+        # MODE 3: Existing config file - load and render
         console.print(
             f"[bold blue]Loading configuration from:[/] [cyan]{args.config_file}[/]")
 
+        # Load configuration from file
         config = load_config_from_yaml(args.config_file)
 
         # Create Tree of Life object
@@ -464,5 +562,6 @@ def main() -> None:
         render_tree(tree, config, args.display, args.config_file)
 
 
+# Entry point when script is run directly
 if __name__ == "__main__":
     main()
