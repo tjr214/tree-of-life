@@ -74,7 +74,7 @@ def display_banner() -> None:
     console.print(Panel(
         Text(banner, style="bold bright_magenta"),
         border_style="bright_cyan",
-        title="[bold bright_yellow]Tree of Life Generator[/]",
+        title="[bold bright_yellow]Tree of Life Image Generator[/]",
         subtitle="[italic bright_green]Interactive CLI Tool[/]"
     ))
 
