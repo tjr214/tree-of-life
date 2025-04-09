@@ -2,7 +2,7 @@
 
 A Python library for generating customizable diagrams of the Kabbalistic Tree of Life.
 
-![Tree of Life Example](sample-output/full_tree_king.png)
+![Tree of Life Example](tree_grid.png)
 
 ## Overview
 
