@@ -14,11 +14,14 @@ Features:
 - Comprehensive validation of all Tree of Life parameters
 
 Usage:
-    # Interactive configuration mode (prompts for saving location)
+    # Display help screen
     ./treegen.py
     
+    # Interactive configuration mode (prompts for saving location)
+    ./treegen.py --new
+    
     # Interactive configuration mode (saves to specified file)
-    ./treegen.py my_config.yaml
+    ./treegen.py --new my_config.yaml
     
     # Load existing configuration and render
     ./treegen.py existing_config.yaml
@@ -87,10 +90,12 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: Parsed command-line arguments with the following attributes:
             - config_file: Optional path to a YAML configuration file
             - display: Boolean flag indicating whether to display the visualization
+            - new: Boolean flag indicating whether to start a new configuration
     """
     parser = argparse.ArgumentParser(
         description="Tree of Life visualization generator",
-        epilog="Run without arguments for interactive mode"
+        epilog="Run without arguments for a helpful guide",
+        add_help=False  # We'll provide our own help
     )
 
     parser.add_argument(
@@ -103,6 +108,18 @@ def parse_arguments() -> argparse.Namespace:
         "--display",
         action="store_true",
         help="Display the visualization instead of saving to file"
+    )
+
+    parser.add_argument(
+        "--new",
+        action="store_true",
+        help="Start interactive mode to create a new configuration"
+    )
+
+    parser.add_argument(
+        "-h", "--help",
+        action="store_true",
+        help="Show this help message and exit"
     )
 
     return parser.parse_args()
