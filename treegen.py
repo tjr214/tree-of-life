@@ -621,35 +621,44 @@ def main() -> None:
 
     This function implements the core workflow of the application:
     1. Parse command-line arguments
-    2. Display the banner
-    3. Determine mode of operation:
-       - Interactive configuration (no config file)
-       - Interactive configuration (new config file)
+    2. Determine mode of operation:
+       - Display help screen (no arguments or --help)
+       - Interactive configuration (--new flag)
        - Load and render (existing config file)
-    4. Create TreeOfLife object and render visualization
+    3. Create TreeOfLife object and render visualization when applicable
     """
     # Parse command-line arguments
     args = parse_arguments()
 
-    # Display the banner
+    # Determine mode of operation based on arguments
+
+    # Show help screen if no arguments or help flag
+    if args.help or (args.config_file is None and not args.new):
+        display_help_screen()
+        sys.exit(0)
+
+    # Display the banner for non-help operations
     display_banner()
 
-    # Determine mode of operation based on arguments
-    if args.config_file is None:
-        # MODE 1: No config file provided - run interactive mode and ask for filename
+    # Handle interactive mode with --new flag
+    if args.new:
         console.print(
             "[bold blue]Running in interactive configuration mode[/]")
 
         # Run interactive configuration
         config = run_interactive_config()
 
-        # Ask for config filename to save
-        console.print("\n[bold cyan]Configuration File:[/]")
-        default_filename = "tree_of_life_config.yaml"
-        config_filename = Prompt.ask(
-            "Enter filename to save configuration",
-            default=default_filename
-        )
+        # Determine where to save the config
+        if args.config_file:
+            config_filename = args.config_file
+        else:
+            # Ask for config filename to save
+            console.print("\n[bold cyan]Configuration File:[/]")
+            default_filename = "tree_of_life_config.yaml"
+            config_filename = Prompt.ask(
+                "Enter filename to save configuration",
+                default=default_filename
+            )
 
         # Save configuration to file
         save_config_to_yaml(config, config_filename)
@@ -661,28 +670,8 @@ def main() -> None:
         if Confirm.ask("\nRender the Tree of Life now?", default=True):
             render_tree(tree, config, args.display, config_filename)
 
-    elif not os.path.exists(args.config_file):
-        # MODE 2: Non-existent config file - run interactive mode and save to specified file
-        console.print(
-            f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
-        console.print(
-            "[bold blue]Running in interactive configuration mode[/]")
-
-        # Run interactive configuration
-        config = run_interactive_config()
-
-        # Save configuration to specified file
-        save_config_to_yaml(config, args.config_file)
-
-        # Create Tree of Life object
-        tree = create_tree_from_config(config)
-
-        # Ask if the user wants to render now
-        if Confirm.ask("\nRender the Tree of Life now?", default=True):
-            render_tree(tree, config, args.display, args.config_file)
-
-    else:
-        # MODE 3: Existing config file - load and render
+    # Handle existing config file (with or without --display)
+    elif args.config_file and os.path.exists(args.config_file):
         console.print(
             f"[bold blue]Loading configuration from:[/] [cyan]{args.config_file}[/]")
 
@@ -694,6 +683,16 @@ def main() -> None:
 
         # Render the Tree of Life
         render_tree(tree, config, args.display, args.config_file)
+
+    # Handle non-existent config file (without --new)
+    elif args.config_file:
+        console.print(
+            f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
+        console.print(
+            "[yellow]Use --new flag to create a new configuration.[/]")
+        console.print(
+            "[yellow]Run without arguments to see help screen.[/]")
+        sys.exit(1)
 
 
 # Entry point when script is run directly
