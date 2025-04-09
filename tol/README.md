@@ -129,6 +129,10 @@ tree.set_path_text_visibility(False)       # Hide Path text
 tree.render(display=True)
 ```
 
+### Command Line Interface
+
+For interactive configuration and generation of Tree of Life visualizations, see the `treegen.py` script in the root directory. This CLI tool provides a user-friendly interface for configuring all aspects of the Tree of Life renderer and saving configurations for reuse.
+
 ## Text Rendering Options
 
 The TreeOfLife class provides several ways to customize text rendering:

@@ -38,6 +38,7 @@ The codebase is organized into modules with clear separation of concerns:
 - `color_utils.py`: Contains color-related functionality including schemes, effects, and parsing
 - `color_scales.yaml`: Defines the color schemes and special effects for Sephiroth and Paths
 - `demonstration.py`: Example script demonstrating the library's capabilities
+- `treegen.py`: Interactive CLI tool for configuring and generating Tree of Life visualizations
 
 This modular architecture makes the code more maintainable and allows for easier extension.
 
@@ -72,6 +73,39 @@ cd tol-gen
 ```
 
 ## Usage
+
+### Command Line Interface (treegen.py)
+
+The project includes a powerful interactive CLI tool (`treegen.py`) for configuring, saving, loading, and rendering Tree of Life visualizations:
+
+```bash
+# Display help screen
+./treegen.py
+
+# Interactive configuration mode (prompts for saving location)
+./treegen.py --new
+
+# Interactive configuration mode (saves to specified file)
+./treegen.py --new my_config.yaml
+
+# Load existing configuration and render
+./treegen.py existing_config.yaml
+
+# Load existing configuration and display instead of saving
+./treegen.py existing_config.yaml --display
+```
+
+The CLI tool provides:
+
+- Interactive step-by-step configuration with colorful prompts
+- Save/load configurations as YAML files
+- Multiple color scheme selection
+- Text display customization
+- Focus mode configuration
+- High-quality rendering options
+- Intelligent file naming
+
+Configurations are saved to YAML files for reuse, and rendered images are saved to the `output` directory by default.
 
 ### Command Line Demo
 
