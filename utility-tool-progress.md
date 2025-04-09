@@ -113,15 +113,6 @@ Create a colorful 80s/90s-style ASCII art banner using `rich` library styling
 - [x] Document the code thoroughly with comments
 - [x] Complete implementation with proper typing
 
-## Testing Strategy
-
-- [ ] Test with no arguments (interactive mode)
-- [ ] Test with non-existent filename
-- [ ] Test with existing filename
-- [ ] Test with --display flag
-- [ ] Test with invalid configurations
-- [ ] Test each feature of the TreeOfLife class
-
 ## Implementation Notes
 
 We have successfully implemented the TreeOfLife Generator CLI tool with the following features:
