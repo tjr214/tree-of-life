@@ -588,8 +588,14 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
     dpi = config["rendering"]["dpi"]
     show_title = config["rendering"]["show_title"]
 
+    # Define output directory
+    output_dir = "output"
+
     # Generate output filename if not displaying
     if not display:
+        # Create output directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
+
         if config_filename:
             # Use the config filename base for the output file (intelligent naming)
             base_name = os.path.splitext(os.path.basename(config_filename))[0]
@@ -605,7 +611,7 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
             else:
                 suffix = ""
 
-            output_file = f"{base_name}{suffix}.png"
+            output_filename = f"{base_name}{suffix}.png"
         else:
             # Fallback to the old method if no config filename is provided
             if focus_sephirah:
@@ -613,12 +619,15 @@ def render_tree(tree: TreeOfLife, config: Dict[str, Any], display: bool, config_
                     "kether", "chokmah", "binah", "chesed", "geburah",
                     "tiphereth", "netzach", "hod", "yesod", "malkuth"
                 ]
-                output_file = f"tree_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}.png"
+                output_filename = f"tree_focus_{focus_sephirah}_{sephirah_names[focus_sephirah-1]}.png"
             else:
                 # Use color schemes in filename if no focus
                 seph_scheme = config["color_schemes"]["sephiroth"]
                 path_scheme = config["color_schemes"]["path"]
-                output_file = f"tree_{seph_scheme.lower()}_{path_scheme.lower()}.png"
+                output_filename = f"tree_{seph_scheme.lower()}_{path_scheme.lower()}.png"
+
+        # Combine directory and filename
+        output_file = os.path.join(output_dir, output_filename)
     else:
         # No output file if displaying
         output_file = None
