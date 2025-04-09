@@ -119,13 +119,13 @@ def display_help_screen() -> None:
     # Define the columns
     commands_table.add_column("Command", style="cyan")
     commands_table.add_column("Description", style="green")
-    commands_table.add_column("Emoji", justify="center")
+    commands_table.add_column("✨", justify="center")
 
     # Add rows with examples
     commands_table.add_row(
         "./treegen.py --new",
         "Start interactive configuration mode",
-        "🧙‍♂️"
+        "🧙"
     )
     commands_table.add_row(
         "./treegen.py --new my_config.yaml",
