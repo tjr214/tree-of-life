@@ -44,7 +44,6 @@ from rich.prompt import Prompt, Confirm, IntPrompt, FloatPrompt
 from rich.table import Table
 from rich.text import Text
 from rich import print as rprint
-from rich.markdown import Markdown
 from rich.columns import Columns
 from rich.box import ROUNDED
 
