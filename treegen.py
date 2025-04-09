@@ -12,6 +12,7 @@ Features:
 - Render visualizations to PNG files or display on screen
 - Multiple operation modes based on command-line arguments
 - Comprehensive validation of all Tree of Life parameters
+- Graceful handling of keyboard interrupts (Ctrl+C) and EOF signals (Ctrl+D)
 
 Usage:
     # Display help screen
@@ -34,6 +35,7 @@ import os
 import sys
 import argparse
 import yaml
+import signal
 from typing import Dict, Any, Optional, Tuple, List, Union
 
 from rich.console import Console
@@ -51,6 +53,19 @@ from tol import TreeOfLife, ColorScheme
 
 # Initialize Rich console
 console = Console()
+
+
+def handle_exit(signal_received=None, frame=None) -> None:
+    """
+    Handles clean exit when the user presses Ctrl+C or Ctrl+D.
+
+    Args:
+        signal_received: Signal that triggered this handler (if called from signal handler)
+        frame: Current stack frame (if called from signal handler)
+    """
+    console.print(
+        "\n[bold yellow]Program interrupted by user. Exiting gracefully...[/]")
+    sys.exit(0)
 
 
 def display_banner() -> None:
@@ -258,6 +273,9 @@ def run_interactive_config() -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: Nested configuration dictionary with all TreeOfLife parameters
         structured in sections for basic, color schemes, text display, and rendering.
+
+    Note:
+        Handles EOFError and KeyboardInterrupt for graceful exit.
     """
     config = {
         "basic": {},
@@ -269,150 +287,154 @@ def run_interactive_config() -> Dict[str, Any]:
     console.print("\n[bold cyan]===== Tree of Life Configuration =====[/]")
     console.print("[dim]Enter values or press Enter for defaults[/]")
 
-    # --- Basic Parameters Section ---
-    console.print("\n[bold green]Basic Parameters:[/]")
+    try:
+        # --- Basic Parameters Section ---
+        console.print("\n[bold green]Basic Parameters:[/]")
 
-    config["basic"]["sphere_scale_factor"] = FloatPrompt.ask(
-        "Sphere scale factor [cyan](controls size of Sephiroth)[/]",
-        default=1.75
-    )
+        config["basic"]["sphere_scale_factor"] = FloatPrompt.ask(
+            "Sphere scale factor [cyan](controls size of Sephiroth)[/]",
+            default=1.75
+        )
 
-    config["basic"]["spacing_factor"] = FloatPrompt.ask(
-        "Spacing factor [cyan](controls distance between Sephiroth)[/]",
-        default=1.5
-    )
+        config["basic"]["spacing_factor"] = FloatPrompt.ask(
+            "Spacing factor [cyan](controls distance between Sephiroth)[/]",
+            default=1.5
+        )
 
-    # --- Color Schemes Section ---
-    console.print("\n[bold green]Color Schemes:[/]")
+        # --- Color Schemes Section ---
+        console.print("\n[bold green]Color Schemes:[/]")
 
-    # Create color scheme choices table for visual clarity
-    scheme_table = Table(title="Available Color Schemes")
-    scheme_table.add_column("Number", justify="center", style="cyan")
-    scheme_table.add_column("Scheme Name", style="green")
-    scheme_table.add_column("Description", style="yellow")
+        # Create color scheme choices table for visual clarity
+        scheme_table = Table(title="Available Color Schemes")
+        scheme_table.add_column("Number", justify="center", style="cyan")
+        scheme_table.add_column("Scheme Name", style="green")
+        scheme_table.add_column("Description", style="yellow")
 
-    # Define available color schemes with descriptions
-    schemes = [
-        (1, "PLAIN", "Simple default colors"),
-        (2, "KING_SCALE", "Elemental/planetary associations in Atziluth"),
-        (3, "QUEEN_SCALE", "Elemental/planetary associations in Briah"),
-        (4, "PRINCE_SCALE", "Elemental/planetary associations in Yetzirah"),
-        (5, "PRINCESS_SCALE", "Elemental/planetary associations in Assiah")
-    ]
-
-    # Populate the table with color scheme information
-    for num, name, desc in schemes:
-        scheme_table.add_row(str(num), name, desc)
-
-    # Display the color scheme table
-    console.print(scheme_table)
-
-    # Prompt for Sephiroth color scheme selection
-    sephiroth_scheme = IntPrompt.ask(
-        "Sephiroth color scheme (1-5)",
-        default=2,  # KING_SCALE as default
-        choices=[str(i) for i in range(1, 6)]
-    )
-    config["color_schemes"]["sephiroth"] = schemes[sephiroth_scheme-1][1]
-
-    # Prompt for Path color scheme selection
-    path_scheme = IntPrompt.ask(
-        "Path color scheme (1-5)",
-        default=2,  # KING_SCALE as default
-        choices=[str(i) for i in range(1, 6)]
-    )
-    config["color_schemes"]["path"] = schemes[path_scheme-1][1]
-
-    # --- Text Display Options Section ---
-    console.print("\n[bold green]Text Display Options:[/]")
-
-    # Create text mode choices table for visual clarity
-    text_mode_table = Table(title="Sephiroth Text Display Modes")
-    text_mode_table.add_column("Number", justify="center", style="cyan")
-    text_mode_table.add_column("Mode", style="green")
-    text_mode_table.add_column("Description", style="yellow")
-
-    # Define available text modes with descriptions
-    text_modes = [
-        (1, "NUMBER", "Traditional enumeration (1-10)"),
-        (2, "TRIGRAM", "I Ching trigrams corresponding to each Sephirah"),
-        (3, "HEBREW", "Hebrew names of the Sephiroth"),
-        (4, "PLANET", "Planetary symbols corresponding to each Sephirah")
-    ]
-
-    # Populate the table with text mode information
-    for num, name, desc in text_modes:
-        text_mode_table.add_row(str(num), name, desc)
-
-    # Display the text mode table
-    console.print(text_mode_table)
-
-    # Prompt for text display mode selection
-    text_mode = IntPrompt.ask(
-        "Sephiroth text mode (1-4)",
-        default=1,  # NUMBER as default
-        choices=[str(i) for i in range(1, 5)]
-    )
-    config["text_display"]["sephiroth_mode"] = text_modes[text_mode-1][1]
-
-    # Prompt for text visibility settings
-    config["text_display"]["sephiroth_visible"] = Confirm.ask(
-        "Show Sephiroth text?",
-        default=True
-    )
-
-    config["text_display"]["path_visible"] = Confirm.ask(
-        "Show Path text and symbols?",
-        default=True
-    )
-
-    # --- Rendering Options Section ---
-    console.print("\n[bold green]Rendering Options:[/]")
-
-    # Prompt for focus Sephirah setting
-    focus_choice = Confirm.ask(
-        "Focus on a specific Sephirah?",
-        default=False
-    )
-
-    if focus_choice:
-        # Display list of Sephiroth names for selection
-        sephiroth_names = [
-            "1: Kether", "2: Chokmah", "3: Binah", "4: Chesed", "5: Geburah",
-            "6: Tiphereth", "7: Netzach", "8: Hod", "9: Yesod", "10: Malkuth"
+        # Define available color schemes with descriptions
+        schemes = [
+            (1, "PLAIN", "Simple default colors"),
+            (2, "KING_SCALE", "Elemental/planetary associations in Atziluth"),
+            (3, "QUEEN_SCALE", "Elemental/planetary associations in Briah"),
+            (4, "PRINCE_SCALE", "Elemental/planetary associations in Yetzirah"),
+            (5, "PRINCESS_SCALE", "Elemental/planetary associations in Assiah")
         ]
 
-        for name in sephiroth_names:
-            console.print(f"  [cyan]{name}[/]")
+        # Populate the table with color scheme information
+        for num, name, desc in schemes:
+            scheme_table.add_row(str(num), name, desc)
 
-        # Prompt for specific Sephirah to focus on
-        focus_num = IntPrompt.ask(
-            "Enter Sephirah number to focus on (1-10)",
-            default=6,  # Tiphereth (central Sephirah) as default
-            choices=[str(i) for i in range(1, 11)]
+        # Display the color scheme table
+        console.print(scheme_table)
+
+        # Prompt for Sephiroth color scheme selection
+        sephiroth_scheme = IntPrompt.ask(
+            "Sephiroth color scheme (1-5)",
+            default=2,  # KING_SCALE as default
+            choices=[str(i) for i in range(1, 6)]
         )
-        config["rendering"]["focus_sephirah"] = focus_num
-    else:
-        config["rendering"]["focus_sephirah"] = None
+        config["color_schemes"]["sephiroth"] = schemes[sephiroth_scheme-1][1]
 
-    # Prompt for figure size dimensions
-    console.print("[dim]Figure size in inches (width, height)[/]")
-    width = FloatPrompt.ask("Width", default=7.5)  # Default width
-    # Default height (letter paper)
-    height = FloatPrompt.ask("Height", default=11.0)
-    config["rendering"]["figsize"] = [width, height]
+        # Prompt for Path color scheme selection
+        path_scheme = IntPrompt.ask(
+            "Path color scheme (1-5)",
+            default=2,  # KING_SCALE as default
+            choices=[str(i) for i in range(1, 6)]
+        )
+        config["color_schemes"]["path"] = schemes[path_scheme-1][1]
 
-    # Prompt for DPI (image quality)
-    config["rendering"]["dpi"] = IntPrompt.ask(
-        "DPI (dots per inch) [cyan](higher = better quality, larger file)[/]",
-        default=300  # Standard print quality
-    )
+        # --- Text Display Options Section ---
+        console.print("\n[bold green]Text Display Options:[/]")
 
-    # Prompt for title display
-    config["rendering"]["show_title"] = Confirm.ask(
-        "Show title on the diagram?",
-        default=False
-    )
+        # Create text mode choices table for visual clarity
+        text_mode_table = Table(title="Sephiroth Text Display Modes")
+        text_mode_table.add_column("Number", justify="center", style="cyan")
+        text_mode_table.add_column("Mode", style="green")
+        text_mode_table.add_column("Description", style="yellow")
+
+        # Define available text modes with descriptions
+        text_modes = [
+            (1, "NUMBER", "Traditional enumeration (1-10)"),
+            (2, "TRIGRAM", "I Ching trigrams corresponding to each Sephirah"),
+            (3, "HEBREW", "Hebrew names of the Sephiroth"),
+            (4, "PLANET", "Planetary symbols corresponding to each Sephirah")
+        ]
+
+        # Populate the table with text mode information
+        for num, name, desc in text_modes:
+            text_mode_table.add_row(str(num), name, desc)
+
+        # Display the text mode table
+        console.print(text_mode_table)
+
+        # Prompt for text display mode selection
+        text_mode = IntPrompt.ask(
+            "Sephiroth text mode (1-4)",
+            default=1,  # NUMBER as default
+            choices=[str(i) for i in range(1, 5)]
+        )
+        config["text_display"]["sephiroth_mode"] = text_modes[text_mode-1][1]
+
+        # Prompt for text visibility settings
+        config["text_display"]["sephiroth_visible"] = Confirm.ask(
+            "Show Sephiroth text?",
+            default=True
+        )
+
+        config["text_display"]["path_visible"] = Confirm.ask(
+            "Show Path text and symbols?",
+            default=True
+        )
+
+        # --- Rendering Options Section ---
+        console.print("\n[bold green]Rendering Options:[/]")
+
+        # Prompt for focus Sephirah setting
+        focus_choice = Confirm.ask(
+            "Focus on a specific Sephirah?",
+            default=False
+        )
+
+        if focus_choice:
+            # Display list of Sephiroth names for selection
+            sephiroth_names = [
+                "1: Kether", "2: Chokmah", "3: Binah", "4: Chesed", "5: Geburah",
+                "6: Tiphereth", "7: Netzach", "8: Hod", "9: Yesod", "10: Malkuth"
+            ]
+
+            for name in sephiroth_names:
+                console.print(f"  [cyan]{name}[/]")
+
+            # Prompt for specific Sephirah to focus on
+            focus_num = IntPrompt.ask(
+                "Enter Sephirah number to focus on (1-10)",
+                default=6,  # Tiphereth (central Sephirah) as default
+                choices=[str(i) for i in range(1, 11)]
+            )
+            config["rendering"]["focus_sephirah"] = focus_num
+        else:
+            config["rendering"]["focus_sephirah"] = None
+
+        # Prompt for figure size dimensions
+        console.print("[dim]Figure size in inches (width, height)[/]")
+        width = FloatPrompt.ask("Width", default=7.5)  # Default width
+        # Default height (letter paper)
+        height = FloatPrompt.ask("Height", default=11.0)
+        config["rendering"]["figsize"] = [width, height]
+
+        # Prompt for DPI (image quality)
+        config["rendering"]["dpi"] = IntPrompt.ask(
+            "DPI (dots per inch) [cyan](higher = better quality, larger file)[/]",
+            default=300  # Standard print quality
+        )
+
+        # Prompt for title display
+        config["rendering"]["show_title"] = Confirm.ask(
+            "Show title on the diagram?",
+            default=False
+        )
+
+    except (KeyboardInterrupt, EOFError):
+        handle_exit()
 
     return config
 
@@ -626,72 +648,91 @@ def main() -> None:
        - Interactive configuration (--new flag)
        - Load and render (existing config file)
     3. Create TreeOfLife object and render visualization when applicable
+
+    The function handles keyboard interrupts (Ctrl+C) and EOF signals (Ctrl+D)
+    gracefully, ensuring a clean exit with a friendly message.
     """
-    # Parse command-line arguments
-    args = parse_arguments()
+    # Set up signal handler for keyboard interrupts (Ctrl+C)
+    signal.signal(signal.SIGINT, handle_exit)
 
-    # Determine mode of operation based on arguments
+    try:
+        # Parse command-line arguments
+        args = parse_arguments()
 
-    # Show help screen if no arguments or help flag
-    if args.help or (args.config_file is None and not args.new):
-        display_help_screen()
-        sys.exit(0)
+        # Determine mode of operation based on arguments
 
-    # Display the banner for non-help operations
-    display_banner()
+        # Show help screen if no arguments or help flag
+        if args.help or (args.config_file is None and not args.new):
+            display_help_screen()
+            sys.exit(0)
 
-    # Handle interactive mode with --new flag
-    if args.new:
-        console.print(
-            "[bold blue]Running in interactive configuration mode[/]")
+        # Display the banner for non-help operations
+        display_banner()
 
-        # Run interactive configuration
-        config = run_interactive_config()
+        # Handle interactive mode with --new flag
+        if args.new:
+            console.print(
+                "[bold blue]Running in interactive configuration mode[/]")
 
-        # Determine where to save the config
-        if args.config_file:
-            config_filename = args.config_file
-        else:
-            # Ask for config filename to save
-            console.print("\n[bold cyan]Configuration File:[/]")
-            default_filename = "tree_of_life_config.yaml"
-            config_filename = Prompt.ask(
-                "Enter filename to save configuration",
-                default=default_filename
-            )
+            # Run interactive configuration
+            config = run_interactive_config()
 
-        # Save configuration to file
-        save_config_to_yaml(config, config_filename)
+            # Determine where to save the config
+            if args.config_file:
+                config_filename = args.config_file
+            else:
+                # Ask for config filename to save
+                console.print("\n[bold cyan]Configuration File:[/]")
+                default_filename = "tree_of_life_config.yaml"
+                try:
+                    config_filename = Prompt.ask(
+                        "Enter filename to save configuration",
+                        default=default_filename
+                    )
+                except (KeyboardInterrupt, EOFError):
+                    handle_exit()
 
-        # Create Tree of Life object
-        tree = create_tree_from_config(config)
+            # Save configuration to file
+            save_config_to_yaml(config, config_filename)
 
-        # Ask if the user wants to render now
-        if Confirm.ask("\nRender the Tree of Life now?", default=True):
-            render_tree(tree, config, args.display, config_filename)
+            # Create Tree of Life object
+            tree = create_tree_from_config(config)
 
-    # Handle existing config file (with or without --display)
-    elif args.config_file and os.path.exists(args.config_file):
-        console.print(
-            f"[bold blue]Loading configuration from:[/] [cyan]{args.config_file}[/]")
+            # Ask if the user wants to render now
+            try:
+                if Confirm.ask("\nRender the Tree of Life now?", default=True):
+                    render_tree(tree, config, args.display, config_filename)
+            except (KeyboardInterrupt, EOFError):
+                handle_exit()
 
-        # Load configuration from file
-        config = load_config_from_yaml(args.config_file)
+        # Handle existing config file (with or without --display)
+        elif args.config_file and os.path.exists(args.config_file):
+            console.print(
+                f"[bold blue]Loading configuration from:[/] [cyan]{args.config_file}[/]")
 
-        # Create Tree of Life object
-        tree = create_tree_from_config(config)
+            # Load configuration from file
+            config = load_config_from_yaml(args.config_file)
 
-        # Render the Tree of Life
-        render_tree(tree, config, args.display, args.config_file)
+            # Create Tree of Life object
+            tree = create_tree_from_config(config)
 
-    # Handle non-existent config file (without --new)
-    elif args.config_file:
-        console.print(
-            f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
-        console.print(
-            "[yellow]Use --new flag to create a new configuration.[/]")
-        console.print(
-            "[yellow]Run without arguments to see help screen.[/]")
+            # Render the Tree of Life
+            render_tree(tree, config, args.display, args.config_file)
+
+        # Handle non-existent config file (without --new)
+        elif args.config_file:
+            console.print(
+                f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
+            console.print(
+                "[yellow]Use --new flag to create a new configuration.[/]")
+            console.print(
+                "[yellow]Run without arguments to see help screen.[/]")
+            sys.exit(1)
+
+    except (KeyboardInterrupt, EOFError):
+        handle_exit()
+    except Exception as e:
+        console.print(f"\n[bold red]An unexpected error occurred:[/] {e}")
         sys.exit(1)
 
 
