@@ -30,12 +30,6 @@ Here are some examples of the different visualization options:
 | Hebrew Text Mode       | <img src="ref/img/text_mode_hebrew.png" width="25%" alt="Hebrew Text">        |
 | Planetary Symbols      | <img src="ref/img/text_mode_planets.png" width="25%" alt="Planetary Symbols"> |
 
-## Hey
-
-| Full Tree (King Scale)                                                   | Focus on Tiphereth                                                        | Hebrew Text Mode                                                       | Planetary Symbols                                                             |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| <img src="ref/img/king-tree.png" width="55%" alt="Full Tree King Scale"> | <img src="ref/img/tiphereth-focus.png" width="55%" alt="Tiphereth Focus"> | <img src="ref/img/text_mode_hebrew.png" width="55%" alt="Hebrew Text"> | <img src="ref/img/text_mode_planets.png" width="55%" alt="Planetary Symbols"> |
-
 ## Project Structure
 
 The codebase is organized into modules with clear separation of concerns:
