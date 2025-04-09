@@ -716,6 +716,8 @@ def main() -> None:
                         "Enter filename to save configuration",
                         default=default_filename
                     )
+                    # Ensure filename has .yaml extension
+                    config_filename = ensure_yaml_extension(config_filename)
                 except (KeyboardInterrupt, EOFError):
                     handle_exit()
 
@@ -748,28 +750,13 @@ def main() -> None:
 
         # Handle non-existent config file (without --new)
         elif args.config_file:
-            # Check if the file exists with .yaml extension
-            yaml_filename = ensure_yaml_extension(args.config_file)
-            if os.path.exists(yaml_filename):
-                console.print(
-                    f"[bold blue]Loading configuration from:[/] [cyan]{yaml_filename}[/]")
-
-                # Load configuration from file
-                config = load_config_from_yaml(yaml_filename)
-
-                # Create Tree of Life object
-                tree = create_tree_from_config(config)
-
-                # Render the Tree of Life
-                render_tree(tree, config, args.display, yaml_filename)
-            else:
-                console.print(
-                    f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
-                console.print(
-                    "[yellow]Use --new flag to create a new configuration.[/]")
-                console.print(
-                    "[yellow]Run without arguments to see help screen.[/]")
-                sys.exit(1)
+            console.print(
+                f"[bold yellow]Config file not found:[/] [cyan]{args.config_file}[/]")
+            console.print(
+                "[yellow]Use --new flag to create a new configuration.[/]")
+            console.print(
+                "[yellow]Run without arguments to see help screen.[/]")
+            sys.exit(1)
 
     except (KeyboardInterrupt, EOFError):
         handle_exit()
