@@ -26,7 +26,7 @@ Here are some examples of the different visualization options:
 | Description            | Example                                                                       |
 | ---------------------- | ----------------------------------------------------------------------------- |
 | Full Tree (King Scale) | <img src="ref/img/king-tree.png" width="25%" alt="Full Tree King Scale">      |
-| Focus on Tiphereth     | <img src="ref/img/tiphereth-focus.png" width="25%" alt="Tiphereth Focus">     |
+| Focus on Tiphereth     | <img src="ref/img/tiphereth-focus.png" width="50%" alt="Tiphereth Focus">     |
 | Hebrew Text Mode       | <img src="ref/img/text_mode_hebrew.png" width="25%" alt="Hebrew Text">        |
 | Planetary Symbols      | <img src="ref/img/text_mode_planets.png" width="25%" alt="Planetary Symbols"> |
 
