@@ -42,6 +42,9 @@ from rich.prompt import Prompt, Confirm, IntPrompt, FloatPrompt
 from rich.table import Table
 from rich.text import Text
 from rich import print as rprint
+from rich.markdown import Markdown
+from rich.columns import Columns
+from rich.box import ROUNDED
 
 from tol import TreeOfLife, ColorScheme
 
@@ -80,6 +83,120 @@ def display_banner() -> None:
         title="[bold bright_yellow]Tree of Life Image Generator[/]",
         subtitle="[italic bright_green]Interactive CLI Tool[/]"
     ))
+
+
+def display_help_screen() -> None:
+    """
+    Display a colorful help screen with emojis explaining how to use the program.
+
+    This function creates an engaging, user-friendly guide to the Tree of Life Generator
+    using rich formatting, colors, and emojis for a positive user experience.
+    """
+    # Display the banner first
+    display_banner()
+
+    # Main title
+    console.print(
+        "\n[bold cyan]✨ Welcome to the Tree of Life Generator! ✨[/]\n")
+
+    # Introduction
+    intro_text = (
+        "This tool helps you create beautiful Tree of Life visualizations with "
+        "customizable colors, text, and rendering options. Here's how to use it:"
+    )
+    console.print(Panel(intro_text, border_style="green", expand=False))
+
+    # Create a table for command examples
+    commands_table = Table(
+        title="🚀 Command Examples",
+        box=ROUNDED,
+        title_style="bold yellow",
+        border_style="bright_blue",
+        highlight=True,
+        header_style="bold cyan"
+    )
+
+    # Define the columns
+    commands_table.add_column("Command", style="cyan")
+    commands_table.add_column("Description", style="green")
+    commands_table.add_column("Emoji", justify="center")
+
+    # Add rows with examples
+    commands_table.add_row(
+        "./treegen.py --new",
+        "Start interactive configuration mode",
+        "🧙‍♂️"
+    )
+    commands_table.add_row(
+        "./treegen.py --new my_config.yaml",
+        "Create new configuration and save to file",
+        "💾"
+    )
+    commands_table.add_row(
+        "./treegen.py existing_config.yaml",
+        "Load and render a saved configuration",
+        "🎨"
+    )
+    commands_table.add_row(
+        "./treegen.py existing_config.yaml --display",
+        "Load configuration and display (don't save)",
+        "🖼️"
+    )
+    commands_table.add_row(
+        "./treegen.py -h",
+        "Show this help screen",
+        "❓"
+    )
+
+    # Display the command examples table
+    console.print(commands_table)
+
+    # Create feature highlights panels
+    features = [
+        (
+            "✨ Interactive Configuration",
+            "Step-by-step process with colorful prompts to create your perfect visualization"
+        ),
+        (
+            "🎨 Multiple Color Schemes",
+            "Choose from traditional color scales for Sephiroth and paths"
+        ),
+        (
+            "🔤 Text Display Options",
+            "Show numbers, Hebrew names, trigrams, or planetary symbols"
+        ),
+        (
+            "🔍 Focus Mode",
+            "Zoom in on a specific Sephirah to highlight its connections"
+        ),
+        (
+            "💾 Save & Load",
+            "Store your configurations as YAML files for future use"
+        )
+    ]
+
+    # Convert features to panels
+    feature_panels = []
+    for title, desc in features:
+        feature_panels.append(
+            Panel(
+                desc,
+                title=title,
+                border_style="magenta",
+                title_align="left"
+            )
+        )
+
+    # Display features in columns
+    console.print(Columns(feature_panels, equal=True, expand=True))
+
+    # Footer with get started tip
+    console.print(
+        "\n[bold green]💫 Get Started:[/] Run [cyan]./treegen.py --new[/] to create your first Tree of Life visualization!"
+    )
+    console.print(
+        "[dim]For more information about the Tree of Life in Kabbalah, visit https://en.wikipedia.org/wiki/Tree_of_life_(Kabbalah)[/]"
+    )
 
 
 def parse_arguments() -> argparse.Namespace:
